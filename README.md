@@ -39,6 +39,27 @@ Para verla en local:
 python3 -m http.server 5501 --directory Resultado/Landing
 ```
 
+## Despliegue
+
+**Cloudflare Pages**, conectado a este repositorio. Se eligió porque despliega desde
+repos privados en el plan gratuito, cosa que GitHub Pages no hace.
+
+| Ajuste | Valor |
+|---|---|
+| Framework preset | None |
+| Build command | *(vacío)* |
+| Build output directory | `Resultado/Landing` |
+| Branch de producción | `main` |
+
+No hay proceso de build: son archivos estáticos que se sirven tal cual. Todas las
+rutas internas son relativas, así que la carpeta funciona como raíz del sitio.
+
+`Resultado/Landing/_headers` define las cabeceras de seguridad y de caché. Solo
+tiene efecto en Cloudflare Pages, no en el servidor local.
+
+Fuera del sitio publicado queda todo lo que esté afuera de `Resultado/Landing/`
+— incluido `Resultado/CRM/`, que no debe ser público.
+
 ## Base de datos
 
 Supabase. Las migraciones se aplican a mano desde el editor SQL del proyecto:
