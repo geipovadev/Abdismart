@@ -41,21 +41,24 @@ python3 -m http.server 5501 --directory Resultado/Landing
 
 ## Despliegue
 
-**Cloudflare Pages**, conectado a este repositorio. Se eligió porque despliega desde
-repos privados en el plan gratuito, cosa que GitHub Pages no hace.
+**Cloudflare Workers (Static Assets)**, conectado a este repositorio. Se eligió
+Cloudflare porque despliega desde repos privados en el plan gratuito, cosa que
+GitHub Pages no hace.
 
-| Ajuste | Valor |
-|---|---|
-| Framework preset | None |
-| Build command | *(vacío)* |
-| Build output directory | `Resultado/Landing` |
-| Branch de producción | `main` |
+Toda la configuración vive en [`wrangler.jsonc`](wrangler.jsonc), en la raíz. Lo
+importante es `assets.directory`, que apunta a `Resultado/Landing`: la landing no
+está en la raíz del repo y sin eso el deploy falla con *"Could not detect a
+directory containing static files"*.
 
-No hay proceso de build: son archivos estáticos que se sirven tal cual. Todas las
-rutas internas son relativas, así que la carpeta funciona como raíz del sitio.
+No hay proceso de build. Son archivos estáticos que se sirven tal cual y todas
+las rutas internas son relativas, así que esa carpeta funciona como raíz del sitio.
+
+```bash
+npx wrangler deploy        # despliegue manual
+```
 
 `Resultado/Landing/_headers` define las cabeceras de seguridad y de caché. Solo
-tiene efecto en Cloudflare Pages, no en el servidor local.
+tiene efecto en Cloudflare, no en el servidor local.
 
 Fuera del sitio publicado queda todo lo que esté afuera de `Resultado/Landing/`
 — incluido `Resultado/CRM/`, que no debe ser público.

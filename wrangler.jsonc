@@ -1,0 +1,20 @@
+{
+  // Sitio estático servido por Cloudflare Workers (Static Assets).
+  // Sin este archivo `wrangler deploy` falla con:
+  //   "Could not detect a directory containing static files"
+  // porque la landing no está en la raíz del repositorio.
+  "name": "abdismart",
+  "compatibility_date": "2026-07-28",
+
+  "assets": {
+    // Raíz del sitio publicado. Todo lo que quede fuera de esta carpeta
+    // no se publica — incluido Resultado/CRM, que no debe ser público.
+    "directory": "./Resultado/Landing",
+
+    // "auto-trailing-slash" hace que /terminos sirva terminos.html.
+    "html_handling": "auto-trailing-slash",
+
+    // Sin 404.html propio: se devuelve el 404 por defecto.
+    "not_found_handling": "none"
+  }
+}
