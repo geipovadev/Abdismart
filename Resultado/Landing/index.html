@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Abdi crea webs profesionales para pequeños negocios en 48 horas. Todo incluido: dominio, hosting y soporte en español por WhatsApp.">
+
+  <!-- Open Graph / redes sociales -->
+  <meta property="og:title" content="Abdi — Tu negocio, online en 48 horas">
+  <meta property="og:description" content="Webs profesionales para pequeños negocios de Costa Rica en 48 horas. Dominio, hosting y soporte en español por WhatsApp. Todo incluido.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_CR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Abdi — Tu negocio, online en 48 horas">
+  <meta name="twitter:description" content="Webs profesionales para pequeños negocios de Costa Rica en 48 horas. Todo incluido.">
+
+  <title>Abdi — Tu negocio, online en 48 horas</title>
+
+  <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
+
+  <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
+  <script>
+    (function () {
+      var saved;
+      try { saved = localStorage.getItem('abdi-theme'); } catch (e) {}
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
+
+  <!-- TODO al publicar: reemplazar con la URL absoluta del dominio final -->
+  <!-- <meta property="og:image" content="https://TUDOMINIO.com/og-image.png"> -->
+  <!-- <link rel="canonical" href="https://TUDOMINIO.com/"> -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Abdi",
+    "description": "Webs profesionales para pequeños negocios de Costa Rica en 48 horas. Dominio, hosting y soporte en español incluidos.",
+    "email": "hola@abdi.com",
+    "areaServed": "CR"
+  }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --onyx:     #0A0B0D;
+      --graphite: #1C1F27;
+      --lime:     #C6FF3D;
+      --fog:      #A6ABB8;
+      --bone:     #F4F5F7;
+      --lime-dim:    rgba(198,255,61,.07);
+      --lime-border: rgba(198,255,61,.18);
+      --edge:        rgba(255,255,255,.07);
+
+      /* Acento para texto/iconos. En claro se oscurece para mantener contraste;
+         --lime sigue siendo el verde de superficies (botones, puntos, glows). */
+      --accent:     #C6FF3D;
+      --on-accent:  #0A0B0D;
+
+      --surface-0: rgba(255,255,255,.02);
+      --surface-1: rgba(255,255,255,.04);
+      --surface-2: rgba(255,255,255,.06);
+      --step-hover: #111318;
+      --feat-hover: #21252E;
+      --hot-bg:     #0D1108;
+      --nav-bg:     rgba(10,11,13,.88);
+      --panel-bg:   rgba(10,11,13,.97);
+      --placeholder: rgba(166,171,184,.55);
+      --grid-line:      rgba(198,255,61,.028);
+      --grid-line-soft: rgba(198,255,61,.022);
+      --shadow-lg: 0 32px 80px rgba(0,0,0,.55);
+      --shadow-md: 0 8px 24px rgba(0,0,0,.4);
+
+      color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+      --onyx:     #F6F7F9;
+      --graphite: #FFFFFF;
+      --fog:      #565C69;
+      --bone:     #0A0B0D;
+      --lime-dim:    rgba(122,168,0,.10);
+      --lime-border: rgba(122,168,0,.30);
+      --edge:        rgba(10,11,13,.11);
+
+      --accent:    #4F7A00;
+
+      --surface-0: rgba(10,11,13,.025);
+      --surface-1: rgba(10,11,13,.045);
+      --surface-2: rgba(10,11,13,.07);
+      --step-hover: #FFFFFF;
+      --feat-hover: #F1F3F6;
+      --hot-bg:     #FBFFF0;
+      --nav-bg:     rgba(246,247,249,.88);
+      --panel-bg:   rgba(255,255,255,.98);
+      --placeholder: rgba(86,92,105,.6);
+      --grid-line:      rgba(10,11,13,.045);
+      --grid-line-soft: rgba(10,11,13,.035);
+      --shadow-lg: 0 24px 60px rgba(10,11,13,.14);
+      --shadow-md: 0 8px 24px rgba(10,11,13,.10);
+
+      color-scheme: light;
+    }
+
+    /* Los puntos y líneas decorativas en lima puro se lavan sobre fondo claro:
+       en modo claro usan el acento oscuro. El mockup del hero queda excluido. */
+    :root[data-theme="light"] .badge-dot,
+    :root[data-theme="light"] .hero-stat-dot,
+    :root[data-theme="light"] .trust-pip,
+    :root[data-theme="light"] .menu__text::after {
+      background: var(--accent);
+    }
+
+    html { scroll-behavior: smooth; }
+    body, nav::before, .menu, section, .step, .feat-card,
+    .testi-card, .prob-card, .faq-item, .waitlist-card {
+      transition: background-color .3s ease, border-color .3s ease, color .3s ease;
+    }
+
+    body {
+      background: var(--onyx);
+      color: var(--bone);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── UTILITIES ──────────────────────────────────────────── */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    .mono  { font-family: 'JetBrains Mono', monospace; }
+    .serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+    .display { font-family: 'Archivo', sans-serif; letter-spacing: -.02em; }
+
+    .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(36px, 5vw, 60px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.05;
+      color: var(--bone);
+      margin-bottom: 20px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--fog);
+      line-height: 1.65;
+      max-width: 480px;
+    }
+
+    .btn-primary {
+      position: relative;
+      z-index: 0;
+      background: var(--lime);
+      color: var(--on-accent);
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform .2s;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #C6FF3D, #8FD400, #E8FF8A, #C6FF3D);
+      opacity: .55;
+      filter: blur(12px);
+      z-index: -1;
+      transition: opacity .3s ease, filter .3s ease;
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-primary:hover::before { opacity: 1; filter: blur(20px); }
+
+    .btn-ghost {
+      position: relative;
+      z-index: 0;
+      border: 1px solid var(--edge);
+      color: var(--fog);
+      padding: 15px 24px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-ghost::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #C6FF3D, #8FD400, #C6FF3D);
+      opacity: 0;
+      filter: blur(10px);
+      z-index: -1;
+      transition: opacity .3s ease;
+    }
+    .btn-ghost:hover { color: var(--bone); border-color: rgba(198,255,61,.25); }
+    .btn-ghost:hover::before { opacity: .35; }
+
+    /* ─── REVEAL ─────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .d1 { transition-delay: .1s; }
+    .d2 { transition-delay: .2s; }
+    .d3 { transition-delay: .3s; }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 100;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--edge);
+      transition: padding .3s;
+    }
+    /* El fondo con blur vive en un pseudo-elemento: si estuviera en el nav,
+       backdrop-filter crearía un containing block y el menú fixed de móvil
+       quedaría anclado al nav (tapando el logo) en vez del viewport. */
+    nav::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--nav-bg);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      z-index: -1;
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .nav-cta-corto { display: none; }
+
+    /* El logotipo es arte fijo: dos versiones, una por modo de color. */
+    .logo { display: block; line-height: 0; }
+    .logo img { display: block; height: 30px; width: auto; }
+    .logo .logo-light { display: none; }
+    :root[data-theme="light"] .logo .logo-dark  { display: none; }
+    :root[data-theme="light"] .logo .logo-light { display: block; }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .45; }
+    }
+    /* ─── INTERACTIVE MENU ──────────────────────────────────── */
+    .menu {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--surface-1);
+      border: 1px solid var(--edge);
+      border-radius: 14px;
+      padding: 4px;
+    }
+    .menu__item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 7px 16px 8px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--fog);
+      transition: color .2s, background .2s;
+      border-radius: 10px;
+      --lineWidth: 0px;
+    }
+    .menu__item:hover { color: var(--bone); background: var(--surface-2); }
+    .menu__item.active { color: var(--bone); }
+    .menu__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px; height: 18px;
+    }
+    .menu__item.active .menu__icon {
+      color: var(--accent);
+      animation: iconBounce .55s ease forwards;
+    }
+    .menu__text {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: lowercase;
+      letter-spacing: .06em;
+      line-height: 1;
+      white-space: nowrap;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity .25s ease, max-height .25s ease;
+    }
+    .menu__text::after {
+      content: '';
+      display: block;
+      width: var(--lineWidth);
+      height: 1.5px;
+      background: var(--lime);
+      border-radius: 2px;
+      margin-top: 3px;
+      transition: width .35s ease;
+    }
+    .menu__item.active .menu__text { opacity: 1; max-height: 20px; }
+
+    /* ─── TOGGLE TEMA (solo iconos) ─────────────────────────── */
+    .menu__sep {
+      width: 1px;
+      align-self: stretch;
+      background: var(--edge);
+      margin: 4px 6px;
+      flex-shrink: 0;
+    }
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+    }
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px; height: 32px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      border-radius: 9px;
+      cursor: pointer;
+      color: var(--fog);
+      transition: color .2s, background .2s;
+    }
+    .theme-btn svg { width: 16px; height: 16px; }
+    .theme-btn:hover { color: var(--bone); background: var(--surface-2); }
+    .theme-btn[aria-pressed="true"] {
+      color: var(--accent);
+      background: var(--lime-dim);
+      box-shadow: inset 0 0 0 1px var(--lime-border);
+    }
+
+    /* ─── BOTÓN HAMBURGUESA ─────────────────────────────────── */
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-burger {
+      display: none;
+      width: 40px; height: 40px;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface-1);
+      border: 1px solid var(--edge);
+      border-radius: 11px;
+      cursor: pointer;
+      color: var(--bone);
+      flex-shrink: 0;
+      transition: background .2s, border-color .2s;
+    }
+    .nav-burger:hover { background: var(--surface-2); }
+    .burger-lines {
+      position: relative;
+      width: 18px; height: 12px;
+    }
+    .burger-lines span {
+      position: absolute;
+      left: 0;
+      width: 100%; height: 1.5px;
+      border-radius: 2px;
+      background: currentColor;
+      transition: transform .3s ease, opacity .2s ease, top .3s ease;
+    }
+    .burger-lines span:nth-child(1) { top: 0; }
+    .burger-lines span:nth-child(2) { top: 5.25px; }
+    .burger-lines span:nth-child(3) { top: 10.5px; }
+    .nav-burger.open .burger-lines span:nth-child(1) { top: 5.25px; transform: rotate(45deg); }
+    .nav-burger.open .burger-lines span:nth-child(2) { opacity: 0; }
+    .nav-burger.open .burger-lines span:nth-child(3) { top: 5.25px; transform: rotate(-45deg); }
+
+    .nav-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(0,0,0,.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+    }
+
+    .nav-cta {
+      position: relative;
+      z-index: 0;
+      background: var(--lime);
+      color: var(--on-accent);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform .2s;
+    }
+    .nav-cta::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #C6FF3D, #8FD400, #E8FF8A, #C6FF3D);
+      opacity: .4;
+      filter: blur(8px);
+      z-index: -1;
+      transition: opacity .25s ease, filter .25s ease;
+    }
+    .nav-cta:hover { transform: translateY(-1px); }
+    .nav-cta:hover::before { opacity: .85; filter: blur(14px); }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+    .hero-glow {
+      position: absolute;
+      top: 15%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse, rgba(198,255,61,.065) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-layout {
+      position: relative;
+      z-index: 1;
+      /* .hero es flex: sin width el bloque se encogería al contenido */
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--lime-border);
+      background: var(--lime-dim);
+      color: var(--accent);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp .6s ease .1s forwards;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--lime);
+      border-radius: 50%;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    .hero-headline {
+      font-family: 'Archivo', sans-serif;
+      /* Archivo es más ancha que la display anterior: el mínimo baja a 54px
+         para que "Abdi, tu Odontología," siga cabiendo en una línea. */
+      font-size: clamp(54px, 8.5vw, 112px);
+      font-weight: 700;
+      letter-spacing: -.035em;
+      line-height: .94;
+      color: var(--bone);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .7s ease .22s forwards;
+    }
+    .hero-headline em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: clamp(17px, 2.2vw, 22px);
+      color: var(--fog);
+      max-width: 520px;
+      margin-bottom: 44px;
+      line-height: 1.55;
+      opacity: 0;
+      animation: fadeUp .7s ease .38s forwards;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 56px;
+      opacity: 0;
+      animation: fadeUp .7s ease .52s forwards;
+    }
+    .hero-stats {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .7s ease .66s forwards;
+    }
+    .hero-stat {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--fog);
+    }
+    .hero-stat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--lime); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes iconBounce {
+      0%,100% { transform: translateY(0); }
+      20%      { transform: translateY(-0.3em); }
+      40%      { transform: translateY(0); }
+      60%      { transform: translateY(-0.1em); }
+      80%      { transform: translateY(0); }
+    }
+
+    /* ─── TEXT ROTATION ──────────────────────────────────────── */
+    .rot-nowrap { white-space: nowrap; }
+    .rotating-word {
+      color: var(--accent);
+      display: inline-block;
+      min-width: 0.25em;
+    }
+    .char-wrap {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+    .char-el { display: inline-block; }
+
+    /* ─── TRUST BAR ──────────────────────────────────────────── */
+    .trust-bar {
+      border-top: 1px solid var(--edge);
+      border-bottom: 1px solid var(--edge);
+      padding: 18px 0;
+      overflow: hidden;
+    }
+    .trust-track {
+      display: flex;
+      gap: 48px;
+      animation: marquee 32s linear infinite;
+      white-space: nowrap;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--fog);
+      flex-shrink: 0;
+    }
+    .trust-pip { width: 4px; height: 4px; border-radius: 50%; background: var(--lime); }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ─── SECTIONS ───────────────────────────────────────────── */
+    section { padding: 112px 0; }
+
+    /* ─── PROBLEM ────────────────────────────────────────────── */
+    .problem { background: var(--graphite); position: relative; overflow: hidden; }
+    .problem::before {
+      content: '';
+      position: absolute;
+      top: -180px; right: -180px;
+      width: 560px; height: 560px;
+      background: radial-gradient(circle, rgba(198,255,61,.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .problem-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .problem-big {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(52px, 7vw, 84px);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1;
+      color: var(--bone);
+      margin-bottom: 24px;
+    }
+    .problem-big em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .problem-desc { font-size: 17px; color: var(--fog); line-height: 1.65; max-width: 400px; }
+    .problem-cards { display: flex; flex-direction: column; gap: 14px; }
+    .prob-card {
+      border: 1px solid var(--edge);
+      border-radius: 12px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 16px;
+      background: var(--surface-0);
+      transition: border-color .2s;
+    }
+    .prob-card.good {
+      border-color: var(--lime-border);
+      background: var(--lime-dim);
+    }
+    .prob-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .prob-title { font-weight: 600; font-size: 14px; color: var(--bone); margin-bottom: 4px; }
+    .prob-title.lime { color: var(--accent); }
+    .prob-text { font-size: 13px; color: var(--fog); line-height: 1.5; }
+
+    /* ─── HOW ────────────────────────────────────────────────── */
+    .how-header { margin-bottom: 56px; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1px;
+      background: var(--edge);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .step {
+      background: var(--onyx);
+      padding: 44px 36px;
+      transition: background .25s;
+    }
+    .step:hover { background: var(--step-hover); }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: .1em;
+      display: block;
+      margin-bottom: 28px;
+    }
+    .step-icon {
+      width: 48px; height: 48px;
+      border: 1px solid var(--lime-border);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--lime-dim);
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    .step-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--bone);
+      margin-bottom: 10px;
+    }
+    .step-desc { font-size: 14px; color: var(--fog); line-height: 1.65; }
+    .step-tag {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--edge);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+    }
+
+    /* ─── FEATURES ───────────────────────────────────────────── */
+    .features { background: var(--graphite); }
+    .features-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: end;
+      margin-bottom: 56px;
+    }
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 1px;
+      background: var(--edge);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .feat-card {
+      background: var(--graphite);
+      padding: 32px;
+      transition: background .2s;
+    }
+    .feat-card:hover { background: var(--feat-hover); }
+    .feat-icon { font-size: 22px; margin-bottom: 18px; display: block; }
+    .feat-title { font-weight: 600; font-size: 15px; color: var(--bone); margin-bottom: 7px; }
+    .feat-desc { font-size: 13px; color: var(--fog); line-height: 1.6; }
+
+    /* ─── TESTIMONIALS ───────────────────────────────────────── */
+    .testimonials { position: relative; }
+    .testimonials-header { text-align: center; margin-bottom: 60px; }
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 20px;
+    }
+    .testi-card {
+      background: var(--graphite);
+      border: 1px solid var(--edge);
+      border-radius: 16px;
+      padding: 36px;
+      position: relative;
+      transition: border-color .2s, transform .2s;
+    }
+    .testi-card:hover { border-color: var(--lime-border); transform: translateY(-4px); }
+    .testi-sla {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .testi-quote {
+      font-size: 15px;
+      color: var(--bone);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .testi-quote::before {
+      content: '"';
+      font-family: 'Instrument Serif', serif;
+      font-size: 52px;
+      color: var(--accent);
+      line-height: 0;
+      vertical-align: -18px;
+      margin-right: 2px;
+    }
+    .testi-meta { display: flex; align-items: center; gap: 13px; }
+    .testi-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Archivo', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .av-a { background: rgba(198,255,61,.14);  color: var(--accent); }
+    .av-b { background: rgba(120,180,255,.14); color: #78B4FF;     }
+    .av-c { background: rgba(255,185,80,.14);  color: #FFB950;     }
+    .testi-name { font-weight: 600; font-size: 14px; color: var(--bone); }
+    .testi-role { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fog); margin-top: 2px; }
+
+    /* ─── MURO DE TESTIMONIOS ────────────────────────────────────
+       Tres columnas que suben en bucle a velocidades distintas.
+       Cada columna repite su lista dos veces y se desplaza -50%,
+       así el salto del bucle es invisible. El padding inferior
+       compensa el gap para que el corte quede exacto. */
+    .tm-wall {
+      --tm-gap: 24px;
+      display: flex;
+      justify-content: center;
+      gap: var(--tm-gap);
+      /* Debe quedar por debajo de la media pista más corta (~664px), o al
+         cerrar el bucle asoma un hueco. Si cambian los testimonios, revisar. */
+      max-height: 620px;
+      overflow: hidden;
+      mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+      -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+    }
+    .tm-col { width: 320px; flex-shrink: 0; }
+    .tm-col--md, .tm-col--lg { display: none; }
+
+    .tm-track {
+      display: flex;
+      flex-direction: column;
+      gap: var(--tm-gap);
+      padding-bottom: var(--tm-gap);
+      animation: tm-scroll var(--tm-dur, 16s) linear infinite;
+      will-change: transform;
+    }
+    @keyframes tm-scroll {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-50%); }
+    }
+    .tm-wall:hover .tm-track { animation-play-state: paused; }
+
+    .tm-card { padding: 30px; border-radius: 22px; }
+    .tm-card .testi-quote { font-size: 14px; margin-bottom: 22px; }
+
+    /* Marcador de contenido pendiente: borde punteado y aviso visible
+       para que nadie publique la sección con texto de relleno. */
+    .tm-card.is-placeholder { border-style: dashed; background: var(--surface-0); }
+    .tm-card.is-placeholder .testi-quote { color: var(--fog); }
+    .tm-card.is-placeholder .testi-avatar {
+      background: transparent;
+      border: 1px dashed var(--edge);
+      color: var(--fog);
+    }
+    .tm-aviso {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      max-width: 560px;
+      margin: 0 auto 40px;
+      border: 1px dashed rgba(255,185,80,.45);
+      background: rgba(255,185,80,.07);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--fog);
+      text-align: left;
+    }
+    .tm-aviso b { color: #FFB950; }
+    :root[data-theme="light"] .tm-aviso b { color: #A96500; }
+
+    @media (min-width: 768px)  { .tm-col--md { display: block; } }
+    @media (min-width: 1024px) { .tm-col--lg { display: block; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tm-track { animation: none; }
+      .tm-wall  { max-height: none; mask-image: none; -webkit-mask-image: none; }
+    }
+
+    /* ─── FAQ ────────────────────────────────────────────────── */
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .faq-list { display: flex; flex-direction: column; gap: 2px; }
+    .faq-item {
+      border: 1px solid var(--edge);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%;
+      text-align: left;
+      padding: 22px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--bone);
+      transition: background .2s;
+    }
+    .faq-q:hover { background: var(--surface-0); }
+    .faq-arrow { color: var(--accent); font-size: 20px; flex-shrink: 0; transition: transform .3s; }
+    .faq-item.open .faq-arrow { transform: rotate(45deg); }
+    .faq-a {
+      padding: 0 22px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s ease, padding .4s ease;
+      font-size: 14px;
+      color: var(--fog);
+      line-height: 1.7;
+    }
+    .faq-item.open .faq-a { max-height: 400px; padding: 0 22px 22px; }
+
+    /* ─── WAITLIST FORM ─────────────────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .form-field { display: flex; flex-direction: column; gap: 7px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .form-input, .form-select {
+      width: 100%;
+      background: var(--surface-0);
+      border: 1px solid var(--edge);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      color: var(--bone);
+      outline: none;
+      transition: border-color .2s, background .2s;
+      appearance: none;
+    }
+    .form-input::placeholder { color: var(--placeholder); }
+    .form-input:focus, .form-select:focus {
+      border-color: rgba(198,255,61,.45);
+      background: rgba(198,255,61,.03);
+    }
+    .form-select { cursor: pointer; }
+    .form-select option { background: var(--graphite); color: var(--bone); }
+    .form-submit {
+      width: 100%;
+      border: none;
+      cursor: pointer;
+      justify-content: center;
+    }
+    .form-note {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      text-align: center;
+      margin-top: 14px;
+    }
+    .form-error {
+      display: none;
+      font-size: 13px;
+      color: #FF5A5A;
+      text-align: center;
+      margin-top: 12px;
+    }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 36px 20px;
+    }
+    .form-success-icon {
+      width: 56px; height: 56px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      color: var(--accent);
+    }
+    .form-success-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--bone);
+      margin-bottom: 8px;
+    }
+    .form-success-text { font-size: 14px; color: var(--fog); }
+    .hp-field { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+    .waitlist-card {
+      background: var(--graphite);
+      border: 1px solid var(--edge);
+      border-radius: 20px;
+      padding: 40px 36px;
+      max-width: 560px;
+      width: 100%;
+    }
+    @media (max-width: 600px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .waitlist-card { padding: 32px 24px; }
+    }
+
+    /* ─── WHATSAPP CTA ──────────────────────────────────────── */
+    .wa-section {
+      background: var(--graphite);
+      border-top: 1px solid var(--edge);
+      border-bottom: 1px solid var(--edge);
+      padding: 72px 0;
+    }
+    .wa-layout {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 64px;
+      align-items: center;
+    }
+    .wa-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: var(--bone);
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+    .wa-desc {
+      font-size: 16px;
+      color: var(--fog);
+      line-height: 1.65;
+      max-width: 420px;
+      margin-bottom: 32px;
+    }
+    .btn-wa {
+      position: relative;
+      z-index: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: transform .2s, background .2s;
+    }
+    .btn-wa::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #25D366, #128C7E, #60D669, #25D366);
+      opacity: .5;
+      filter: blur(12px);
+      z-index: -1;
+      transition: opacity .3s ease, filter .3s ease;
+    }
+    .btn-wa:hover { transform: translateY(-2px); background: #20bc59; }
+    .btn-wa:hover::before { opacity: .9; filter: blur(20px); }
+    .wa-visual {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      flex-shrink: 0;
+    }
+    .wa-blob {
+      position: absolute;
+      inset: -20px;
+      background: radial-gradient(circle, rgba(37,211,102,.12) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: waPulse 3s ease-in-out infinite;
+    }
+    .wa-icon {
+      width: 180px;
+      height: 180px;
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 20px 40px rgba(37,211,102,.25));
+      animation: waFloat 4s ease-in-out infinite;
+    }
+    @keyframes waFloat {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-10px); }
+    }
+    @keyframes waPulse {
+      0%, 100% { opacity: .6; transform: scale(1); }
+      50%       { opacity: 1; transform: scale(1.08); }
+    }
+    @media (max-width: 600px) {
+      .wa-layout { grid-template-columns: 1fr; gap: 40px; }
+      .wa-visual  { display: none; }
+    }
+
+    /* ─── CTA FINAL ──────────────────────────────────────────── */
+    .cta-final {
+      text-align: center;
+      padding: 140px 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-final-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 1000px; height: 500px;
+      background: radial-gradient(ellipse, rgba(198,255,61,.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-final-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line-soft) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line-soft) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 0 24px; }
+    .cta-headline {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(40px, 6vw, 74px);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1;
+      color: var(--bone);
+      margin-bottom: 20px;
+    }
+    .cta-headline em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .cta-sub { font-size: 18px; color: var(--fog); margin-bottom: 44px; }
+    .cta-actions { display: flex; align-items: center; gap: 14px; justify-content: center; }
+    .cta-meta {
+      margin-top: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+    .cta-meta span { opacity: .5; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--edge);
+      padding: 40px 0;
+    }
+    /* Fila superior: logotipo y enlaces. Debajo, los derechos centrados. */
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--edge);
+    }
+    .footer-links { display: flex; gap: 22px; list-style: none; }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-links a:hover { color: var(--bone); }
+    .footer-copy {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      text-align: center;
+      padding-top: 24px;
+    }
+    .footer-legal { display: block; margin-top: 4px; opacity: .75; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .problem-layout { grid-template-columns: 1fr; gap: 40px; }
+      .steps          { grid-template-columns: 1fr; }
+      .features-header{ grid-template-columns: 1fr; gap: 20px; }
+      .feat-grid      { grid-template-columns: 1fr 1fr; }
+      .testi-grid     { grid-template-columns: 1fr; }
+      .faq-layout     { grid-template-columns: 1fr; gap: 40px; }
+      .footer-inner   { justify-content: center; text-align: center; }
+      .footer-links   { flex-wrap: wrap; justify-content: center; }
+      .footer-copy    { text-align: center; }
+
+      /* El menú deja de ser una barra fija y pasa a un panel hamburguesa,
+         para que no tape el botón "Empieza tu web". */
+      .nav-burger { display: flex; }
+      .nav-scrim  { display: block; }
+      body.menu-open .nav-scrim { opacity: 1; pointer-events: auto; }
+      body.menu-open { overflow: hidden; }
+
+      /* El nav crea contexto de apilamiento propio (z-index:100), así que el
+         panel y la barra se ordenan entre sí, no contra el resto de la página. */
+      .logo, .nav-right { position: relative; z-index: 2; }
+
+      .menu {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+        border: none;
+        border-bottom: 1px solid var(--edge);
+        border-radius: 0 0 20px 20px;
+        background: var(--panel-bg);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        padding: 84px 16px 20px;
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform .35s cubic-bezier(.4,0,.2,1), opacity .25s ease, visibility .35s;
+      }
+      body.menu-open .menu {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .menu__item {
+        flex-direction: row;
+        justify-content: center;
+        gap: 12px;
+        padding: 14px 16px;
+        border-radius: 12px;
+      }
+      .menu__icon svg { width: 20px; height: 20px; }
+
+      .menu__text {
+        opacity: 1;
+        max-height: none;
+        font-size: 14px;
+        letter-spacing: .02em;
+      }
+      .menu__text::after { display: none; }
+
+      .menu__sep {
+        width: auto;
+        height: 1px;
+        align-self: auto;
+        margin: 10px 16px 6px;
+      }
+      .theme-toggle { justify-content: center; gap: 8px; padding-bottom: 4px; }
+      .theme-btn { width: 46px; height: 40px; }
+      .theme-btn svg { width: 18px; height: 18px; }
+    }
+
+    @media (max-width: 560px) {
+      .feat-grid    { grid-template-columns: 1fr; }
+      .hero-actions { flex-direction: column; align-items: flex-start; }
+      .cta-actions  { flex-direction: column; }
+      section       { padding: 80px 0; }
+      /* .rot-nowrap mantiene unidos palabra y coma, pero el espacio anterior
+         sigue siendo punto de corte: en móvil la palabra baja de línea sola
+         y el titular conserva tamaño en vez de encogerse. */
+      .hero-headline { font-size: clamp(34px, 12vw, 52px); }
+    }
+
+    /* En pantallas muy angostas el CTA y la hamburguesa deben convivir sin apretarse.
+       El logotipo baja de 30px porque "abdismart" es ancho y toca el CTA. */
+    @media (max-width: 560px) {
+      nav .logo img { height: 22px; }
+    }
+    @media (max-width: 400px) {
+      .nav-right { gap: 8px; }
+      .nav-cta   { padding: 9px 13px; font-size: 13px; }
+      .nav-burger { width: 38px; height: 38px; }
+      nav .logo img { height: 20px; }
+      /* A 320px "Empieza tu web" ya no cabe junto al logotipo. */
+      .nav-cta-largo { display: none; }
+      .nav-cta-corto { display: inline; }
+    }
+
+    /* ─── ACCESIBILIDAD: REDUCIR MOVIMIENTO ─────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .hero-badge, .hero-headline, .hero-sub,
+      .hero-actions, .hero-stats {
+        opacity: 1;
+        animation: none;
+      }
+      .badge-dot { animation: none; }
+      .trust-track { animation-play-state: paused; }
+      .wa-icon, .wa-blob { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
+      <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+    </div>
+    <div class="menu" role="navigation" id="main-menu">
+      <button class="menu__item active" data-href="#" style="--lineWidth:0px">
+        <div class="menu__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <strong class="menu__text">inicio</strong>
+      </button>
+      <button class="menu__item" data-href="#como-funciona" style="--lineWidth:0px">
+        <div class="menu__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <strong class="menu__text">proceso</strong>
+      </button>
+      <button class="menu__item" data-href="#faq" style="--lineWidth:0px">
+        <div class="menu__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </div>
+        <strong class="menu__text">preguntas</strong>
+      </button>
+      <button class="menu__item" data-href="#clientes" style="--lineWidth:0px">
+        <div class="menu__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <strong class="menu__text">fundador</strong>
+      </button>
+
+      <div class="menu__sep" aria-hidden="true"></div>
+      <div class="theme-toggle" role="group" aria-label="Modo de color">
+        <button type="button" class="theme-btn" data-theme-set="light" aria-pressed="false" aria-label="Modo claro" title="Modo claro">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+        <button type="button" class="theme-btn" data-theme-set="dark" aria-pressed="true" aria-label="Modo oscuro" title="Modo oscuro">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <a href="empezar.html" class="nav-cta"><span class="nav-cta-largo">Empieza tu web</span><span class="nav-cta-corto">Empieza</span> →</a>
+      <button type="button" class="nav-burger" id="nav-burger" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">
+        <span class="burger-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-scrim" id="nav-scrim"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-layout">
+    <div>
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        SLA 48h · Costa Rica · Soporte en español
+      </div>
+      <h1 class="hero-headline">
+        Abdi, tu <span class="rot-nowrap"><span id="rotating-word" class="rotating-word"></span>,</span><br>online en <em>48h</em>.
+      </h1>
+      <p class="hero-sub">
+        Sin agencia. Sin freelance. Sin esperas.<br>
+        Web profesional, dominio y soporte incluidos desde el día uno.
+      </p>
+      <div class="hero-actions">
+        <a href="empezar.html" class="btn-primary">Empieza tu web →</a>
+        <a href="#como-funciona" class="btn-ghost">Ver cómo funciona</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-dot"></div><span class="mono">Dominio incluido</span></div>
+        <div class="hero-stat"><div class="hero-stat-dot"></div><span class="mono">Hosting incluido</span></div>
+        <div class="hero-stat"><div class="hero-stat-dot"></div><span class="mono">SEO básico</span></div>
+        <div class="hero-stat"><div class="hero-stat-dot"></div><span class="mono">Sin contrato largo</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-track">
+    <div class="trust-item"><div class="trust-pip"></div>Consultorios médicos</div>
+    <div class="trust-item"><div class="trust-pip"></div>Clínicas estéticas</div>
+    <div class="trust-item"><div class="trust-pip"></div>Odontologías</div>
+    <div class="trust-item"><div class="trust-pip"></div>Nutricionistas</div>
+    <div class="trust-item"><div class="trust-pip"></div>Psicólogos</div>
+    <div class="trust-item"><div class="trust-pip"></div>Fisioterapeutas</div>
+    <div class="trust-item"><div class="trust-pip"></div>Laboratorios clínicos</div>
+    <div class="trust-item"><div class="trust-pip"></div>Oftalmólogos</div>
+    <!-- duplicate for seamless loop -->
+    <div class="trust-item"><div class="trust-pip"></div>Consultorios médicos</div>
+    <div class="trust-item"><div class="trust-pip"></div>Clínicas estéticas</div>
+    <div class="trust-item"><div class="trust-pip"></div>Odontologías</div>
+    <div class="trust-item"><div class="trust-pip"></div>Nutricionistas</div>
+    <div class="trust-item"><div class="trust-pip"></div>Psicólogos</div>
+    <div class="trust-item"><div class="trust-pip"></div>Fisioterapeutas</div>
+    <div class="trust-item"><div class="trust-pip"></div>Laboratorios clínicos</div>
+    <div class="trust-item"><div class="trust-pip"></div>Oftalmólogos</div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="container">
+    <div class="problem-layout">
+      <div>
+        <span class="label reveal">El problema</span>
+        <div class="problem-big reveal d1">
+          8 de cada<br><em>10</em> negocios<br>no tienen web.
+        </div>
+        <p class="problem-desc reveal d2">
+          No porque no quieran. Porque todas las opciones disponibles son malas, caras o lentas.
+        </p>
+      </div>
+      <div class="problem-cards reveal">
+        <div class="prob-card">
+          <div class="prob-icon">🏢</div>
+          <div>
+            <div class="prob-title">Agencia tradicional</div>
+            <div class="prob-text">USD 1.500–4.000. 4 a 8 semanas. Reuniones, propuestas, revisiones. Y luego te cobran cada cambio.</div>
+          </div>
+        </div>
+        <div class="prob-card">
+          <div class="prob-icon">👤</div>
+          <div>
+            <div class="prob-title">Freelance</div>
+            <div class="prob-text">Inconsistente. No da el ancho con volumen. Cuando desaparece, te quedas con una web que nadie sabe mantener.</div>
+          </div>
+        </div>
+        <div class="prob-card">
+          <div class="prob-icon">🔧</div>
+          <div>
+            <div class="prob-title">Wix / Squarespace</div>
+            <div class="prob-text">En inglés. Exige tiempo que el dueño no tiene. Sin integraciones locales. Sin soporte real en español.</div>
+          </div>
+        </div>
+        <div class="prob-card good">
+          <div class="prob-icon">⚡</div>
+          <div>
+            <div class="prob-title lime">Abdi</div>
+            <div class="prob-text">Web profesional en 48 horas. Todo incluido. Soporte en español por WhatsApp. Sin sorpresas.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="como-funciona">
+  <div class="container">
+    <div class="how-header">
+      <span class="label reveal">Cómo funciona</span>
+      <h2 class="section-title reveal d1">De cero a online<br>en tres pasos.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="step-num">01 ·</span>
+        <div class="step-icon">📝</div>
+        <div class="step-title">Cuéntanos de tu negocio</div>
+        <p class="step-desc">Cinco preguntas. Diez minutos. Sin formularios complicados. Nos dices qué haces, a quién le vendes y qué necesitas.</p>
+        <div class="step-tag mono">⟶ Briefing guiado en español</div>
+      </div>
+      <div class="step reveal d1">
+        <span class="step-num">02 ·</span>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">Tu web toma forma</div>
+        <p class="step-desc">Diseño profesional generado en horas. Antes de entregarte, un humano revisa todo con checklist de 10 puntos. No es automatización pura.</p>
+        <div class="step-tag mono">⟶ Revisión humana obligatoria</div>
+      </div>
+      <div class="step reveal d2">
+        <span class="step-num">03 ·</span>
+        <div class="step-icon">🚀</div>
+        <div class="step-title">Tu negocio, online</div>
+        <p class="step-desc">Dominio propio, hosting configurado, SEO básico activo. Te mandamos un video de 2 minutos explicando todo. Luego tú editas sin código.</p>
+        <div class="step-tag mono">⟶ En 48 horas hábiles</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <div class="features-header">
+      <div>
+        <span class="label reveal">Qué incluye</span>
+        <h2 class="section-title reveal d1">Todo lo que tu negocio<br>necesita. Sin extras.</h2>
+      </div>
+      <p class="section-sub reveal d2">Cada plan incluye dominio, hosting, soporte y las integraciones que los negocios de Costa Rica realmente usan.</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card reveal">
+        <span class="feat-icon">⏱</span>
+        <div class="feat-title">SLA 48h garantizado</div>
+        <div class="feat-desc">De tu pago al dominio live. Si no cumplimos, te regresamos el setup fee. Sin letra chica.</div>
+      </div>
+      <div class="feat-card reveal d1">
+        <span class="feat-icon">🌐</span>
+        <div class="feat-title">Dominio + hosting incluido</div>
+        <div class="feat-desc">Sin costos ocultos. Sin configurar nada. Llega la web, llega el dominio, llega el SSL. Todo en uno.</div>
+      </div>
+      <div class="feat-card reveal d2">
+        <span class="feat-icon">🔍</span>
+        <div class="feat-title">SEO básico configurado</div>
+        <div class="feat-desc">Títulos, meta tags, sitemap y velocidad optimizada para que Google te encuentre desde el día uno.</div>
+      </div>
+      <div class="feat-card reveal">
+        <span class="feat-icon">💬</span>
+        <div class="feat-title">Soporte por WhatsApp</div>
+        <div class="feat-desc">En español. Con tiempos de respuesta reales. Sin tickets, sin bots inútiles, sin esperas.</div>
+      </div>
+      <div class="feat-card reveal d1">
+        <span class="feat-icon">💳</span>
+        <div class="feat-title">Pagos en línea integrados</div>
+        <div class="feat-desc">SINPE Móvil y tarjetas, conectados a tu web. Tus clientes pagan sin salir de la página. Sin redireccionamientos raros.</div>
+      </div>
+      <div class="feat-card reveal d2">
+        <span class="feat-icon">✏️</span>
+        <div class="feat-title">Cambios incluidos en tu mensualidad</div>
+        <div class="feat-desc">Un equipo especializado hace los cambios por ti. Textos, imágenes, precios, secciones nuevas. Pides por WhatsApp, nosotros lo resolvemos.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMA FUNDADOR -->
+<section id="clientes">
+  <div class="container">
+    <div class="testimonials-header reveal">
+      <span class="label">Programa fundador</span>
+      <h2 class="section-title">Sé de los primeros<br>10 negocios.</h2>
+      <p class="section-sub" style="max-width:520px; margin:16px auto 0;">Estamos abriendo Abdi con un grupo fundador de 10 consultorios y clínicas. Tu confianza al inicio se paga con condiciones que no volveremos a ofrecer.</p>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-sla">Beneficio 01</div>
+        <span class="feat-icon">🔒</span>
+        <div class="step-title" style="margin-top:14px;">Mensualidad congelada</div>
+        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">El precio que pagas al entrar no sube nunca, mientras sigas siendo cliente. Sin letra chica.</p>
+      </div>
+      <div class="testi-card reveal d1">
+        <div class="testi-sla">Beneficio 02</div>
+        <span class="feat-icon">⚡</span>
+        <div class="step-title" style="margin-top:14px;">Primeros en la fila</div>
+        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Tu web entra directo a producción. SLA de 48 horas desde el primer día, sin lista de espera.</p>
+      </div>
+      <div class="testi-card reveal d2">
+        <div class="testi-sla">Beneficio 03</div>
+        <span class="feat-icon">🤝</span>
+        <div class="step-title" style="margin-top:14px;">Línea directa</div>
+        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Hablas directo con quien construye Abdi. Tus pedidos y sugerencias definen el producto.</p>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:44px;" class="reveal">
+      <a href="#contacto" class="btn-primary">Apartar mi lugar →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════
+     MURO DE TESTIMONIOS — PENDIENTE DE CONTENIDO REAL
+
+     El diseño está terminado. Las tarjetas son marcadores.
+     Para publicar: sustituir el texto de cada .tm-card, quitar la
+     clase "is-placeholder", borrar el bloque .tm-aviso y añadir el
+     ítem al menú si se quiere enlazar.
+     No publicar esta sección con el texto de relleno.
+     ══════════════════════════════════════════════════════════════ -->
+<section class="testimonials" id="testimonios">
+  <div class="container">
+    <div class="testimonials-header reveal">
+      <span class="label">Testimonios</span>
+      <h2 class="section-title">Lo que dicen<br>nuestros clientes.</h2>
+      <p class="section-sub" style="max-width:520px; margin:16px auto 0;">Negocios que ya tienen su web funcionando con Abdismart.</p>
+    </div>
+
+    <div class="tm-aviso reveal">
+      <span aria-hidden="true">⚠</span>
+      <div><b>Sección pendiente de contenido.</b> Las nueve tarjetas son marcadores para revisar el diseño. Hay que reemplazarlas por testimonios reales de los clientes fundadores antes de publicar la landing.</div>
+    </div>
+
+    <div class="tm-wall reveal">
+      <!-- Columna 1 -->
+      <div class="tm-col">
+        <div class="tm-track" style="--tm-dur:34s">
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado para la cita textual de un cliente fundador.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Consultorio · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado. Aquí va lo que el cliente destaque del servicio: el plazo de entrega, el soporte o el resultado concreto que consiguió con su web.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Clínica · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado. Una cita corta y concreta funciona mejor que una larga y genérica.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Odontología · pendiente</div></div>
+            </div>
+          </div>
+
+          <!-- copia para cerrar el bucle sin salto -->
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado para la cita textual de un cliente fundador.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Consultorio · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado. Aquí va lo que el cliente destaque del servicio: el plazo de entrega, el soporte o el resultado concreto que consiguió con su web.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Clínica · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado. Una cita corta y concreta funciona mejor que una larga y genérica.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Odontología · pendiente</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 2 · aparece desde 768px -->
+      <div class="tm-col tm-col--md">
+        <div class="tm-track" style="--tm-dur:42s">
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado. Si el cliente menciona un número —cuántas citas nuevas, cuánto tiempo ahorró— la cita gana fuerza.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Nutrición · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado para la cita textual de un cliente fundador.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Psicología · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado. Conviene pedir permiso por escrito antes de publicar el nombre del negocio.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Fisioterapia · pendiente</div></div>
+            </div>
+          </div>
+
+          <!-- copia para cerrar el bucle sin salto -->
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado. Si el cliente menciona un número —cuántas citas nuevas, cuánto tiempo ahorró— la cita gana fuerza.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Nutrición · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado para la cita textual de un cliente fundador.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Psicología · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado. Conviene pedir permiso por escrito antes de publicar el nombre del negocio.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Fisioterapia · pendiente</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna 3 · aparece desde 1024px -->
+      <div class="tm-col tm-col--lg">
+        <div class="tm-track" style="--tm-dur:38s">
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado. Una foto real del negocio vale más que un avatar genérico.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Laboratorio · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado. Aquí va lo que el cliente destaque del servicio, en sus propias palabras y sin retoques de marketing.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Clínica estética · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder">
+            <p class="testi-quote">Espacio reservado para la cita textual de un cliente fundador.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Oftalmología · pendiente</div></div>
+            </div>
+          </div>
+
+          <!-- copia para cerrar el bucle sin salto -->
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado. Una foto real del negocio vale más que un avatar genérico.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Laboratorio · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado. Aquí va lo que el cliente destaque del servicio, en sus propias palabras y sin retoques de marketing.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Clínica estética · pendiente</div></div>
+            </div>
+          </div>
+          <div class="testi-card tm-card is-placeholder" aria-hidden="true">
+            <p class="testi-quote">Espacio reservado para la cita textual de un cliente fundador.</p>
+            <div class="testi-meta">
+              <div class="testi-avatar">—</div>
+              <div><div class="testi-name">Nombre pendiente</div><div class="testi-role">Oftalmología · pendiente</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="faq-layout">
+      <div>
+        <span class="label reveal">FAQ</span>
+        <h2 class="section-title reveal d1">Preguntas frecuentes.</h2>
+        <p class="section-sub reveal d2">Si tienes alguna que no está aquí, déjanos tus datos abajo y te respondemos directo.</p>
+      </div>
+      <div class="faq-list reveal">
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿De verdad en 48 horas?
+            <span class="faq-arrow">+</span>
+          </button>
+          <div class="faq-a">48 horas hábiles desde que confirmas el pago y nos das la información de tu negocio. Si no cumplimos, te regresamos el setup fee sin preguntas. Así de simple.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Qué incluye exactamente el pago inicial?
+            <span class="faq-arrow">+</span>
+          </button>
+          <div class="faq-a">El briefing guiado, el diseño completo, la revisión humana, el dominio (primer año), la configuración de hosting, SSL, SEO básico, integraciones y el video de onboarding. La mensualidad cubre hosting, soporte, actualizaciones de seguridad y cambios menores mensuales.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Puedo pedir cambios en mi web?
+            <span class="faq-arrow">+</span>
+          </button>
+          <div class="faq-a">Sí, cuando quieras. Tu mensualidad incluye un equipo especializado que hace los cambios por ti — textos, imágenes, precios, nuevas secciones. Tú pides por WhatsApp, nosotros lo resolvemos. Sin que toques nada.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Qué pasa si no me gusta el resultado?
+            <span class="faq-arrow">+</span>
+          </button>
+          <div class="faq-a">Antes de publicar tienes una ronda de revisión para pedir ajustes. Si después de eso el resultado no cumple con lo acordado en el briefing, lo rehacemos. No publicamos nada sin tu aprobación.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">
+            ¿Puedo cancelar cuando quiera?
+            <span class="faq-arrow">+</span>
+          </button>
+          <div class="faq-a">Sí. La mensualidad es mes a mes, sin contrato largo. Si cancelas, el dominio es tuyo y podemos exportarte los archivos de tu web. Sin drama, sin penalizaciones.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="wa-section" id="contacto">
+  <div class="container" style="display:flex; flex-direction:column; align-items:center;">
+    <div style="text-align:center; margin-bottom:40px;" class="reveal">
+      <span class="label" style="margin-bottom:14px;">Lista fundadora</span>
+      <h2 class="wa-title">Aparta tu lugar.</h2>
+      <p class="wa-desc" style="margin:0 auto;">Déjanos tus datos y te contactamos para apartar uno de los 10 lugares fundadores. Sin compromiso.</p>
+    </div>
+    <div class="waitlist-card reveal d1">
+      <form id="waitlist-form" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label class="form-label" for="wl-nombre">Tu nombre</label>
+            <input class="form-input" type="text" id="wl-nombre" name="nombre" placeholder="Andrés Morales" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="wl-negocio">Tu negocio</label>
+            <select class="form-select" id="wl-negocio" name="negocio" required>
+              <option value="" disabled selected>Elige una opción</option>
+              <option>Consultorio médico</option>
+              <option>Clínica estética</option>
+              <option>Odontología</option>
+              <option>Psicología</option>
+              <option>Nutrición</option>
+              <option>Fisioterapia</option>
+              <option>Laboratorio clínico</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="wl-whatsapp">Tu WhatsApp</label>
+            <input class="form-input" type="tel" id="wl-whatsapp" name="whatsapp" placeholder="+506 8888 8888" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="wl-email">Tu email <span style="text-transform:none; letter-spacing:0;">(opcional)</span></label>
+            <input class="form-input" type="email" id="wl-email" name="email" placeholder="andres@clinica.com">
+          </div>
+          <div class="hp-field" aria-hidden="true">
+            <label for="wl-web">Web</label>
+            <input type="text" id="wl-web" name="website" tabindex="-1" autocomplete="off">
+          </div>
+          <div class="form-field full">
+            <button type="submit" class="btn-primary form-submit" id="wl-submit">Apartar mi lugar →</button>
+          </div>
+        </div>
+        <div class="form-error" id="wl-error">No pudimos guardar tus datos. Intenta de nuevo en un momento.</div>
+        <p class="form-note">Solo usamos tus datos para contactarte. Nada de spam.</p>
+      </form>
+      <div class="form-success" id="wl-success">
+        <div class="form-success-icon">✓</div>
+        <div class="form-success-title">Lugar apartado.</div>
+        <p class="form-success-text">Te contactamos en menos de 24 horas para contarte los siguientes pasos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="cta-final-glow"></div>
+  <div class="cta-final-grid"></div>
+  <div class="cta-inner reveal">
+    <span class="label" style="display:block; text-align:center;">¿Empezamos?</span>
+    <h2 class="cta-headline">Tu negocio merece<br>estar <em>online hoy</em>.</h2>
+    <p class="cta-sub">En 48 horas, te entregamos. Nosotros nos encargamos.</p>
+    <div class="cta-actions">
+      <a href="empezar.html" class="btn-primary" style="font-size:16px; padding:18px 36px;">Empieza tu web →</a>
+      <a href="#contacto" class="btn-ghost">Apartar mi lugar</a>
+    </div>
+    <div class="cta-meta">
+      <span>SLA 48h garantizado</span>
+      · <span>Sin contrato largo</span>
+      · <span>Soporte en español</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="logo">
+        <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
+        <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+      </div>
+      <ul class="footer-links">
+        <li><a href="terminos.html">Términos</a></li>
+        <li><a href="#">Privacidad</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy mono">
+      © 2026 Abdismart. Todos los derechos reservados.
+      <span class="footer-legal">Grupo Abdi S.R.L.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Nav shrink on scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.style.padding = window.scrollY > 60 ? '13px 0' : '20px 0';
+  }, { passive: true });
+
+  // ── Interactive menu ────────────────────────────────────────
+  const menuItems = Array.from(document.querySelectorAll('#main-menu .menu__item'));
+
+  function measureText(item) {
+    const txt = item.querySelector('.menu__text');
+    if (!txt) return;
+    const w = txt.offsetWidth;
+    item.style.setProperty('--lineWidth', (w > 0 ? w : 48) + 'px');
+  }
+
+  function activateItem(item) {
+    menuItems.forEach(m => {
+      m.classList.remove('active');
+      m.style.setProperty('--lineWidth', '0px');
+      const icon = m.querySelector('.menu__icon');
+      if (icon) { icon.style.animation = 'none'; icon.offsetHeight; icon.style.animation = ''; }
+    });
+    item.classList.add('active');
+    requestAnimationFrame(() => measureText(item));
+
+    const href = item.dataset.href;
+    if (!href || href === '#') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      const target = document.querySelector(href);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  menuItems.forEach(item => item.addEventListener('click', () => {
+    closeMenu();
+    activateItem(item);
+  }));
+
+  // ── Menú hamburguesa ────────────────────────────────────────
+  const burger = document.getElementById('nav-burger');
+  const scrim  = document.getElementById('nav-scrim');
+
+  function openMenu() {
+    document.body.classList.add('menu-open');
+    burger.classList.add('open');
+    burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Cerrar menú');
+  }
+
+  function closeMenu() {
+    document.body.classList.remove('menu-open');
+    burger.classList.remove('open');
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Abrir menú');
+  }
+
+  burger.addEventListener('click', () => {
+    document.body.classList.contains('menu-open') ? closeMenu() : openMenu();
+  });
+  scrim.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMenu(); });
+
+  // ── Modo claro / modo oscuro ────────────────────────────────
+  const THEME_KEY   = 'abdi-theme';
+  const themeBtns   = Array.from(document.querySelectorAll('.theme-btn'));
+  const metaColor   = document.getElementById('meta-theme-color');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme)));
+    if (metaColor) metaColor.setAttribute('content', theme === 'light' ? '#F6F7F9' : '#0A0B0D');
+  }
+
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.dataset.themeSet;
+      applyTheme(theme);
+      try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+    });
+  });
+
+  document.fonts.ready.then(() => {
+    const initActive = document.querySelector('#main-menu .menu__item.active');
+    if (initActive) measureText(initActive);
+  });
+
+  // ── Text rotation (hero headline) ──────────────────────────
+  const ROT_WORDS  = ['Consultorio', 'Clínica', 'Odontología', 'Estética', 'Laboratorio'];
+  const INTERVAL   = 2600;
+  const STAGGER_IN = 28;
+  const STAGGER_OUT = 22;
+
+  let rotIdx = 0;
+  const rotEl = document.getElementById('rotating-word');
+
+  function buildChars(word) {
+    return word.split('').map(char => {
+      const wrap = document.createElement('span');
+      wrap.className = 'char-wrap';
+      const el = document.createElement('span');
+      el.className = 'char-el';
+      el.textContent = char;
+      wrap.appendChild(el);
+      return { wrap, el };
+    });
+  }
+
+  function wordIn(word) {
+    rotEl.innerHTML = '';
+    const chars = buildChars(word);
+    const total  = chars.length;
+    chars.forEach(({ wrap }) => rotEl.appendChild(wrap));
+    chars.forEach(({ el }, i) => {
+      el.style.transform = 'translateY(110%)';
+      el.style.opacity   = '0';
+      const delay = (total - 1 - i) * STAGGER_IN;
+      setTimeout(() => {
+        el.style.transition = `transform 0.52s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms,
+                               opacity   0.3s  ease ${delay}ms`;
+        el.style.transform  = 'translateY(0)';
+        el.style.opacity    = '1';
+      }, 16);
+    });
+  }
+
+  function wordOut() {
+    const chars = Array.from(rotEl.querySelectorAll('.char-el'));
+    const total  = chars.length;
+    return new Promise(resolve => {
+      chars.forEach((el, i) => {
+        const delay = (total - 1 - i) * STAGGER_OUT;
+        setTimeout(() => {
+          el.style.transition = 'transform 0.3s cubic-bezier(0.4,0,1,1), opacity 0.22s ease';
+          el.style.transform  = 'translateY(-110%)';
+          el.style.opacity    = '0';
+        }, delay);
+      });
+      setTimeout(resolve, total * STAGGER_OUT + 340);
+    });
+  }
+
+  async function cycleWord() {
+    await wordOut();
+    rotIdx = (rotIdx + 1) % ROT_WORDS.length;
+    wordIn(ROT_WORDS[rotIdx]);
+  }
+
+  wordIn(ROT_WORDS[0]);
+  setInterval(cycleWord, INTERVAL);
+
+  // ── Supabase: waitlist + métricas ───────────────────────────
+  const SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Registro de visita (conversión = waitlist / page_views)
+  const params = new URLSearchParams(location.search);
+  db.from('page_views').insert({
+    path: location.pathname,
+    referrer: document.referrer || null,
+    utm_source: params.get('utm_source'),
+    utm_campaign: params.get('utm_campaign')
+  }).then(() => {});
+
+  // Formulario de waitlist
+  const wlForm    = document.getElementById('waitlist-form');
+  const wlError   = document.getElementById('wl-error');
+  const wlSuccess = document.getElementById('wl-success');
+  const wlSubmit  = document.getElementById('wl-submit');
+
+  wlForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    wlError.style.display = 'none';
+
+    if (wlForm.website.value) return; // honeypot: bot detectado
+
+    const nombre   = wlForm.nombre.value.trim();
+    const negocio  = wlForm.negocio.value;
+    const whatsapp = wlForm.whatsapp.value.trim();
+    const email    = wlForm.email.value.trim();
+
+    if (!nombre || !negocio || whatsapp.replace(/\D/g, '').length < 8) {
+      wlError.textContent = 'Revisa tu nombre, negocio y número de WhatsApp.';
+      wlError.style.display = 'block';
+      return;
+    }
+
+    wlSubmit.disabled = true;
+    wlSubmit.textContent = 'Guardando…';
+
+    const { error } = await db.from('waitlist').insert({
+      nombre, negocio, whatsapp,
+      email: email || null,
+      utm_source: params.get('utm_source')
+    });
+
+    if (error) {
+      wlSubmit.disabled = false;
+      wlSubmit.textContent = 'Apartar mi lugar →';
+      wlError.textContent = 'No pudimos guardar tus datos. Intenta de nuevo en un momento.';
+      wlError.style.display = 'block';
+      return;
+    }
+
+    wlForm.style.display = 'none';
+    wlSuccess.style.display = 'block';
+  });
+</script>
+
+</body>
+</html>

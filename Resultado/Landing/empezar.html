@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cuéntanos de tu negocio en 9 preguntas. Dos minutos y te contactamos por WhatsApp para arrancar tu web.">
+  <meta name="robots" content="noindex">
+
+  <title>Empieza tu web — Abdi</title>
+
+  <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
+
+  <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
+  <script>
+    (function () {
+      var saved;
+      try { saved = localStorage.getItem('abdi-theme'); } catch (e) {}
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Tokens del sistema Monolito — idénticos a index.html. */
+    :root {
+      --onyx:     #0A0B0D;
+      --graphite: #1C1F27;
+      --lime:     #C6FF3D;
+      --fog:      #A6ABB8;
+      --bone:     #F4F5F7;
+      --lime-dim:    rgba(198,255,61,.07);
+      --lime-border: rgba(198,255,61,.18);
+      --edge:        rgba(255,255,255,.07);
+
+      --accent:     #C6FF3D;
+      --on-accent:  #0A0B0D;
+
+      --surface-0: rgba(255,255,255,.02);
+      --surface-1: rgba(255,255,255,.04);
+      --surface-2: rgba(255,255,255,.06);
+      --nav-bg:     rgba(10,11,13,.88);
+      --placeholder: rgba(166,171,184,.55);
+      --grid-line:      rgba(198,255,61,.028);
+      --shadow-md: 0 8px 24px rgba(0,0,0,.4);
+
+      color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+      --onyx:     #F6F7F9;
+      --graphite: #FFFFFF;
+      --fog:      #565C69;
+      --bone:     #0A0B0D;
+      --lime-dim:    rgba(122,168,0,.10);
+      --lime-border: rgba(122,168,0,.30);
+      --edge:        rgba(10,11,13,.11);
+
+      --accent:    #4F7A00;
+
+      --surface-0: rgba(10,11,13,.025);
+      --surface-1: rgba(10,11,13,.045);
+      --surface-2: rgba(10,11,13,.07);
+      --nav-bg:     rgba(246,247,249,.88);
+      --placeholder: rgba(86,92,105,.6);
+      --grid-line:      rgba(10,11,13,.045);
+      --shadow-md: 0 8px 24px rgba(10,11,13,.10);
+
+      color-scheme: light;
+    }
+
+    html { height: 100%; }
+
+    body {
+      min-height: 100%;
+      background: var(--onyx);
+      color: var(--bone);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      transition: background-color .3s ease, color .3s ease;
+    }
+
+    /* Resplandor lima detrás del formulario, como en el hero de la landing. */
+    .bg-glow {
+      position: fixed;
+      top: -10%; left: 50%;
+      transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(198,255,61,.06) 0%, transparent 68%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse at 50% 30%, #000 0%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 0%, transparent 75%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── TOPBAR ─────────────────────────────────────────────── */
+    .topbar {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 28px;
+    }
+    /* El logotipo es arte fijo: dos versiones, una por modo de color. */
+    .logo { display: block; text-decoration: none; line-height: 0; }
+    .logo img { display: block; height: 30px; width: auto; }
+    .logo .logo-light { display: none; }
+    :root[data-theme="light"] .logo .logo-dark  { display: none; }
+    :root[data-theme="light"] .logo .logo-light { display: block; }
+
+    .topbar-right { display: flex; align-items: center; gap: 14px; }
+
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid var(--edge);
+      border-radius: 100px;
+      padding: 3px;
+    }
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--fog);
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .theme-btn svg { width: 14px; height: 14px; }
+    .theme-btn:hover { color: var(--bone); }
+    .theme-btn[aria-pressed="true"] { background: var(--surface-2); color: var(--accent); }
+
+    .btn-back-home {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--edge);
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .btn-back-home:hover { color: var(--bone); border-color: var(--lime-border); background: var(--surface-1); }
+
+    /* ─── PASO ───────────────────────────────────────────────── */
+    .stage {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 28px 90px;
+    }
+    .step-wrap { width: 100%; max-width: 640px; text-align: center; }
+
+    .counter {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .12em;
+      color: var(--fog);
+      margin-bottom: 18px;
+    }
+    .counter b { color: var(--accent); font-weight: 500; }
+
+    .question {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(28px, 4.6vw, 46px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.08;
+      color: var(--bone);
+      margin-bottom: 14px;
+      text-wrap: balance;
+    }
+    .question em {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0;
+    }
+
+    .help {
+      font-size: 15px;
+      color: var(--fog);
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto 38px;
+    }
+    .help.is-hidden { display: none; }
+    .question + .help { margin-top: 4px; }
+    .question.no-help { margin-bottom: 38px; }
+
+    /* Campo tipo línea, al estilo de la referencia. */
+    .field {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--edge);
+      border-radius: 0;
+      padding: 14px 4px;
+      font-family: 'Poppins', sans-serif;
+      font-size: clamp(17px, 2.2vw, 21px);
+      color: var(--bone);
+      text-align: center;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .field::placeholder { color: var(--placeholder); }
+    .field:focus { border-bottom-color: var(--accent); }
+
+    textarea.field {
+      resize: none;
+      min-height: 112px;
+      line-height: 1.55;
+      text-align: center;
+    }
+
+    select.field {
+      appearance: none;
+      cursor: pointer;
+      text-align: center;
+      text-align-last: center;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23A6ABB8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 6px center;
+    }
+    select.field option { background: var(--graphite); color: var(--bone); text-align: left; }
+
+    /* Opciones múltiples. */
+    .opts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--edge);
+      background: var(--surface-0);
+      border-radius: 100px;
+      padding: 11px 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--fog);
+      cursor: pointer;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .opt:hover { color: var(--bone); border-color: var(--lime-border); }
+    .opt-mark {
+      width: 16px; height: 16px;
+      flex-shrink: 0;
+      border: 1px solid var(--edge);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: transparent;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .opt.on {
+      color: var(--bone);
+      border-color: var(--accent);
+      background: var(--lime-dim);
+    }
+    .opt.on .opt-mark { background: var(--lime); border-color: var(--lime); color: var(--on-accent); }
+
+    /* Paso final: dos campos en una pantalla. */
+    .pair { display: flex; flex-direction: column; gap: 22px; }
+    .pair-item { display: flex; flex-direction: column; gap: 6px; }
+    .pair-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .error {
+      display: none;
+      font-size: 13px;
+      color: #FF5A5A;
+      margin-top: 18px;
+    }
+    .error.show { display: block; }
+
+    /* ─── ACCIONES ───────────────────────────────────────────── */
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 38px;
+    }
+    .btn-primary {
+      position: relative;
+      z-index: 0;
+      background: var(--lime);
+      color: var(--on-accent);
+      border: none;
+      padding: 15px 34px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform .2s, opacity .2s;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #C6FF3D, #8FD400, #E8FF8A, #C6FF3D);
+      opacity: .55;
+      filter: blur(12px);
+      z-index: -1;
+      transition: opacity .3s ease, filter .3s ease;
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-primary:hover::before { opacity: 1; filter: blur(20px); }
+    .btn-primary:disabled { opacity: .6; cursor: default; transform: none; }
+
+    .btn-ghost {
+      border: 1px solid var(--edge);
+      background: transparent;
+      color: var(--fog);
+      padding: 15px 22px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .btn-ghost:hover { color: var(--bone); border-color: var(--lime-border); background: var(--surface-1); }
+    .btn-ghost.is-hidden { display: none; }
+
+    .hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      opacity: .75;
+      margin-top: 20px;
+    }
+    .hint.is-hidden { display: none; }
+
+    /* ─── PROGRESO ───────────────────────────────────────────── */
+    .progress {
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: 3px;
+      background: var(--surface-1);
+      z-index: 4;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: var(--lime);
+      box-shadow: 0 0 14px rgba(198,255,61,.55);
+      transition: width .45s cubic-bezier(.4,0,.2,1);
+    }
+    :root[data-theme="light"] .progress-bar { background: #7AA800; box-shadow: none; }
+
+    /* ─── PANTALLA FINAL ─────────────────────────────────────── */
+    .done { display: none; text-align: center; max-width: 560px; }
+    .done.show { display: block; }
+    .done-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: var(--accent);
+    }
+    .done-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(30px, 4.4vw, 44px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.1;
+      color: var(--bone);
+      margin-bottom: 14px;
+    }
+    .done-text { font-size: 16px; color: var(--fog); line-height: 1.65; margin-bottom: 32px; }
+    .done-actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+    .done-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      letter-spacing: .06em;
+      margin-top: 26px;
+    }
+
+    .hp-field { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+
+    /* Entrada de cada paso. */
+    @keyframes stepIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .anim { animation: stepIn .42s cubic-bezier(.22,1,.36,1) both; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 16px 18px; }
+      .logo img { height: 22px; }
+      .stage  { padding: 16px 20px 80px; }
+      .actions { flex-direction: column-reverse; }
+      .actions .btn-primary, .actions .btn-ghost { width: 100%; justify-content: center; }
+      .btn-back-home span { display: none; }
+      .hint { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .anim { animation: none; }
+      .progress-bar { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
+
+<header class="topbar">
+  <a class="logo" href="index.html" aria-label="Abdismart — ir al inicio">
+    <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
+    <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+  </a>
+  <div class="topbar-right">
+    <div class="theme-toggle" role="group" aria-label="Modo de color">
+      <button type="button" class="theme-btn" data-theme-set="light" aria-pressed="false" aria-label="Modo claro" title="Modo claro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <button type="button" class="theme-btn" data-theme-set="dark" aria-pressed="true" aria-label="Modo oscuro" title="Modo oscuro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+    <a class="btn-back-home" href="index.html">← <span>Volver</span></a>
+  </div>
+</header>
+
+<main class="stage">
+  <!-- Paso activo. El contenido lo pinta el script. -->
+  <div class="step-wrap anim" id="step-wrap">
+    <div class="counter" id="counter"></div>
+    <h1 class="question" id="question"></h1>
+    <p class="help is-hidden" id="help"></p>
+    <div id="field-slot"></div>
+    <div class="hp-field" aria-hidden="true">
+      <label for="hp">Web</label>
+      <input type="text" id="hp" tabindex="-1" autocomplete="off">
+    </div>
+    <p class="error" id="error" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="btn-ghost is-hidden" id="btn-prev">← Atrás</button>
+      <button type="button" class="btn-primary" id="btn-next">Siguiente →</button>
+    </div>
+    <p class="hint" id="hint">Enter para continuar</p>
+  </div>
+
+  <!-- Pantalla final. -->
+  <div class="done" id="done">
+    <div class="done-icon">✓</div>
+    <h1 class="done-title">Recibido.</h1>
+    <p class="done-text">Te escribimos por WhatsApp en menos de 24 horas con los siguientes pasos y el precio exacto de tu plan. Sin compromiso.</p>
+    <div class="done-actions">
+      <a class="btn-primary" href="https://wa.me/50689814520" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
+      <a class="btn-ghost" href="index.html">Volver al inicio</a>
+    </div>
+    <p class="done-meta">SLA 48h garantizado · Soporte en español</p>
+  </div>
+</main>
+
+<div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Modo claro / modo oscuro ─────────────────────────────── */
+  var THEME_KEY = 'abdi-theme';
+  var themeBtns = Array.prototype.slice.call(document.querySelectorAll('.theme-btn'));
+  var metaColor = document.getElementById('meta-theme-color');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme));
+    });
+    if (metaColor) metaColor.setAttribute('content', theme === 'light' ? '#F6F7F9' : '#0A0B0D');
+  }
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+  themeBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyTheme(btn.dataset.themeSet);
+      try { localStorage.setItem(THEME_KEY, btn.dataset.themeSet); } catch (e) {}
+    });
+  });
+
+  /* ── Las preguntas ────────────────────────────────────────────
+     Versión corta del brief: lo mínimo para calificar al cliente y
+     preparar la llamada. El brief completo se llena después del pago.
+  ------------------------------------------------------------- */
+  var STEPS = [
+    {
+      key: 'nombre', type: 'text', required: true, autocomplete: 'name',
+      q: '¿Cómo te llamas?',
+      ph: 'Nombre y apellido',
+      err: 'Escribe tu nombre para continuar.'
+    },
+    {
+      key: 'negocio_nombre', type: 'text', autocomplete: 'organization',
+      q: '¿Cómo se llama tu negocio?',
+      help: 'Si todavía no tiene nombre, escribe «sin nombre». Lo vemos juntos.',
+      ph: 'Clínica Morales'
+    },
+    {
+      key: 'negocio', type: 'select', required: true,
+      q: '¿A qué se dedica?',
+      options: [
+        'Consultorio médico',
+        'Clínica estética',
+        'Odontología',
+        'Psicología',
+        'Nutrición',
+        'Fisioterapia',
+        'Laboratorio clínico',
+        'Otro'
+      ],
+      err: 'Elige una opción para continuar.'
+    },
+    {
+      key: 'ciudad', type: 'text',
+      q: '¿En qué ciudad atiendes?',
+      help: 'Lo usamos para que te encuentren los pacientes de tu zona.',
+      ph: 'Escazú, San José'
+    },
+    {
+      key: 'presencia', type: 'text',
+      q: '¿Tienes web o Instagram hoy?',
+      help: 'Si no tienes nada, escribe «ninguna». También está bien.',
+      ph: 'tuweb.com o @tuconsultorio'
+    },
+    {
+      key: 'servicios', type: 'checks', required: true,
+      q: '¿Qué servicios necesitas en tu proyecto?',
+      help: 'Elige todos los que apliquen.',
+      options: [
+        'Que me encuentren en Google',
+        'Que agenden cita en línea',
+        'Agentes IA para WhatsApp',
+        'Que me escriban por WhatsApp',
+        'Mostrar mis servicios',
+        'Otra cosa'
+      ],
+      err: 'Elige al menos una opción.'
+    },
+    {
+      key: 'detalle', type: 'textarea',
+      q: 'Cuéntanos de tu negocio',
+      help: '¿Qué servicios das? ¿Quién es tu paciente ideal? Dos líneas bastan.',
+      ph: 'Escribe aquí…'
+    },
+    {
+      key: 'urgencia', type: 'select',
+      q: '¿Para cuándo la necesitas?',
+      options: [
+        'Para ayer',
+        'Este mes',
+        'En los próximos 3 meses',
+        'Todavía estoy viendo'
+      ]
+    },
+    {
+      key: 'origen', type: 'select',
+      q: '¿Cómo nos encontraste?',
+      options: [
+        'Instagram',
+        'TikTok',
+        'Google',
+        'Recomendación de un colega',
+        'Otro'
+      ]
+    },
+    {
+      key: 'contacto', type: 'pair', required: true,
+      q: '¿A dónde te escribimos?',
+      help: 'Te contactamos por WhatsApp en menos de 24 horas.',
+      err: 'Revisa tu número de WhatsApp.'
+    }
+  ];
+
+  var TOTAL = STEPS.length;
+
+  var state = {
+    step: 0,
+    answers: { servicios: [] },
+    sending: false
+  };
+
+  /* ── Nodos ─────────────────────────────────────────────────── */
+  var wrap      = document.getElementById('step-wrap');
+  var counterEl = document.getElementById('counter');
+  var questionEl= document.getElementById('question');
+  var helpEl    = document.getElementById('help');
+  var slot      = document.getElementById('field-slot');
+  var errorEl   = document.getElementById('error');
+  var btnPrev   = document.getElementById('btn-prev');
+  var btnNext   = document.getElementById('btn-next');
+  var hintEl    = document.getElementById('hint');
+  var doneEl    = document.getElementById('done');
+  var bar       = document.getElementById('progress-bar');
+  var hp        = document.getElementById('hp');
+
+  /* ── Render ────────────────────────────────────────────────── */
+  function render() {
+    var def = STEPS[state.step];
+
+    counterEl.innerHTML = '<b>' + (state.step + 1) + '</b> / ' + TOTAL;
+    questionEl.textContent = def.q;
+
+    if (def.help) {
+      helpEl.textContent = def.help;
+      helpEl.classList.remove('is-hidden');
+      questionEl.classList.remove('no-help');
+    } else {
+      helpEl.classList.add('is-hidden');
+      questionEl.classList.add('no-help');
+    }
+
+    slot.innerHTML = '';
+    slot.appendChild(buildField(def));
+
+    errorEl.classList.remove('show');
+    errorEl.textContent = '';
+
+    btnPrev.classList.toggle('is-hidden', state.step === 0);
+    btnNext.textContent = state.step === TOTAL - 1 ? 'Enviar →' : 'Siguiente →';
+    btnNext.disabled = false;
+
+    hintEl.classList.toggle('is-hidden', def.type === 'checks' || def.type === 'pair');
+
+    bar.style.width = Math.round(((state.step + 1) / TOTAL) * 100) + '%';
+
+    replayAnim();
+    focusField();
+  }
+
+  function buildField(def) {
+    if (def.type === 'checks')   return buildChecks(def);
+    if (def.type === 'select')   return buildSelect(def);
+    if (def.type === 'textarea') return buildTextarea(def);
+    if (def.type === 'pair')     return buildPair();
+    return buildInput(def);
+  }
+
+  function buildInput(def) {
+    var el = document.createElement('input');
+    el.className = 'field';
+    el.id = 'sp-field';
+    el.type = 'text';
+    el.placeholder = def.ph || '';
+    el.autocomplete = def.autocomplete || 'off';
+    el.value = state.answers[def.key] || '';
+    el.addEventListener('input', function () { setAnswer(def.key, el.value); });
+    return el;
+  }
+
+  function buildTextarea(def) {
+    var el = document.createElement('textarea');
+    el.className = 'field';
+    el.id = 'sp-field';
+    el.rows = 3;
+    el.placeholder = def.ph || '';
+    el.value = state.answers[def.key] || '';
+    el.addEventListener('input', function () { setAnswer(def.key, el.value); });
+    return el;
+  }
+
+  function buildSelect(def) {
+    var el = document.createElement('select');
+    el.className = 'field';
+    el.id = 'sp-field';
+
+    var blank = document.createElement('option');
+    blank.value = '';
+    blank.textContent = 'Elige una opción';
+    el.appendChild(blank);
+
+    def.options.forEach(function (o) {
+      var opt = document.createElement('option');
+      opt.value = o;
+      opt.textContent = o;
+      el.appendChild(opt);
+    });
+
+    el.value = state.answers[def.key] || '';
+    el.addEventListener('change', function () { setAnswer(def.key, el.value); });
+    return el;
+  }
+
+  function buildChecks(def) {
+    var box = document.createElement('div');
+    box.className = 'opts';
+
+    def.options.forEach(function (label) {
+      var sel = state.answers[def.key] || [];
+      var on  = sel.indexOf(label) > -1;
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'opt' + (on ? ' on' : '');
+      btn.setAttribute('aria-pressed', String(on));
+
+      var mark = document.createElement('span');
+      mark.className = 'opt-mark';
+      mark.textContent = '✓';
+      mark.setAttribute('aria-hidden', 'true');
+
+      var txt = document.createElement('span');
+      txt.textContent = label;
+
+      btn.appendChild(mark);
+      btn.appendChild(txt);
+
+      btn.addEventListener('click', function () {
+        var cur = state.answers[def.key] || [];
+        var next = cur.indexOf(label) > -1
+          ? cur.filter(function (x) { return x !== label; })
+          : cur.concat([label]);
+        setAnswer(def.key, next);
+
+        var isOn = next.indexOf(label) > -1;
+        btn.classList.toggle('on', isOn);
+        btn.setAttribute('aria-pressed', String(isOn));
+      });
+
+      box.appendChild(btn);
+    });
+
+    return box;
+  }
+
+  function buildPair() {
+    var box = document.createElement('div');
+    box.className = 'pair';
+
+    box.appendChild(pairItem({
+      id: 'sp-field', label: 'Tu WhatsApp', type: 'tel',
+      ph: '+506 8888 8888', autocomplete: 'tel', key: 'whatsapp'
+    }));
+    box.appendChild(pairItem({
+      id: 'sp-email', label: 'Tu email (opcional)', type: 'email',
+      ph: 'andres@clinica.com', autocomplete: 'email', key: 'email'
+    }));
+
+    return box;
+  }
+
+  function pairItem(cfg) {
+    var item = document.createElement('div');
+    item.className = 'pair-item';
+
+    var lab = document.createElement('label');
+    lab.className = 'pair-label';
+    lab.setAttribute('for', cfg.id);
+    lab.textContent = cfg.label;
+
+    var input = document.createElement('input');
+    input.className = 'field';
+    input.id = cfg.id;
+    input.type = cfg.type;
+    input.placeholder = cfg.ph;
+    input.autocomplete = cfg.autocomplete;
+    input.value = state.answers[cfg.key] || '';
+    input.addEventListener('input', function () { setAnswer(cfg.key, input.value); });
+
+    item.appendChild(lab);
+    item.appendChild(input);
+    return item;
+  }
+
+  function setAnswer(key, value) {
+    state.answers[key] = value;
+    errorEl.classList.remove('show');
+  }
+
+  function replayAnim() {
+    wrap.classList.remove('anim');
+    void wrap.offsetWidth;   // fuerza el reflow para reiniciar la animación
+    wrap.classList.add('anim');
+  }
+
+  function focusField() {
+    setTimeout(function () {
+      var el = document.getElementById('sp-field');
+      if (el && typeof el.focus === 'function') el.focus({ preventScroll: true });
+    }, 80);
+  }
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.classList.add('show');
+  }
+
+  /* ── Validación ────────────────────────────────────────────── */
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function validate(def) {
+    if (!def.required) return null;
+
+    if (def.type === 'checks') {
+      return (state.answers[def.key] || []).length ? null : def.err;
+    }
+
+    if (def.type === 'pair') {
+      var wa = String(state.answers.whatsapp || '').replace(/\D/g, '');
+      if (wa.length < 8) return def.err;
+      var mail = String(state.answers.email || '').trim();
+      if (mail && !EMAIL_RE.test(mail)) return 'Ese email no se ve bien. Revísalo.';
+      return null;
+    }
+
+    return String(state.answers[def.key] || '').trim() ? null : def.err;
+  }
+
+  /* ── Navegación ────────────────────────────────────────────── */
+  function next() {
+    if (state.sending) return;
+
+    var def = STEPS[state.step];
+    var err = validate(def);
+    if (err) { showError(err); return; }
+
+    if (state.step < TOTAL - 1) {
+      state.step += 1;
+      render();
+      return;
+    }
+    submit();
+  }
+
+  function prev() {
+    if (state.sending || state.step === 0) return;
+    state.step -= 1;
+    render();
+  }
+
+  btnNext.addEventListener('click', next);
+  btnPrev.addEventListener('click', prev);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter') return;
+    var def = STEPS[state.step];
+    // En el textarea, Enter escribe salto de línea; Cmd/Ctrl+Enter avanza.
+    if (def.type === 'textarea' && !(e.metaKey || e.ctrlKey)) return;
+    if (doneEl.classList.contains('show')) return;
+    e.preventDefault();
+    next();
+  });
+
+  /* ── Supabase ──────────────────────────────────────────────── */
+  var SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
+  var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
+  var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  var params = new URLSearchParams(location.search);
+
+  db.from('page_views').insert({
+    path: location.pathname,
+    referrer: document.referrer || null,
+    utm_source: params.get('utm_source'),
+    utm_campaign: params.get('utm_campaign')
+  }).then(function () {});
+
+  function submit() {
+    // Honeypot lleno = bot. Mostramos el éxito sin guardar nada.
+    if (hp.value) { showDone(); return; }
+
+    state.sending = true;
+    btnNext.disabled = true;
+    btnNext.textContent = 'Enviando…';
+
+    var a = state.answers;
+
+    var base = {
+      nombre:     String(a.nombre || '').trim(),
+      negocio:    a.negocio || '',
+      whatsapp:   String(a.whatsapp || '').trim(),
+      email:      String(a.email || '').trim() || null,
+      utm_source: params.get('utm_source')
+    };
+
+    var extra = {
+      negocio_nombre: String(a.negocio_nombre || '').trim(),
+      ciudad:         String(a.ciudad || '').trim(),
+      presencia:      String(a.presencia || '').trim(),
+      servicios:      a.servicios || [],
+      detalle:        String(a.detalle || '').trim(),
+      urgencia:       a.urgencia || '',
+      origen:         a.origen || ''
+    };
+
+    var full = Object.assign({ respuestas: extra }, base);
+
+    db.from('waitlist').insert(full).then(function (res) {
+      if (!res.error) { finish(); return; }
+
+      // Si todavía no se corrió supabase-respuestas.sql, la columna
+      // `respuestas` no existe. Antes de perder el lead, guardamos los
+      // datos de contacto solos y dejamos el resto en consola.
+      if (isMissingColumn(res.error)) {
+        console.warn('[abdi] Falta la columna `respuestas` en waitlist. ' +
+                     'Corre supabase-respuestas.sql. Respuestas del lead:', extra);
+        db.from('waitlist').insert(base).then(function (res2) {
+          if (res2.error) { fail(res2.error); return; }
+          finish();
+        });
+        return;
+      }
+
+      fail(res.error);
+    });
+
+    function finish() {
+      state.sending = false;
+      showDone();
+    }
+
+    function fail(error) {
+      state.sending = false;
+      console.error('[abdi] no se pudo guardar el lead:', error);
+      btnNext.disabled = false;
+      btnNext.textContent = 'Enviar →';
+      showError('No pudimos guardar tus respuestas. Intenta de nuevo en un momento.');
+    }
+  }
+
+  // PostgREST responde PGRST204 (o 42703 de Postgres) cuando la columna
+  // no existe en el esquema.
+  function isMissingColumn(error) {
+    if (!error) return false;
+    if (error.code === 'PGRST204' || error.code === '42703') return true;
+    return /respuestas/.test(String(error.message || ''));
+  }
+
+  function showDone() {
+    wrap.style.display = 'none';
+    doneEl.classList.add('show');
+    bar.style.width = '100%';
+  }
+
+  render();
+})();
+</script>
+
+</body>
+</html>

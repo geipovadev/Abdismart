@@ -1,0 +1,532 @@
+<!--
+  CARRUSEL 01 — "¿Por qué Instagram no reemplaza a tu web?"
+  Tipo: Educativo | 7 slides | 1080×1080
+  Marca: Abdi | Sistema: Monolito
+  Instrucción: Abre open-carrusel, crea un nuevo carrusel con este título,
+  selecciona dimensión 1080×1080. Pega el HTML de cada SLIDE en un slide nuevo.
+-->
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 1 de 7: Portada -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s1 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s1 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: flex-end;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 80px;
+  position: relative; overflow: hidden;
+}
+.s1-glow {
+  position: absolute; top: -280px; right: -180px;
+  width: 780px; height: 780px;
+  background: radial-gradient(circle, rgba(198,255,61,0.10) 0%, transparent 65%);
+  pointer-events: none;
+}
+.s1-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s1-tag {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.14em; color: #C6FF3D;
+  text-transform: uppercase;
+  border: 1px solid rgba(198,255,61,0.35);
+  padding: 7px 16px; border-radius: 3px;
+  margin-bottom: 40px; display: inline-block;
+}
+.s1-title {
+  font-size: 76px; font-weight: 700;
+  line-height: 1.04; letter-spacing: -0.025em;
+  color: #F4F5F7; max-width: 860px;
+  margin-bottom: 28px;
+}
+.s1-title em { color: #C6FF3D; font-style: normal; }
+.s1-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px; font-weight: 400;
+  color: #A6ABB8; margin-bottom: 72px;
+  line-height: 1.5;
+}
+.s1-brand {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 18px; font-weight: 600;
+  color: #A6ABB8; letter-spacing: 0.04em;
+}
+.s1-brand-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #C6FF3D;
+}
+</style>
+<div class="s1">
+  <div class="s1-glow"></div>
+  <div class="s1-grid"></div>
+  <div class="s1-tag">Educativo · 4 razones</div>
+  <div class="s1-title">¿Por qué Instagram<br>no <em>reemplaza</em><br>a tu web?</div>
+  <div class="s1-sub">Lo que ningún algoritmo puede darte.</div>
+  <div class="s1-brand">
+    <div class="s1-brand-dot"></div>
+    abdi
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 2 de 7: Intro -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s2 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s2 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 80px 100px;
+  position: relative; overflow: hidden;
+}
+.s2-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s2-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: rgba(198,255,61,0.5); letter-spacing: 0.14em;
+  text-transform: uppercase; margin-bottom: 60px;
+}
+.s2-big {
+  font-size: 64px; font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.022em;
+  color: #F4F5F7; margin-bottom: 0;
+}
+.s2-big .dim { color: rgba(244,245,247,0.28); }
+.s2-divider {
+  width: 56px; height: 3px;
+  background: #C6FF3D;
+  margin: 44px 0;
+}
+.s2-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px; font-weight: 400;
+  color: #A6ABB8; line-height: 1.55;
+  max-width: 760px;
+}
+.s2-body strong { color: #F4F5F7; font-weight: 600; }
+</style>
+<div class="s2">
+  <div class="s2-grid"></div>
+  <div class="s2-label">Abdi · Contexto</div>
+  <div class="s2-big">
+    Tienes seguidores.<br>
+    <span class="dim">Pero tu negocio<br>no existe en Google.</span>
+  </div>
+  <div class="s2-divider"></div>
+  <div class="s2-body">
+    Instagram funciona para atraer.<br>
+    Pero hay <strong>4 cosas que nunca va a darte.</strong>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 3 de 7: Punto 01 — Tu cuenta puede desaparecer -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s3 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s3 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 80px 100px;
+  position: relative; overflow: hidden;
+}
+.s3-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s3-bgnum {
+  position: absolute; right: 50px; top: 40px;
+  font-size: 280px; font-weight: 700;
+  color: rgba(198,255,61,0.04); letter-spacing: -0.04em;
+  line-height: 1; pointer-events: none;
+  font-family: 'Space Grotesk', sans-serif;
+  user-select: none;
+}
+.s3-accent {
+  font-size: 100px; font-weight: 700;
+  color: #C6FF3D; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 36px;
+}
+.s3-title {
+  font-size: 66px; font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.022em;
+  color: #F4F5F7; max-width: 760px;
+  margin-bottom: 36px;
+}
+.s3-divider {
+  width: 48px; height: 2px;
+  background: rgba(198,255,61,0.4);
+  margin-bottom: 36px;
+}
+.s3-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 25px; font-weight: 400;
+  color: #A6ABB8; line-height: 1.55;
+  max-width: 680px;
+}
+.s3-body strong { color: #F4F5F7; font-weight: 600; }
+.s3-brand {
+  position: absolute; bottom: 60px; right: 80px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 600;
+  color: rgba(166,171,184,0.45); letter-spacing: 0.04em;
+}
+.s3-brand-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(198,255,61,0.45); }
+</style>
+<div class="s3">
+  <div class="s3-grid"></div>
+  <div class="s3-bgnum">01</div>
+  <div class="s3-accent">01</div>
+  <div class="s3-title">Tu cuenta puede<br>desaparecer hoy.</div>
+  <div class="s3-divider"></div>
+  <div class="s3-body">
+    Instagram suspende cuentas sin previo aviso.<br>
+    <strong>Si tu negocio solo vive ahí, puede irse con ella.</strong>
+  </div>
+  <div class="s3-brand"><div class="s3-brand-dot"></div>abdi</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 4 de 7: Punto 02 — No apareces en Google -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s4 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s4 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 80px 100px;
+  position: relative; overflow: hidden;
+}
+.s4-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s4-bgnum {
+  position: absolute; right: 50px; top: 40px;
+  font-size: 280px; font-weight: 700;
+  color: rgba(198,255,61,0.04); letter-spacing: -0.04em;
+  line-height: 1; pointer-events: none;
+  font-family: 'Space Grotesk', sans-serif;
+  user-select: none;
+}
+.s4-accent {
+  font-size: 100px; font-weight: 700;
+  color: #C6FF3D; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 36px;
+}
+.s4-title {
+  font-size: 66px; font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.022em;
+  color: #F4F5F7; max-width: 760px;
+  margin-bottom: 36px;
+}
+.s4-divider {
+  width: 48px; height: 2px;
+  background: rgba(198,255,61,0.4);
+  margin-bottom: 36px;
+}
+.s4-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 25px; font-weight: 400;
+  color: #A6ABB8; line-height: 1.55;
+  max-width: 680px;
+}
+.s4-body strong { color: #F4F5F7; font-weight: 600; }
+.s4-brand {
+  position: absolute; bottom: 60px; right: 80px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 600;
+  color: rgba(166,171,184,0.45); letter-spacing: 0.04em;
+}
+.s4-brand-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(198,255,61,0.45); }
+</style>
+<div class="s4">
+  <div class="s4-grid"></div>
+  <div class="s4-bgnum">02</div>
+  <div class="s4-accent">02</div>
+  <div class="s4-title">No apareces<br>en Google.</div>
+  <div class="s4-divider"></div>
+  <div class="s4-body">
+    El 90% de las búsquedas locales pasan por Google.<br>
+    <strong>Un perfil de Instagram no aparece ahí. Tu web sí.</strong>
+  </div>
+  <div class="s4-brand"><div class="s4-brand-dot"></div>abdi</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 5 de 7: Punto 03 — Los DMs no son pedidos -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s5 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s5 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 80px 100px;
+  position: relative; overflow: hidden;
+}
+.s5-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s5-bgnum {
+  position: absolute; right: 50px; top: 40px;
+  font-size: 280px; font-weight: 700;
+  color: rgba(198,255,61,0.04); letter-spacing: -0.04em;
+  line-height: 1; pointer-events: none;
+  font-family: 'Space Grotesk', sans-serif;
+  user-select: none;
+}
+.s5-accent {
+  font-size: 100px; font-weight: 700;
+  color: #C6FF3D; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 36px;
+}
+.s5-title {
+  font-size: 66px; font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.022em;
+  color: #F4F5F7; max-width: 760px;
+  margin-bottom: 36px;
+}
+.s5-divider {
+  width: 48px; height: 2px;
+  background: rgba(198,255,61,0.4);
+  margin-bottom: 36px;
+}
+.s5-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 25px; font-weight: 400;
+  color: #A6ABB8; line-height: 1.55;
+  max-width: 680px;
+}
+.s5-body strong { color: #F4F5F7; font-weight: 600; }
+.s5-brand {
+  position: absolute; bottom: 60px; right: 80px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 600;
+  color: rgba(166,171,184,0.45); letter-spacing: 0.04em;
+}
+.s5-brand-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(198,255,61,0.45); }
+</style>
+<div class="s5">
+  <div class="s5-grid"></div>
+  <div class="s5-bgnum">03</div>
+  <div class="s5-accent">03</div>
+  <div class="s5-title">Cada DM sin<br>respuesta es<br>una venta perdida.</div>
+  <div class="s5-divider"></div>
+  <div class="s5-body">
+    Con una web, el cliente agenda o pide directamente.<br>
+    <strong>Sin esperar a que tú estés disponible.</strong>
+  </div>
+  <div class="s5-brand"><div class="s5-brand-dot"></div>abdi</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 6 de 7: Punto 04 — No tienes datos de tus clientes -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s6 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s6 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 80px 100px;
+  position: relative; overflow: hidden;
+}
+.s6-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.035) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s6-bgnum {
+  position: absolute; right: 50px; top: 40px;
+  font-size: 280px; font-weight: 700;
+  color: rgba(198,255,61,0.04); letter-spacing: -0.04em;
+  line-height: 1; pointer-events: none;
+  font-family: 'Space Grotesk', sans-serif;
+  user-select: none;
+}
+.s6-accent {
+  font-size: 100px; font-weight: 700;
+  color: #C6FF3D; letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 36px;
+}
+.s6-title {
+  font-size: 66px; font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.022em;
+  color: #F4F5F7; max-width: 760px;
+  margin-bottom: 36px;
+}
+.s6-divider {
+  width: 48px; height: 2px;
+  background: rgba(198,255,61,0.4);
+  margin-bottom: 36px;
+}
+.s6-body {
+  font-family: 'Inter', sans-serif;
+  font-size: 25px; font-weight: 400;
+  color: #A6ABB8; line-height: 1.55;
+  max-width: 680px;
+}
+.s6-body strong { color: #F4F5F7; font-weight: 600; }
+.s6-brand {
+  position: absolute; bottom: 60px; right: 80px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 16px; font-weight: 600;
+  color: rgba(166,171,184,0.45); letter-spacing: 0.04em;
+}
+.s6-brand-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(198,255,61,0.45); }
+</style>
+<div class="s6">
+  <div class="s6-grid"></div>
+  <div class="s6-bgnum">04</div>
+  <div class="s6-accent">04</div>
+  <div class="s6-title">No sabes quiénes<br>son tus clientes<br>reales.</div>
+  <div class="s6-divider"></div>
+  <div class="s6-body">
+    Instagram te da likes. Tu web te da datos.<br>
+    <strong>Quién visitó, qué buscó, cuándo compró.</strong>
+  </div>
+  <div class="s6-brand"><div class="s6-brand-dot"></div>abdi</div>
+</div>
+
+
+<!-- ============================================================ -->
+<!-- SLIDE 7 de 7: CTA -->
+<!-- ============================================================ -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+.s7 * { margin: 0; padding: 0; box-sizing: border-box; }
+.s7 {
+  width: 1080px; height: 1080px;
+  background: #0A0B0D;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  text-align: center;
+  padding: 80px;
+  position: relative; overflow: hidden;
+}
+.s7-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(198,255,61,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(198,255,61,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+.s7-glow {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 860px; height: 860px;
+  background: radial-gradient(circle, rgba(198,255,61,0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+.s7-eyebrow {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.14em; color: rgba(198,255,61,0.65);
+  text-transform: uppercase; margin-bottom: 44px;
+}
+.s7-title {
+  font-size: 88px; font-weight: 700;
+  line-height: 1.04; letter-spacing: -0.025em;
+  color: #F4F5F7; margin-bottom: 20px;
+}
+.s7-title em { color: #C6FF3D; font-style: normal; }
+.s7-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 22px; color: #A6ABB8;
+  font-weight: 400; margin-bottom: 64px;
+  line-height: 1.5;
+}
+.s7-btn {
+  display: inline-block;
+  background: #C6FF3D;
+  color: #0A0B0D;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 20px; font-weight: 700;
+  padding: 22px 56px;
+  border-radius: 4px;
+  letter-spacing: -0.01em;
+  margin-bottom: 72px;
+}
+.s7-brand {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 18px; font-weight: 600;
+  color: rgba(166,171,184,0.55); letter-spacing: 0.04em;
+}
+.s7-brand-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #C6FF3D;
+}
+</style>
+<div class="s7">
+  <div class="s7-grid"></div>
+  <div class="s7-glow"></div>
+  <div class="s7-eyebrow">¿Listo para salir del Instagram?</div>
+  <div class="s7-title">Tu negocio,<br>online en <em>48h.</em></div>
+  <div class="s7-sub">Sin agencia. Sin freelance. Sin esperas.</div>
+  <div class="s7-btn">Empieza hoy → abdismart.com</div>
+  <div class="s7-brand">
+    <div class="s7-brand-dot"></div>
+    abdi
+  </div>
+</div>

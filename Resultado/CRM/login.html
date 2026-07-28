@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abdi CRM — Acceso</title>
+
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --onyx:        #0A0B0D;
+      --graphite:    #1C1F27;
+      --lime:        #C6FF3D;
+      --fog:         #A6ABB8;
+      --bone:        #F4F5F7;
+      --lime-dim:    rgba(198,255,61,.07);
+      --lime-border: rgba(198,255,61,.18);
+      --edge:        rgba(255,255,255,.07);
+      --red:         #FF5A5A;
+      --red-dim:     rgba(255,90,90,.08);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--onyx);
+      color: var(--bone);
+      font-family: 'General Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .bg-grid {
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(198,255,61,.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(198,255,61,.022) 1px, transparent 1px);
+      background-size: 64px 64px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .bg-glow {
+      position: fixed;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(198,255,61,.055) 0%, transparent 68%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    /* ─── LOGO ───────────────────────────────────────────────── */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 40px;
+      text-decoration: none;
+    }
+    .logo-text {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -.04em;
+      color: var(--bone);
+    }
+    .logo-dot {
+      width: 8px; height: 8px;
+      background: var(--lime);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--lime);
+      animation: blink 2s ease-in-out infinite;
+    }
+    .logo-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--lime);
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      padding: 2px 8px;
+      border-radius: 100px;
+      letter-spacing: .08em;
+      margin-left: 4px;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; }
+      50%      { opacity: .4; }
+    }
+
+    /* ─── CARD ───────────────────────────────────────────────── */
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--graphite);
+      border: 1px solid var(--edge);
+      border-radius: 20px;
+      padding: 40px 36px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.4);
+    }
+    .card-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -.025em;
+      color: var(--bone);
+      margin-bottom: 6px;
+    }
+    .card-sub {
+      font-size: 13px;
+      color: var(--fog);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    /* ─── FORM ───────────────────────────────────────────────── */
+    .form { display: flex; flex-direction: column; gap: 18px; }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+
+    label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    input {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--edge);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-family: 'General Sans', sans-serif;
+      font-size: 15px;
+      color: var(--bone);
+      outline: none;
+      transition: border-color .2s, background .2s;
+      width: 100%;
+    }
+    input::placeholder { color: rgba(166,171,184,.35); }
+    input:focus {
+      border-color: var(--lime-border);
+      background: rgba(198,255,61,.04);
+    }
+
+    .field-password { position: relative; }
+    .field-password input { padding-right: 48px; }
+    .toggle-pass {
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--fog);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      transition: color .2s;
+    }
+    .toggle-pass:hover { color: var(--bone); }
+
+    /* ─── BOTÓN ──────────────────────────────────────────────── */
+    .btn-primary {
+      position: relative;
+      z-index: 0;
+      background: var(--lime);
+      color: var(--onyx);
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      font-family: 'General Sans', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      width: 100%;
+      transition: transform .2s;
+      margin-top: 4px;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #C6FF3D, #8FD400, #E8FF8A, #C6FF3D);
+      opacity: .45;
+      filter: blur(12px);
+      z-index: -1;
+      transition: opacity .3s, filter .3s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-primary:hover::before { opacity: .9; filter: blur(20px); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* ─── TOGGLE VISTAS ──────────────────────────────────────── */
+    .toggle-view {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--fog);
+    }
+    .toggle-view button {
+      background: none;
+      border: none;
+      color: var(--lime);
+      font-family: 'General Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      padding: 0;
+      transition: opacity .2s;
+    }
+    .toggle-view button:hover { opacity: .7; }
+
+    /* ─── MENSAJES ───────────────────────────────────────────── */
+    .msg {
+      display: none;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .msg.error {
+      display: block;
+      background: var(--red-dim);
+      border: 1px solid rgba(255,90,90,.2);
+      color: var(--red);
+    }
+    .msg.success {
+      display: block;
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      color: var(--lime);
+    }
+
+    .divider { height: 1px; background: var(--edge); margin: 28px 0; }
+
+    /* ─── VISTAS ─────────────────────────────────────────────── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ─── SPINNER ────────────────────────────────────────────── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(10,11,13,.3);
+      border-top-color: var(--onyx);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    .page-footer {
+      margin-top: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: rgba(166,171,184,.3);
+      text-align: center;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 32px 24px; border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="page">
+
+  <a href="#" class="logo">
+    <span class="logo-text">abdi</span>
+    <div class="logo-dot"></div>
+    <span class="logo-badge">CRM</span>
+  </a>
+
+  <div class="card">
+
+    <!-- ── LOGIN ─────────────────────────────────────────────── -->
+    <div class="view active" id="view-login">
+      <div class="card-title">Acceso</div>
+      <p class="card-sub">Ingresa tus credenciales para continuar.</p>
+
+      <div id="msg-login" class="msg"></div>
+
+      <form class="form" id="form-login" novalidate>
+        <div class="field">
+          <label for="username">Usuario</label>
+          <input
+            type="text"
+            id="username"
+            placeholder="geiner.abdi"
+            autocomplete="username"
+            spellcheck="false"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <div class="field-password">
+            <input
+              type="password"
+              id="password"
+              placeholder="••••••••••"
+              autocomplete="current-password"
+              required
+            >
+            <button type="button" class="toggle-pass" id="toggle-pass" aria-label="Mostrar contraseña">
+              <svg id="icon-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="icon-hide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-login">Entrar</button>
+      </form>
+
+      <div class="toggle-view">
+        ¿Olvidaste tu contraseña?
+        <button type="button" onclick="showView('recover')">Recupérala aquí</button>
+      </div>
+    </div>
+
+    <!-- ── RECUPERAR CONTRASEÑA ───────────────────────────────── -->
+    <div class="view" id="view-recover">
+      <div class="card-title">Recuperar acceso</div>
+      <p class="card-sub">Ingresa tu correo registrado y te enviamos un enlace para restablecer tu contraseña.</p>
+
+      <div id="msg-recover" class="msg"></div>
+
+      <form class="form" id="form-recover" novalidate>
+        <div class="field">
+          <label for="recover-email">Correo registrado</label>
+          <input
+            type="email"
+            id="recover-email"
+            placeholder="geiner.abdi@abdismart.com"
+            autocomplete="email"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-recover">Enviar enlace de recuperación</button>
+      </form>
+
+      <div class="divider"></div>
+
+      <div class="toggle-view">
+        <button type="button" onclick="showView('login')">← Volver al acceso</button>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="page-footer">© 2026 Abdi · Uso interno</p>
+
+</div>
+
+<script>
+  const SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
+  const DOMAIN = '@abdismart.com';
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  // Cambiar vista
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    clearMsg('login');
+    clearMsg('recover');
+  }
+
+  // Mensajes
+  function showMsg(view, type, text) {
+    const el = document.getElementById('msg-' + view);
+    el.className = 'msg ' + type;
+    el.textContent = text;
+  }
+  function clearMsg(view) {
+    const el = document.getElementById('msg-' + view);
+    el.className = 'msg';
+    el.textContent = '';
+  }
+
+  // Spinner
+  function setLoading(id, on, label) {
+    const btn = document.getElementById(id);
+    btn.disabled = on;
+    btn.innerHTML = on ? '<span class="spinner"></span>Un momento...' : label;
+  }
+
+  // Toggle mostrar contraseña
+  document.getElementById('toggle-pass').addEventListener('click', () => {
+    const input = document.getElementById('password');
+    const show  = input.type === 'text';
+    input.type = show ? 'password' : 'text';
+    document.getElementById('icon-show').style.display = show ? ''     : 'none';
+    document.getElementById('icon-hide').style.display = show ? 'none' : '';
+  });
+
+  // Si el usuario escribe "geiner.abdi" se convierte en "geiner.abdi@abdismart.com"
+  function toEmail(raw) {
+    const v = raw.trim().toLowerCase();
+    return v.includes('@') ? v : v + DOMAIN;
+  }
+
+  // Login
+  document.getElementById('form-login').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg('login');
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      showMsg('login', 'error', 'Completa usuario y contraseña.');
+      return;
+    }
+
+    setLoading('btn-login', true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: toEmail(username),
+      password,
+    });
+
+    setLoading('btn-login', false, 'Entrar');
+
+    if (error) {
+      const known = {
+        'Invalid login credentials': 'Usuario o contraseña incorrectos.',
+        'Email not confirmed':        'Confirma tu correo antes de entrar.',
+      };
+      showMsg('login', 'error', known[error.message] || 'No pudimos iniciar sesión. Intenta de nuevo.');
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  });
+
+  // Recuperar contraseña
+  document.getElementById('form-recover').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMsg('recover');
+
+    const email = document.getElementById('recover-email').value.trim().toLowerCase();
+
+    if (!email) {
+      showMsg('recover', 'error', 'Ingresa tu correo registrado.');
+      return;
+    }
+
+    setLoading('btn-recover', true);
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password.html',
+    });
+
+    setLoading('btn-recover', false, 'Enviar enlace de recuperación');
+
+    if (error) {
+      showMsg('recover', 'error', 'No pudimos enviar el enlace. Verifica el correo e intenta de nuevo.');
+    } else {
+      showMsg('recover', 'success', 'Enlace enviado. Revisa tu correo — puede tardar unos minutos.');
+    }
+  });
+
+  // Si ya hay sesión activa, ir directo al dashboard
+  supabase.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = 'dashboard.html';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+# ─── Secretos ───────────────────────────────────────────────
+# Nunca subir credenciales. Si alguna llega a subirse, hay que
+# rotarla: borrarla del historial no basta.
+.env
+.env.*
+*.pem
+*.key
+
+# ─── Proyectos que no son parte de Abdi ─────────────────────
+# open-carrusel tiene su propio repo (Hainrixz/open-carrusel).
+open-carrusel/
+# Agente Contenido queda fuera: contiene .env con llaves de API.
+Agente Contenido/
+# Skill externo con su propio repo (skills-sh/claude-seo). Se instala aparte.
+.claude/skills/
+
+# ─── Dependencias y builds ──────────────────────────────────
+node_modules/
+.next/
+dist/
+build/
+
+# ─── Sistema operativo y editores ───────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# ─── Configuración local de Claude Code ─────────────────────
+# settings.json sí se versiona; el .local es de cada máquina.
+.claude/settings.local.json

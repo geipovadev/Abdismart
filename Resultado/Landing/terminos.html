@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Términos y condiciones de contratación de Abdismart, operado por Grupo Abdi S.R.L. en Costa Rica.">
+
+  <title>Términos y condiciones — Abdismart</title>
+
+  <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
+
+  <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
+  <script>
+    (function () {
+      var saved;
+      try { saved = localStorage.getItem('abdi-theme'); } catch (e) {}
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Tokens del sistema Monolito — idénticos a index.html. */
+    :root {
+      --onyx:     #0A0B0D;
+      --graphite: #1C1F27;
+      --lime:     #C6FF3D;
+      --fog:      #A6ABB8;
+      --bone:     #F4F5F7;
+      --lime-dim:    rgba(198,255,61,.07);
+      --lime-border: rgba(198,255,61,.18);
+      --edge:        rgba(255,255,255,.07);
+
+      --accent:     #C6FF3D;
+      --on-accent:  #0A0B0D;
+
+      --surface-0: rgba(255,255,255,.02);
+      --surface-1: rgba(255,255,255,.04);
+      --surface-2: rgba(255,255,255,.06);
+      --nav-bg:     rgba(10,11,13,.88);
+
+      color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+      --onyx:     #F6F7F9;
+      --graphite: #FFFFFF;
+      --fog:      #565C69;
+      --bone:     #0A0B0D;
+      --lime-dim:    rgba(122,168,0,.10);
+      --lime-border: rgba(122,168,0,.30);
+      --edge:        rgba(10,11,13,.11);
+
+      --accent:    #4F7A00;
+
+      --surface-0: rgba(10,11,13,.025);
+      --surface-1: rgba(10,11,13,.045);
+      --surface-2: rgba(10,11,13,.07);
+      --nav-bg:     rgba(246,247,249,.88);
+
+      color-scheme: light;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--onyx);
+      color: var(--bone);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+    }
+
+    /* ─── TOPBAR ─────────────────────────────────────────────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 28px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--edge);
+    }
+    .logo { display: block; text-decoration: none; line-height: 0; }
+    .logo img { display: block; height: 26px; width: auto; }
+    .logo .logo-light { display: none; }
+    :root[data-theme="light"] .logo .logo-dark  { display: none; }
+    :root[data-theme="light"] .logo .logo-light { display: block; }
+
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .theme-toggle {
+      display: flex; align-items: center; gap: 2px;
+      border: 1px solid var(--edge);
+      border-radius: 100px;
+      padding: 3px;
+    }
+    .theme-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: none; border-radius: 50%;
+      background: transparent;
+      color: var(--fog);
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .theme-btn svg { width: 14px; height: 14px; }
+    .theme-btn:hover { color: var(--bone); }
+    .theme-btn[aria-pressed="true"] { background: var(--surface-2); color: var(--accent); }
+
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 7px;
+      border: 1px solid var(--edge);
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 13px; font-weight: 500;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .btn-back:hover { color: var(--bone); border-color: var(--lime-border); background: var(--surface-1); }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 56px 28px 96px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* Índice lateral */
+    .toc {
+      position: sticky;
+      top: 96px;
+      border-left: 1px solid var(--edge);
+      padding-left: 18px;
+    }
+    .toc-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 14px;
+    }
+    .toc ol { list-style: none; counter-reset: toc; }
+    .toc li { counter-increment: toc; }
+    .toc a {
+      display: block;
+      padding: 4px 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .toc a::before {
+      content: counter(toc) ". ";
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      opacity: .6;
+    }
+    .toc a:hover { color: var(--accent); }
+
+    /* Cabecera del documento */
+    .doc-head { margin-bottom: 44px; }
+    .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      display: block;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .doc-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--fog);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--edge);
+    }
+
+    /* Aviso de borrador */
+    .aviso {
+      border: 1px solid rgba(255,180,80,.35);
+      background: rgba(255,180,80,.07);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 44px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--bone);
+    }
+    /* Solo el primer strong es el título del aviso; los de adentro van en línea. */
+    .aviso > strong:first-child { color: #FFB950; display: block; margin-bottom: 6px; font-size: 13px; }
+    :root[data-theme="light"] .aviso > strong:first-child { color: #A96500; }
+
+    /* Secciones */
+    section { margin-bottom: 44px; scroll-margin-top: 96px; }
+    h2 {
+      font-family: 'Archivo', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--edge);
+      display: flex;
+      gap: 12px;
+    }
+    h2 .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      padding-top: 5px;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      margin: 22px 0 8px;
+      color: var(--bone);
+    }
+    p { color: var(--fog); margin-bottom: 14px; font-size: 15px; }
+    p strong, li strong { color: var(--bone); font-weight: 600; }
+
+    ul, ol.lista { margin: 0 0 16px 0; padding-left: 20px; }
+    li { color: var(--fog); margin-bottom: 8px; font-size: 15px; }
+    li::marker { color: var(--accent); }
+
+    a.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a.link:hover { text-decoration-thickness: 2px; }
+
+    /* Ficha de datos */
+    .ficha {
+      border: 1px solid var(--edge);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .ficha div {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 16px;
+      padding: 12px 18px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--edge);
+    }
+    .ficha div:last-child { border-bottom: none; }
+    .ficha dt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding-top: 3px;
+    }
+    .ficha dd { color: var(--bone); }
+
+    /* Marcador de dato pendiente */
+    .pendiente {
+      background: rgba(255,180,80,.15);
+      border: 1px dashed rgba(255,180,80,.5);
+      border-radius: 5px;
+      padding: 1px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #FFB950;
+    }
+    :root[data-theme="light"] .pendiente { color: #8A5200; background: rgba(255,180,80,.22); }
+
+    /* Bloque destacado */
+    .destacado {
+      border-left: 2px solid var(--accent);
+      background: var(--lime-dim);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .destacado p:last-child { margin-bottom: 0; }
+
+    footer {
+      border-top: 1px solid var(--edge);
+      padding: 32px 28px 48px;
+      text-align: center;
+    }
+    .footer-copy {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+    }
+    .footer-legal { display: block; margin-top: 4px; opacity: .75; }
+
+    @media (max-width: 940px) {
+      .wrap { grid-template-columns: 1fr; gap: 32px; padding-top: 36px; }
+      .toc {
+        position: static;
+        border-left: none;
+        border: 1px solid var(--edge);
+        border-radius: 14px;
+        padding: 18px 20px;
+      }
+      .toc ol { columns: 2; column-gap: 24px; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 14px 18px; }
+      .logo img { height: 22px; }
+      .wrap { padding: 28px 18px 72px; }
+      .toc ol { columns: 1; }
+      .ficha div { grid-template-columns: 1fr; gap: 4px; }
+      .btn-back span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="index.html" aria-label="Abdismart — ir al inicio">
+    <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
+    <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+  </a>
+  <div class="topbar-right">
+    <div class="theme-toggle" role="group" aria-label="Modo de color">
+      <button type="button" class="theme-btn" data-theme-set="light" aria-pressed="false" aria-label="Modo claro" title="Modo claro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <button type="button" class="theme-btn" data-theme-set="dark" aria-pressed="true" aria-label="Modo oscuro" title="Modo oscuro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+    <a class="btn-back" href="index.html">← <span>Volver</span></a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc" aria-label="Índice del documento">
+    <div class="toc-title">Contenido</div>
+    <ol>
+      <li><a href="#s1">Identificación del proveedor</a></li>
+      <li><a href="#s2">Objeto y aceptación</a></li>
+      <li><a href="#s3">Definiciones</a></li>
+      <li><a href="#s4">Servicios</a></li>
+      <li><a href="#s5">Contratación</a></li>
+      <li><a href="#s6">Precios, IVA y factura</a></li>
+      <li><a href="#s7">Formas de pago</a></li>
+      <li><a href="#s8">Derecho de retracto</a></li>
+      <li><a href="#s9">Plazo de entrega y garantía</a></li>
+      <li><a href="#s10">Obligaciones del cliente</a></li>
+      <li><a href="#s11">Revisiones y cambios</a></li>
+      <li><a href="#s12">Suscripción y cancelación</a></li>
+      <li><a href="#s13">Propiedad intelectual</a></li>
+      <li><a href="#s14">Dominio y hosting</a></li>
+      <li><a href="#s15">Disponibilidad y responsabilidad</a></li>
+      <li><a href="#s16">Datos personales</a></li>
+      <li><a href="#s17">Usos prohibidos</a></li>
+      <li><a href="#s18">Suspensión y terminación</a></li>
+      <li><a href="#s19">Cambios a estos términos</a></li>
+      <li><a href="#s20">Ley aplicable y reclamos</a></li>
+      <li><a href="#s21">Contacto</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="doc-head">
+      <span class="label">Legal</span>
+      <h1>Términos y condiciones.</h1>
+      <div class="doc-meta">
+        <span>Versión 1.0</span>
+        <span>Vigente desde el 28 de julio de 2026</span>
+        <span>Costa Rica</span>
+      </div>
+    </div>
+
+    <div class="aviso">
+      <strong>Borrador pendiente de revisión legal</strong>
+      Este documento fue redactado siguiendo la normativa costarricense vigente, pero <strong>no sustituye la asesoría de un abogado</strong>. Antes de publicarlo debe ser revisado y firmado por un profesional en derecho incorporado al Colegio de Abogados y Abogadas de Costa Rica. Los datos marcados en naranja están pendientes de completar.
+    </div>
+
+    <section id="s1">
+      <h2><span class="num">01</span> Identificación del proveedor</h2>
+      <p>Estos términos regulan la contratación de los servicios ofrecidos bajo la marca <strong>Abdismart</strong>, a través del sitio web y de los canales de atención indicados a continuación.</p>
+      <dl class="ficha">
+        <div><dt>Razón social</dt><dd>Grupo Abdi S.R.L.</dd></div>
+        <div><dt>Nombre comercial</dt><dd>Abdismart</dd></div>
+        <div><dt>Cédula jurídica</dt><dd><span class="pendiente">pendiente: 3-102-XXXXXX</span></dd></div>
+        <div><dt>Domicilio social</dt><dd><span class="pendiente">pendiente: dirección exacta</span></dd></div>
+        <div><dt>Correo electrónico</dt><dd><a class="link" href="mailto:hola@abdi.com">hola@abdi.com</a></dd></div>
+        <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
+        <div><dt>Horario de atención</dt><dd><span class="pendiente">pendiente: p. ej. lunes a viernes, 8:00 a 17:00</span></dd></div>
+      </dl>
+      <p>En adelante, «Abdismart», «nosotros» o «el proveedor». La persona física o jurídica que contrata los servicios se denomina «el cliente» o «usted».</p>
+    </section>
+
+    <section id="s2">
+      <h2><span class="num">02</span> Objeto y aceptación</h2>
+      <p>Estos términos regulan la relación comercial entre Abdismart y el cliente respecto del diseño, desarrollo, publicación y mantenimiento de páginas web y servicios digitales relacionados.</p>
+      <p>Al enviar el formulario de contratación, aceptar una cotización o realizar el primer pago, el cliente declara que <strong>leyó, entendió y acepta estos términos en su totalidad</strong>. Si no está de acuerdo con alguna disposición, debe abstenerse de contratar.</p>
+      <p>De conformidad con la <strong>Ley 8454, Ley de Certificados, Firmas Digitales y Documentos Electrónicos</strong>, la aceptación manifestada por medios electrónicos tiene la misma validez y fuerza probatoria que una firma manuscrita. Conforme al <strong>artículo 411 del Código de Comercio</strong>, los contratos mercantiles no están sujetos a formalidades especiales para su validez.</p>
+    </section>
+
+    <section id="s3">
+      <h2><span class="num">03</span> Definiciones</h2>
+      <ul>
+        <li><strong>Brief:</strong> cuestionario mediante el cual el cliente entrega la información y los materiales de su negocio necesarios para producir la web.</li>
+        <li><strong>Setup fee:</strong> pago único inicial que cubre el diseño, desarrollo y publicación de la web.</li>
+        <li><strong>Mensualidad:</strong> cuota periódica que cubre hosting, soporte, actualizaciones de seguridad y los cambios incluidos.</li>
+        <li><strong>Horas hábiles:</strong> las comprendidas dentro del horario de atención indicado en la cláusula 01, de lunes a viernes, excluyendo sábados, domingos y feriados de ley en Costa Rica.</li>
+        <li><strong>Entregable:</strong> la web publicada y funcionando en el dominio acordado.</li>
+      </ul>
+    </section>
+
+    <section id="s4">
+      <h2><span class="num">04</span> Servicios</h2>
+      <p>Abdismart diseña, desarrolla y publica páginas web para pequeños negocios, e incluye según el plan contratado: registro y configuración de dominio, hosting, certificado SSL, configuración de SEO básico, integraciones y soporte en español.</p>
+      <p>El alcance exacto de cada contratación —número de páginas, secciones, integraciones y plazos— es el que conste en la <strong>cotización aceptada por el cliente</strong>. Esa cotización prevalece sobre cualquier descripción general publicada en el sitio web.</p>
+      <p>La producción combina herramientas de inteligencia artificial con revisión humana. En todos los casos existe una revisión humana antes de publicar.</p>
+    </section>
+
+    <section id="s5">
+      <h2><span class="num">05</span> Contratación</h2>
+      <p>El proceso de contratación es el siguiente:</p>
+      <ol class="lista">
+        <li>El cliente completa el formulario del sitio web con los datos de su negocio.</li>
+        <li>Abdismart contacta al cliente y envía una cotización con el alcance, el precio y el plazo.</li>
+        <li>El cliente acepta la cotización y realiza el pago del setup fee.</li>
+        <li>Abdismart envía el brief. El cliente lo completa y entrega los materiales.</li>
+        <li>Se produce la web, se envía una versión de revisión y, tras la aprobación del cliente, se publica.</li>
+      </ol>
+      <p>Antes de que el cliente confirme el pago, Abdismart le informará de manera clara el precio total con impuestos incluidos, la descripción del servicio, el plazo de entrega y las condiciones de estos términos, conforme al <strong>Capítulo IX del Reglamento a la Ley 7472 (Decreto Ejecutivo 37899-MEIC)</strong>, que regula el comercio electrónico.</p>
+      <p>El contrato se perfecciona cuando Abdismart confirma la recepción del pago. El cliente recibirá esa confirmación por medio electrónico, junto con una copia de estos términos.</p>
+    </section>
+
+    <section id="s6">
+      <h2><span class="num">06</span> Precios, IVA y factura electrónica</h2>
+      <p>Los precios se comunican al cliente en la cotización, antes de cualquier cobro. Todos los precios se expresan <strong>con el impuesto al valor agregado incluido</strong>, salvo que se indique expresamente lo contrario.</p>
+      <p>Los servicios prestados por Abdismart están gravados con el <strong>impuesto al valor agregado del 13%</strong>, conforme a la Ley 9635, Ley de Fortalecimiento de las Finanzas Públicas, y su reglamento.</p>
+      <p>Por cada pago recibido, Abdismart emitirá el <strong>comprobante electrónico autorizado por la Dirección General de Tributación</strong> y lo enviará al correo del cliente.</p>
+      <p>Cuando los precios se expresen en dólares de los Estados Unidos, el pago podrá realizarse en esa moneda o en colones al tipo de cambio de venta de referencia del Banco Central de Costa Rica del día del pago.</p>
+    </section>
+
+    <section id="s7">
+      <h2><span class="num">07</span> Formas de pago</h2>
+      <p>Abdismart acepta los medios de pago que se indiquen en la cotización, que pueden incluir transferencia SINPE, SINPE Móvil, tarjeta de débito o crédito y otros medios electrónicos.</p>
+      <p>La mensualidad se cobra por períodos adelantados. El cliente autoriza el cobro recurrente por el medio que haya registrado, hasta que solicite la cancelación conforme a la cláusula 12.</p>
+      <p>Si un cobro es rechazado, Abdismart lo notificará al cliente y podrá reintentarlo. Transcurridos <strong>quince días naturales</strong> de mora sin regularizar el pago, Abdismart podrá suspender el servicio conforme a la cláusula 18.</p>
+    </section>
+
+    <section id="s8">
+      <h2><span class="num">08</span> Derecho de retracto</h2>
+      <div class="destacado">
+        <p>Conforme al <strong>artículo 40 de la Ley 7472, Ley de Promoción de la Competencia y Defensa Efectiva del Consumidor</strong>, y a su reglamento, el consumidor tiene derecho a rescindir el contrato sin responsabilidad de su parte dentro de los <strong>ocho días hábiles</strong> siguientes a su perfeccionamiento.</p>
+      </div>
+      <p>Para ejercerlo, el cliente debe comunicarlo <strong>por el mismo medio por el que manifestó su consentimiento</strong>, o a los canales de contacto de la cláusula 01. Abdismart reembolsará la totalidad de las sumas recibidas <strong>dentro de los ocho días naturales</strong> siguientes, por el mismo medio de pago utilizado, y emitirá el comprobante correspondiente.</p>
+
+      <h3>Límites de este derecho</h3>
+      <p>El reglamento a la Ley 7472 excluye del derecho de retracto los servicios ya consumidos y los bienes o servicios elaborados a la medida según las necesidades del comprador. Por la naturaleza del servicio de Abdismart, esto significa que:</p>
+      <ul>
+        <li>Si el cliente ejerce el retracto <strong>antes</strong> de entregar el brief, el reembolso es total.</li>
+        <li>Si lo ejerce <strong>después</strong> de que la producción de su web haya comenzado, Abdismart podrá retener la parte proporcional del trabajo personalizado ya ejecutado, acreditándolo de forma detallada. El resto se reembolsa.</li>
+        <li>Una vez que la web ha sido <strong>publicada y aceptada</strong> por el cliente, el servicio se considera consumido y no aplica el retracto, sin perjuicio de la garantía de la cláusula 09 y del derecho de cancelar la mensualidad en cualquier momento.</li>
+      </ul>
+      <p>Esta limitación no restringe ningún otro derecho que la ley reconozca al consumidor.</p>
+    </section>
+
+    <section id="s9">
+      <h2><span class="num">09</span> Plazo de entrega y garantía</h2>
+      <p>Abdismart se compromete a entregar la web en un plazo de <strong>48 horas hábiles</strong>. Ese plazo empieza a correr cuando se cumplen <strong>ambas</strong> condiciones:</p>
+      <ul>
+        <li>El pago del setup fee está confirmado.</li>
+        <li>El cliente entregó el brief completo con los materiales mínimos.</li>
+      </ul>
+      <p>El plazo se suspende mientras Abdismart esté a la espera de información, materiales o aprobaciones del cliente, y se reanuda al recibirlos.</p>
+      <div class="destacado">
+        <p><strong>Garantía de plazo.</strong> Si Abdismart incumple el plazo de 48 horas hábiles por causas que le sean atribuibles, devolverá el setup fee íntegro, sin necesidad de que el cliente justifique el reclamo.</p>
+      </div>
+      <p>Si el resultado no corresponde con lo acordado en el brief, Abdismart lo corregirá sin costo. No se publica ninguna web sin la aprobación previa del cliente.</p>
+      <p>Esta garantía comercial es adicional y no sustituye la garantía legal ni los derechos que la Ley 7472 reconoce al consumidor.</p>
+    </section>
+
+    <section id="s10">
+      <h2><span class="num">10</span> Obligaciones del cliente</h2>
+      <p>El cliente se obliga a:</p>
+      <ul>
+        <li>Entregar información <strong>veraz, completa y actualizada</strong> sobre su negocio.</li>
+        <li>Contar con los <strong>derechos o licencias</strong> sobre todo el material que entregue: textos, fotografías, logotipos, marcas y videos. El cliente responde frente a terceros por el material que aporta y mantiene indemne a Abdismart ante cualquier reclamo derivado de ese material.</li>
+        <li>Cumplir la normativa aplicable a su propia actividad. En el caso de servicios de salud, esto incluye las disposiciones del Ministerio de Salud y de los colegios profesionales correspondientes sobre publicidad y ejercicio profesional.</li>
+        <li>Publicar en su web la información legal que su actividad requiera, incluido su propio aviso de privacidad cuando recolecte datos de sus pacientes o clientes.</li>
+        <li>Custodiar las credenciales de acceso que se le entreguen y notificar de inmediato cualquier uso no autorizado.</li>
+      </ul>
+      <p>Abdismart no revisa ni valida la exactitud de los contenidos aportados por el cliente ni la legalidad de su actividad.</p>
+    </section>
+
+    <section id="s11">
+      <h2><span class="num">11</span> Revisiones y cambios</h2>
+      <p>Antes de publicar, el cliente cuenta con <strong>una ronda de revisión incluida</strong> para solicitar ajustes sobre lo acordado en el brief.</p>
+      <p>Si el cliente no responde dentro de las <strong>seis horas hábiles</strong> siguientes al envío de la versión de revisión, Abdismart podrá publicar la web tal como está para no incumplir el plazo de entrega. Los ajustes pendientes se atenderán después como cambios incluidos en la mensualidad.</p>
+      <p>La mensualidad incluye los cambios menores descritos en la cotización: textos, imágenes, precios y secciones. Los trabajos que excedan ese alcance —rediseños completos, nuevas funcionalidades o integraciones adicionales— se cotizan por separado y requieren aprobación previa del cliente.</p>
+    </section>
+
+    <section id="s12">
+      <h2><span class="num">12</span> Suscripción y cancelación</h2>
+      <p>La mensualidad se renueva automáticamente por períodos mensuales, <strong>sin plazo mínimo de permanencia</strong>.</p>
+      <p>El cliente puede cancelar en cualquier momento, por cualquiera de los canales de la cláusula 01. La cancelación surte efecto <strong>al final del período ya pagado</strong>; no se cobran períodos posteriores ni se aplican penalizaciones.</p>
+      <p>Al cancelar:</p>
+      <ul>
+        <li>El <strong>dominio es del cliente</strong> y Abdismart realizará el traslado a quien el cliente indique.</li>
+        <li>Abdismart entregará una <strong>exportación de los archivos</strong> de la web.</li>
+        <li>Abdismart dejará de prestar hosting y soporte, por lo que la web dejará de estar disponible en la infraestructura de Abdismart.</li>
+      </ul>
+      <p>Abdismart conservará una copia de respaldo durante <strong>treinta días naturales</strong> después de la cancelación. Pasado ese plazo podrá eliminarla de forma definitiva.</p>
+    </section>
+
+    <section id="s13">
+      <h2><span class="num">13</span> Propiedad intelectual</h2>
+      <p>La materia se rige por la <strong>Ley 6683, Ley de Derechos de Autor y Derechos Conexos</strong>, y por la <strong>Ley 8039, Ley de Procedimientos de Observancia de los Derechos de Propiedad Intelectual</strong>.</p>
+
+      <h3>Lo que es del cliente</h3>
+      <p>El material que el cliente aporta sigue siendo suyo. Además, una vez pagado íntegramente el setup fee, Abdismart <strong>cede al cliente los derechos patrimoniales</strong> sobre el diseño y los contenidos producidos específicamente para su web, de forma exclusiva, sin límite territorial y por todo el plazo de protección legal.</p>
+
+      <h3>Lo que es de Abdismart</h3>
+      <p>Abdismart conserva la titularidad de sus plantillas base, componentes reutilizables, código de plataforma, herramientas internas, metodología y de la marca Abdismart. Nada en estos términos transfiere esos elementos al cliente; sobre ellos el cliente recibe una licencia de uso no exclusiva mientras dure la relación contractual.</p>
+
+      <h3>Portafolio</h3>
+      <p>Salvo que el cliente manifieste lo contrario por escrito, Abdismart podrá mostrar la web publicada y el nombre comercial del cliente en su portafolio y materiales promocionales. El cliente puede revocar esta autorización en cualquier momento escribiendo a los canales de la cláusula 01.</p>
+    </section>
+
+    <section id="s14">
+      <h2><span class="num">14</span> Dominio y hosting</h2>
+      <p>Cuando el plan lo incluya, Abdismart registrará el dominio <strong>a nombre del cliente</strong> y cubrirá el costo del primer año. Las renovaciones posteriores se incluyen en la mensualidad mientras el cliente se mantenga activo.</p>
+      <p>La disponibilidad de un dominio depende del registrador y no de Abdismart. Si el dominio solicitado no está disponible, se acordará una alternativa con el cliente.</p>
+      <p>El hosting se presta sobre infraestructura de terceros. Abdismart selecciona proveedores con estándares reconocidos del mercado, pero no responde por interrupciones imputables exclusivamente a esos terceros, sin perjuicio de la cláusula 15.</p>
+    </section>
+
+    <section id="s15">
+      <h2><span class="num">15</span> Disponibilidad y responsabilidad</h2>
+      <p>Abdismart realizará sus mejores esfuerzos para mantener la web del cliente disponible de forma continua. No obstante, el servicio puede verse interrumpido por mantenimiento programado, fallas de terceros proveedores, ataques informáticos o casos fortuitos y de fuerza mayor.</p>
+      <p>El mantenimiento programado se comunicará con antelación razonable cuando sea previsible.</p>
+      <p>Salvo dolo o culpa grave, y en la medida en que la ley lo permita, la responsabilidad total de Abdismart frente al cliente por cualquier reclamo derivado de estos términos <strong>no excederá el monto efectivamente pagado por el cliente en los doce meses anteriores</strong> al hecho que origina el reclamo.</p>
+      <p>Esta limitación <strong>no aplica</strong> a los derechos irrenunciables que la Ley 7472 reconoce a los consumidores ni a los daños causados a la vida, la salud o la integridad de las personas.</p>
+    </section>
+
+    <section id="s16">
+      <h2><span class="num">16</span> Datos personales</h2>
+      <p>El tratamiento de datos personales se rige por la <strong>Ley 8968, Ley de Protección de la Persona frente al Tratamiento de sus Datos Personales</strong>, y su reglamento, el Decreto Ejecutivo 37554-JP, bajo la supervisión de la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong>.</p>
+      <p>Grupo Abdi S.R.L. es la responsable de la base de datos. Los datos que el cliente proporciona —nombre, teléfono, correo, datos del negocio y respuestas del formulario— se recolectan con la finalidad de <strong>contactar al cliente, elaborar la cotización, prestar el servicio contratado y cumplir obligaciones legales y tributarias</strong>.</p>
+      <p>Conforme al artículo 5 de la Ley 8968, la recolección se basa en el <strong>consentimiento expreso, libre e informado</strong> del titular, que se otorga al enviar el formulario. Ese consentimiento puede revocarse en cualquier momento, sin efecto retroactivo sobre el tratamiento ya realizado.</p>
+      <p>El titular puede ejercer sus derechos de <strong>acceso, rectificación, actualización, eliminación y revocación del consentimiento</strong> escribiendo a los canales de la cláusula 01. Abdismart atenderá la solicitud dentro de los plazos de ley.</p>
+      <p>Los datos no se venden ni se ceden a terceros con fines comerciales. Se comparten únicamente con los proveedores tecnológicos necesarios para prestar el servicio y con las autoridades cuando exista obligación legal.</p>
+      <p><span class="pendiente">Pendiente: publicar el aviso de privacidad completo e inscribir la base de datos ante la PRODHAB si corresponde según el volumen y tipo de tratamiento.</span></p>
+    </section>
+
+    <section id="s17">
+      <h2><span class="num">17</span> Usos prohibidos</h2>
+      <p>El cliente no podrá destinar los servicios a:</p>
+      <ul>
+        <li>Actividades contrarias a la ley costarricense, la moral o el orden público.</li>
+        <li>Difundir contenido que infrinja derechos de propiedad intelectual de terceros.</li>
+        <li>Distribuir software malicioso, realizar phishing o suplantar identidades.</li>
+        <li>Enviar comunicaciones masivas no solicitadas.</li>
+        <li>Publicar contenido discriminatorio, difamatorio o que promueva la violencia.</li>
+        <li>Ofrecer productos o servicios cuya comercialización requiera autorización que el cliente no posea.</li>
+      </ul>
+    </section>
+
+    <section id="s18">
+      <h2><span class="num">18</span> Suspensión y terminación</h2>
+      <p>Abdismart podrá suspender o terminar el servicio, previa notificación al cliente, cuando exista mora superior a quince días naturales, incumplimiento de la cláusula 17, o uso que comprometa la seguridad o estabilidad de la infraestructura.</p>
+      <p>Salvo casos de riesgo inminente de seguridad o de orden de autoridad competente, Abdismart otorgará al cliente un plazo razonable para subsanar antes de suspender.</p>
+      <p>La terminación no libera al cliente de las sumas devengadas antes de que surta efecto, ni a Abdismart de entregar el dominio y la exportación de archivos conforme a la cláusula 12.</p>
+    </section>
+
+    <section id="s19">
+      <h2><span class="num">19</span> Cambios a estos términos</h2>
+      <p>Abdismart puede modificar estos términos. Los cambios se publicarán en esta página con su fecha de vigencia.</p>
+      <p>Cuando la modificación afecte de forma sustancial los derechos u obligaciones del cliente, se le notificará con al menos <strong>treinta días naturales</strong> de antelación por correo o WhatsApp. Si el cliente no está de acuerdo, puede cancelar la mensualidad conforme a la cláusula 12 antes de que el cambio entre en vigor, sin penalización.</p>
+      <p>Las contrataciones ya perfeccionadas se rigen por la versión vigente al momento de su perfeccionamiento.</p>
+    </section>
+
+    <section id="s20">
+      <h2><span class="num">20</span> Ley aplicable y reclamos</h2>
+      <p>Estos términos se rigen por las leyes de la <strong>República de Costa Rica</strong>.</p>
+      <p>Si el cliente tiene un reclamo, le pedimos escribirnos primero a los canales de la cláusula 01. Nos comprometemos a responder dentro de los <strong>cinco días hábiles</strong> siguientes y a buscar una solución directa.</p>
+      <p>Sin perjuicio de lo anterior, el consumidor puede acudir a la <strong>Comisión Nacional del Consumidor del Ministerio de Economía, Industria y Comercio (MEIC)</strong>, conforme a la Ley 7472, o a los tribunales de justicia costarricenses. Ninguna disposición de estos términos limita ese derecho.</p>
+      <p>Si una cláusula fuera declarada nula o inaplicable, las demás mantienen su validez.</p>
+    </section>
+
+    <section id="s21">
+      <h2><span class="num">21</span> Contacto</h2>
+      <p>Para consultas sobre estos términos, para ejercer el derecho de retracto o para gestionar sus datos personales:</p>
+      <dl class="ficha">
+        <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
+        <div><dt>Correo</dt><dd><a class="link" href="mailto:hola@abdi.com">hola@abdi.com</a></dd></div>
+        <div><dt>Responsable</dt><dd>Grupo Abdi S.R.L.</dd></div>
+      </dl>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="footer-copy">
+    © 2026 Abdismart. Todos los derechos reservados.
+    <span class="footer-legal">Grupo Abdi S.R.L.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var THEME_KEY = 'abdi-theme';
+  var themeBtns = Array.prototype.slice.call(document.querySelectorAll('.theme-btn'));
+  var metaColor = document.getElementById('meta-theme-color');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme));
+    });
+    if (metaColor) metaColor.setAttribute('content', theme === 'light' ? '#F6F7F9' : '#0A0B0D');
+  }
+
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
+  themeBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyTheme(btn.dataset.themeSet);
+      try { localStorage.setItem(THEME_KEY, btn.dataset.themeSet); } catch (e) {}
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
