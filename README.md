@@ -11,15 +11,18 @@ Operado por **Grupo Abdi S.R.L.**
 
 ```
 Abdi/
-├── Contexto/          # Fuente de verdad. Leer antes de generar cualquier output.
-│   ├── Abdi - Contexto Completo.txt      # Producto, modelo, personas, roadmap, KPIs
-│   └── Abdi - Tono de Comunicacion.txt   # Voz de marca y reglas de estilo
+├── Contexto/          # NO versionado — solo local (ver nota abajo)
 └── Resultado/
     ├── Landing/       # Landing page pública
     ├── CRM/           # Journey del cliente y acceso al CRM
     ├── Ejemplos/      # Webs de muestra por vertical
     └── Instagram/     # Piezas de contenido
 ```
+
+> **`Contexto/` no está en este repositorio.** Contiene la documentación de
+> negocio —economía unitaria, roadmap y metas de MRR— y el repo es público, así
+> que vive solo en local y está en `.gitignore`. Quien trabaje en el proyecto
+> necesita esa carpeta: pídela por los canales internos.
 
 ## Landing
 

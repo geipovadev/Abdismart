@@ -6,6 +6,12 @@
 *.pem
 *.key
 
+# ─── Documentación de negocio ───────────────────────────────
+# El repo es público. Contexto/ tiene la economía unitaria (LTV, CAC,
+# break-even), el roadmap y las metas de MRR: no debe subirse.
+# Vive solo en local. Se eliminó del historial el 28/07/2026.
+Contexto/
+
 # ─── Proyectos que no son parte de Abdi ─────────────────────
 # open-carrusel tiene su propio repo (Hainrixz/open-carrusel).
 open-carrusel/
