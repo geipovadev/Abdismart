@@ -41,24 +41,27 @@ python3 -m http.server 5501 --directory Resultado/Landing
 
 ## Despliegue
 
-**Cloudflare Workers (Static Assets)**, conectado a este repositorio. Se eligió
-Cloudflare porque despliega desde repos privados en el plan gratuito, cosa que
-GitHub Pages no hace.
+El sitio se publica desde **`Resultado/Landing/`**, que no es la raíz del
+repositorio. Cada plataforma necesita que se le indique, o sirve el README y
+devuelve 404 en la portada.
 
-Toda la configuración vive en [`wrangler.jsonc`](wrangler.jsonc), en la raíz. Lo
-importante es `assets.directory`, que apunta a `Resultado/Landing`: la landing no
-está en la raíz del repo y sin eso el deploy falla con *"Could not detect a
-directory containing static files"*.
+| Plataforma | Configuración | Ajuste clave |
+|---|---|---|
+| Cloudflare Workers | [`wrangler.jsonc`](wrangler.jsonc) | `assets.directory` |
+| Netlify | [`netlify.toml`](netlify.toml) | `build.publish` |
+
+Ambos archivos conviven sin conflicto: cada plataforma lee el suyo e ignora el
+otro, y los dos apuntan a la misma carpeta.
 
 No hay proceso de build. Son archivos estáticos que se sirven tal cual y todas
 las rutas internas son relativas, así que esa carpeta funciona como raíz del sitio.
 
 ```bash
-npx wrangler deploy        # despliegue manual
+npx wrangler deploy        # despliegue manual en Cloudflare
 ```
 
-`Resultado/Landing/_headers` define las cabeceras de seguridad y de caché. Solo
-tiene efecto en Cloudflare, no en el servidor local.
+`Resultado/Landing/_headers` define las cabeceras de seguridad y de caché.
+Cloudflare y Netlify lo leen igual; el servidor local no.
 
 Fuera del sitio publicado queda todo lo que esté afuera de `Resultado/Landing/`
 — incluido `Resultado/CRM/`, que no debe ser público.

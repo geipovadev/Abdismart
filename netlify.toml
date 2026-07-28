@@ -1,0 +1,17 @@
+# Configuración de Netlify.
+# Convive con wrangler.jsonc (Cloudflare): cada plataforma lee la suya y
+# ambas publican exactamente la misma carpeta.
+
+[build]
+  # Raíz del sitio publicado. La landing no está en la raíz del repositorio;
+  # sin esto Netlify sirve el README y da 404 en la portada.
+  publish = "Resultado/Landing"
+
+  # No hay proceso de build: son archivos estáticos que se sirven tal cual.
+  command = ""
+
+[build.processing]
+  skip_processing = true
+
+# Netlify lee además Resultado/Landing/_headers, que trae las cabeceras de
+# seguridad y el cacheo del logotipo. No hace falta repetirlas aquí.
