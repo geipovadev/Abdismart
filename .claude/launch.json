@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "5501", "--directory", "/Users/geinerporras/Abdi/Resultado/Landing"],
       "port": 5501
+    },
+    {
+      "name": "crm",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5502", "--directory", "/Users/geinerporras/Abdi/Resultado/CRM"],
+      "port": 5502
     }
   ]
 }
