@@ -309,12 +309,12 @@
 
       <form class="form" id="form-login" novalidate>
         <div class="field">
-          <label for="username">Usuario</label>
+          <label for="username">Correo</label>
           <input
-            type="text"
+            type="email"
             id="username"
-            placeholder="geiner.abdi"
-            autocomplete="username"
+            placeholder="nombre@dominio.com"
+            autocomplete="email"
             spellcheck="false"
             required
           >
@@ -363,7 +363,7 @@
           <input
             type="email"
             id="recover-email"
-            placeholder="geiner.abdi@abdismart.com"
+            placeholder="nombre@dominio.com"
             autocomplete="email"
             required
           >
@@ -388,7 +388,6 @@
 <script>
   const SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
-  const DOMAIN = '@abdismart.com';
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
@@ -428,11 +427,14 @@
     document.getElementById('icon-hide').style.display = show ? 'none' : '';
   });
 
-  // Si el usuario escribe "geiner.abdi" se convierte en "geiner.abdi@abdismart.com"
+  // El acceso es con el correo real de la cuenta. Antes se completaba un
+  // dominio automáticamente y eso fabricaba direcciones inexistentes: los
+  // enlaces de recuperación se enviaban a un buzón que no existe.
   function toEmail(raw) {
-    const v = raw.trim().toLowerCase();
-    return v.includes('@') ? v : v + DOMAIN;
+    return raw.trim().toLowerCase();
   }
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
   // Login
   document.getElementById('form-login').addEventListener('submit', async (e) => {
@@ -443,7 +445,12 @@
     const password = document.getElementById('password').value;
 
     if (!username || !password) {
-      showMsg('login', 'error', 'Completa usuario y contraseña.');
+      showMsg('login', 'error', 'Completa correo y contraseña.');
+      return;
+    }
+
+    if (!EMAIL_RE.test(toEmail(username))) {
+      showMsg('login', 'error', 'Escribe tu correo completo, por ejemplo nombre@dominio.com');
       return;
     }
 
@@ -458,7 +465,7 @@
 
     if (error) {
       const known = {
-        'Invalid login credentials': 'Usuario o contraseña incorrectos.',
+        'Invalid login credentials': 'Correo o contraseña incorrectos.',
         'Email not confirmed':        'Confirma tu correo antes de entrar.',
       };
       showMsg('login', 'error', known[error.message] || 'No pudimos iniciar sesión. Intenta de nuevo.');
