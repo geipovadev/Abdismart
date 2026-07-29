@@ -81,6 +81,23 @@ Supabase. Las migraciones se aplican a mano desde el editor SQL del proyecto:
 La `anon key` que aparece en los HTML es pública por diseño: el acceso está limitado
 por RLS, que solo permite `INSERT` a usuarios anónimos.
 
+### Mantener la base despierta
+
+El plan gratuito de Supabase **pausa el proyecto tras ~7 días de inactividad**. Con la
+base pausada nadie entra al CRM y los formularios de la landing no guardan nada: cada
+lead que llega se pierde.
+
+[`.github/workflows/keep-alive.yml`](.github/workflows/keep-alive.yml) hace una
+consulta de solo lectura lunes y jueves para que el proyecto cuente como activo.
+Si falla, el job falla y GitHub avisa por correo — ese aviso es la señal de ir a mirar.
+
+Dos límites que conviene tener presentes:
+
+- **No despierta una base ya pausada.** Hay que restaurarla a mano desde el panel de
+  Supabase; a partir de ahí el ping la mantiene viva.
+- **GitHub desactiva las tareas programadas** si el repositorio pasa 60 días sin
+  actividad. Avisa por correo antes de hacerlo.
+
 ## Pendientes antes de publicar
 
 - [ ] Reemplazar los testimonios de marcador en `index.html` por citas reales

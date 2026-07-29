@@ -1,0 +1,65 @@
+# Mantiene despierto el proyecto de Supabase.
+#
+# El plan gratuito pausa por inactividad a los ~7 días. Con la base pausada
+# nadie entra al CRM y, peor, los formularios de la landing no guardan nada:
+# cada lead que llega se pierde.
+#
+# Esto hace una petición de solo lectura dos veces por semana (lunes y jueves,
+# hueco máximo de 4 días) para que el proyecto cuente como activo.
+#
+# Si la petición falla, el job falla y GitHub avisa por correo al dueño del
+# repositorio. Ese correo es la señal de que hay que ir a mirar.
+
+name: Mantener Supabase despierta
+
+on:
+  schedule:
+    # Lunes y jueves a las 09:00 UTC (03:00 en Costa Rica).
+    - cron: '0 9 * * 1,4'
+  workflow_dispatch:        # permite lanzarlo a mano desde la pestaña Actions
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Consultar la API de Supabase
+        env:
+          # Clave `anon`, pública por diseño y ya presente en los HTML del
+          # repositorio. La protege RLS, que solo permite INSERT a anónimos.
+          SUPABASE_URL: https://zmlslhftqjljhvetmbya.supabase.co
+          SUPABASE_ANON: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M
+        run: |
+          set -euo pipefail
+
+          # Solo lectura: nada de INSERT. Escribir aquí ensuciaría page_views,
+          # que es de donde salen las métricas de conversión.
+          url="$SUPABASE_URL/rest/v1/waitlist?select=id&limit=1"
+
+          echo "Consultando $SUPABASE_URL …"
+
+          codigo=$(curl -sS -o /tmp/respuesta.txt -w '%{http_code}' \
+            --max-time 30 --retry 3 --retry-delay 10 --retry-connrefused \
+            -H "apikey: $SUPABASE_ANON" \
+            -H "Authorization: Bearer $SUPABASE_ANON" \
+            "$url") || true
+
+          echo "HTTP $codigo"
+          echo "Respuesta: $(head -c 300 /tmp/respuesta.txt)"
+
+          # 200 y 206 son respuestas válidas. RLS devuelve lista vacía para
+          # anónimos, y eso está bien: la consulta llegó a la base.
+          case "$codigo" in
+            200|206)
+              echo "✓ La base respondió. Proyecto activo."
+              ;;
+            000)
+              echo "✗ No hubo respuesta: el proyecto puede estar pausado o caído."
+              exit 1
+              ;;
+            *)
+              echo "✗ Respuesta inesperada ($codigo). Revisar el proyecto en Supabase."
+              exit 1
+              ;;
+          esac
