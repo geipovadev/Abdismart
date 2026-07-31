@@ -349,6 +349,64 @@
       transition: width .35s ease;
     }
     .menu__item.active .menu__text { opacity: 1; max-height: 20px; }
+    .menu-services { position: relative; }
+    .menu-services .menu__item { height: 100%; }
+    .services-submenu {
+      position: absolute;
+      top: calc(100% + 14px);
+      left: 50%;
+      width: 250px;
+      padding: 8px;
+      background: var(--panel-bg);
+      border: 1px solid var(--edge);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      opacity: 0;
+      visibility: hidden;
+      transform: translate(-50%,-8px);
+      transition: opacity .2s ease, transform .2s ease, visibility .2s;
+    }
+    .menu-services:hover .services-submenu,
+    .menu-services:focus-within .services-submenu,
+    .menu-services.open .services-submenu {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%,0);
+    }
+    .services-submenu a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 12px 13px;
+      color: var(--fog);
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 12px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .services-submenu a:hover { color: var(--bone); background: var(--surface-2); }
+    .submenu-service-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .submenu-service-icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .submenu-service-icon svg { width: 15px; height: 15px; }
+    .services-submenu small {
+      color: var(--accent);
+      font: 9px 'JetBrains Mono', monospace;
+    }
 
     /* ─── TOGGLE TEMA (solo iconos) ─────────────────────────── */
     .menu__sep {
@@ -726,6 +784,814 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--accent);
+    }
+
+    /* ─── SERVICES ───────────────────────────────────────────── */
+    .services {
+      position: relative;
+      overflow: hidden;
+      background: var(--graphite);
+      border-top: 1px solid var(--edge);
+      border-bottom: 1px solid var(--edge);
+    }
+    .services::before {
+      content: '';
+      position: absolute;
+      width: 720px;
+      height: 720px;
+      top: 10%;
+      right: -260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(198,255,61,.07), transparent 66%);
+      pointer-events: none;
+    }
+    .services-header {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 64px;
+      align-items: end;
+      margin-bottom: 56px;
+    }
+    .service-showcases {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--edge);
+      border-radius: 24px;
+      background: var(--edge);
+    }
+    .service-showcase {
+      min-height: 650px;
+      display: grid;
+      grid-template-columns: .82fr 1.18fr;
+      gap: 56px;
+      align-items: center;
+      padding: 64px;
+      background: var(--graphite);
+    }
+    .service-showcase:nth-child(even) {
+      grid-template-columns: 1.18fr .82fr;
+      background: var(--onyx);
+    }
+    .service-showcase:nth-child(even) .service-showcase-copy { order: 2; }
+    .service-showcase:nth-child(even) .service-visual-slot { order: 1; }
+    .service-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 22px;
+      padding: 6px 11px;
+      color: var(--accent);
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      border-radius: 100px;
+      font: 10px 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .service-showcase-title {
+      max-width: 470px;
+      margin-bottom: 18px;
+      color: var(--bone);
+      font: 700 clamp(34px,4vw,54px)/1.02 'Archivo', sans-serif;
+      letter-spacing: -.035em;
+    }
+    .service-showcase-copy > p {
+      max-width: 440px;
+      color: var(--fog);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .service-points {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      margin: 28px 0 32px;
+      list-style: none;
+    }
+    .service-points li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--bone);
+      font-size: 13px;
+    }
+    .service-points li::before {
+      content: '✓';
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      color: var(--on-accent);
+      background: var(--lime);
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .service-detail-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 20px;
+      color: var(--on-accent);
+      background: var(--lime);
+      border-radius: 9px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .service-detail-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(198,255,61,.18);
+    }
+    .service-visual-slot { min-width: 0; }
+    .service-visual-slot .services-visual { min-height: 500px; }
+    .services-template { display: none !important; }
+    .services-layout {
+      display: grid;
+      grid-template-columns: minmax(320px,.72fr) minmax(0,1.28fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+    .service-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .service-tab {
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 16px;
+      padding: 24px;
+      text-align: left;
+      color: var(--bone);
+      background: var(--surface-0);
+      border: 1px solid var(--edge);
+      border-radius: 16px;
+      cursor: pointer;
+      font: inherit;
+      transition: transform .25s ease, border-color .25s ease, background .25s ease;
+    }
+    .service-tab::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 0;
+      height: 2px;
+      background: var(--lime);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .35s ease;
+    }
+    .service-tab:hover { transform: translateX(4px); border-color: var(--lime-border); }
+    .service-tab.active {
+      background: var(--lime-dim);
+      border-color: var(--lime-border);
+    }
+    .service-tab.active::after { transform: scaleX(1); }
+    .service-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: var(--surface-1);
+      border: 1px solid var(--edge);
+      border-radius: 11px;
+    }
+    .service-icon svg { width: 20px; height: 20px; }
+    .service-name {
+      display: block;
+      margin-bottom: 7px;
+      font-family: 'Archivo', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .service-copy {
+      display: block;
+      max-width: 390px;
+      color: var(--fog);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+    .service-result {
+      grid-column: 2;
+      display: block;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      transition: opacity .3s ease, max-height .3s ease, margin .3s ease;
+    }
+    .service-tab.active .service-result {
+      max-height: 48px;
+      opacity: 1;
+      margin-top: 13px;
+    }
+    .services-visual {
+      position: relative;
+      min-height: 510px;
+      overflow: hidden;
+      isolation: isolate;
+      border: 1px solid var(--edge);
+      border-radius: 22px;
+      background: #070809;
+      box-shadow: var(--shadow-md);
+    }
+    .services-visual::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: rgba(5,6,7,.78);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      pointer-events: none;
+    }
+    .services-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 510px;
+      display: block;
+      object-fit: cover;
+      opacity: .42;
+      transform: scale(1.06);
+    }
+    .service-demo {
+      position: absolute;
+      inset: 36px 36px 76px;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(14px) scale(.98);
+      transition: opacity .35s ease, transform .35s ease, visibility .35s;
+    }
+    .services-visual[data-active="landing"] .demo-landing,
+    .services-visual[data-active="agent"] .demo-agent,
+    .services-visual[data-active="automation"] .demo-automation {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+    }
+    .demo-window {
+      width: min(100%, 520px);
+      overflow: hidden;
+      color: #F4F5F7;
+      background: rgba(16,18,22,.96);
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 18px;
+      box-shadow: 0 30px 70px rgba(0,0,0,.46);
+    }
+    .demo-bar {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 16px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .demo-bar i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(244,245,247,.2);
+    }
+    .demo-bar i:first-child { background: #C6FF3D; }
+    .demo-body { padding: 26px; }
+
+    /* Landing: una web de odontología recorre su contenido y servicios. */
+    .demo-landing { perspective: 1100px; }
+    .landing-mock {
+      position: relative;
+      height: 390px;
+      transform-origin: 50% 48%;
+      animation: landingCamera 9s cubic-bezier(.65,0,.35,1) infinite;
+      will-change: transform;
+    }
+    .landing-mock::after {
+      content: '';
+      position: absolute;
+      inset: 42px 0 0;
+      z-index: 4;
+      pointer-events: none;
+      background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.09) 48%, transparent 64%);
+      transform: translateX(-120%);
+      animation: landingLightPass 9s ease-in-out infinite;
+    }
+    .landing-scroll {
+      height: 348px;
+      overflow: hidden;
+      background: #F5F3EE;
+      color: #17201E;
+    }
+    .dentist-page {
+      animation: dentistPageScroll 9s cubic-bezier(.65,0,.35,1) infinite;
+      will-change: transform;
+    }
+    .dentist-nav {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      background: rgba(245,243,238,.96);
+      border-bottom: 1px solid rgba(23,32,30,.1);
+    }
+    .dentist-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font: 700 11px 'Archivo', sans-serif;
+    }
+    .dentist-mark {
+      width: 23px;
+      height: 23px;
+      display: grid;
+      place-items: center;
+      color: #F5F3EE;
+      background: #214D45;
+      border-radius: 50%;
+      font-size: 12px;
+    }
+    .dentist-nav-links {
+      color: #63716D;
+      font: 8px 'JetBrains Mono', monospace;
+      word-spacing: 10px;
+    }
+    .dentist-hero {
+      min-height: 270px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 18px;
+      padding: 30px 24px;
+      background:
+        radial-gradient(circle at 82% 12%, rgba(215,242,90,.22), transparent 24%),
+        linear-gradient(135deg, #F8F6F1 55%, #DDE8E3);
+    }
+    .dentist-eyebrow {
+      color: #35766A;
+      font: 8px 'JetBrains Mono', monospace;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .dentist-title {
+      margin: 9px 0;
+      font: 700 27px/1.02 'Archivo', sans-serif;
+      letter-spacing: -.035em;
+    }
+    .dentist-text { color: #63716D; font-size: 9px; line-height: 1.55; }
+    .dentist-button {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 9px 13px;
+      color: #fff;
+      background: #214D45;
+      border-radius: 100px;
+      font-size: 8px;
+      font-weight: 600;
+    }
+    .dentist-photo {
+      position: relative;
+      height: 190px;
+      overflow: hidden;
+      border-radius: 90px 90px 14px 14px;
+      background:
+        linear-gradient(180deg, transparent 55%, rgba(15,38,34,.35)),
+        url('assets/odontologa-clinica-robles.png') center 24% / cover;
+      box-shadow: 0 16px 30px rgba(33,77,69,.18);
+    }
+    .dentist-photo::before {
+      content: '';
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(255,255,255,.52);
+      border-radius: 80px 80px 9px 9px;
+    }
+    .dentist-photo::after {
+      content: 'Atención profesional';
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #214D45;
+      background: rgba(245,243,238,.92);
+      border-radius: 100px;
+      backdrop-filter: blur(8px);
+      font: 600 7px 'JetBrains Mono', monospace;
+      letter-spacing: .04em;
+    }
+    .dentist-services {
+      min-height: 300px;
+      padding: 30px 24px;
+      background: #173C36;
+      color: #fff;
+    }
+    .dentist-section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .dentist-section-head h4 {
+      max-width: 240px;
+      font: 700 22px/1.05 'Archivo', sans-serif;
+      letter-spacing: -.025em;
+    }
+    .dentist-section-head span { color: #C3D3CE; font-size: 8px; }
+    .dentist-service-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 9px;
+    }
+    .dentist-service {
+      min-height: 125px;
+      padding: 14px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+    }
+    .dentist-service::after {
+      content: '';
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      right: -16px;
+      top: -16px;
+      border: 1px solid rgba(215,242,90,.22);
+      border-radius: 50%;
+      box-shadow: 0 0 0 8px rgba(215,242,90,.03);
+    }
+    .dentist-service-num { color: #D7F25A; font: 8px 'JetBrains Mono', monospace; }
+    .dentist-service b { display: block; margin: 26px 0 6px; font-size: 10px; }
+    .dentist-service p { color: #C3D3CE; font-size: 7px; line-height: 1.5; }
+    .dentist-about {
+      min-height: 280px;
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 22px;
+      align-items: center;
+      padding: 30px 24px;
+      background: #F5F3EE;
+    }
+    .dentist-about-visual {
+      position: relative;
+      height: 180px;
+      overflow: hidden;
+      border-radius: 12px;
+      background:
+        linear-gradient(180deg, transparent 48%, rgba(19,45,40,.58)),
+        url('assets/odontologa-clinica-robles.png') center 19% / cover;
+      box-shadow: 0 14px 28px rgba(33,77,69,.14);
+    }
+    .dentist-about-visual::after {
+      content: 'Perfil profesional';
+      position: absolute;
+      left: 12px;
+      bottom: 11px;
+      color: #fff;
+      font: 7px 'JetBrains Mono', monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .dentist-about h4 { margin: 8px 0; font: 700 21px/1.05 'Archivo', sans-serif; }
+    .dentist-about p { color: #63716D; font-size: 8px; line-height: 1.55; }
+    .dentist-scroll-label {
+      position: absolute;
+      right: 13px;
+      top: 56px;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      color: #214D45;
+      background: rgba(245,243,238,.9);
+      border: 1px solid rgba(33,77,69,.12);
+      border-radius: 100px;
+      font: 7px 'JetBrains Mono', monospace;
+    }
+    .dentist-scroll-label::before {
+      content: '↓';
+      animation: scrollArrow 1.2s ease-in-out infinite;
+    }
+
+    /* Agente: reúne WhatsApp, Instagram y Facebook y reserva una cita. */
+    .chat-demo { width: min(100%, 500px); }
+    .omni-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .omni-head b { display: block; font-size: 12px; }
+    .chat-online { color: #A6ABB8; font: 9px 'JetBrains Mono', monospace; }
+    .omni-channel-icons { display: flex; align-items: center; gap: 6px; }
+    .channel-logo {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      border: 2px solid #111318;
+      border-radius: 9px;
+      font: 700 11px 'Archivo', sans-serif;
+    }
+    .channel-logo.wa { background: #25D366; }
+    .channel-logo.ig { background: linear-gradient(135deg,#833AB4,#FD1D1D,#FCAF45); }
+    .channel-logo.fb { background: #1877F2; }
+    .omni-body {
+      min-height: 332px;
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+    }
+    .channel-inbox {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      border-right: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.015);
+    }
+    .inbox-label {
+      margin-bottom: 3px;
+      color: #A6ABB8;
+      font: 8px 'JetBrains Mono', monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .channel-message {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 9px;
+      align-items: start;
+      padding: 10px;
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 10px;
+      opacity: 0;
+      transform: translateX(-9px);
+      animation: omniMessage 7.2s ease-in-out infinite;
+    }
+    .channel-message:nth-of-type(3) { animation-delay: .55s; }
+    .channel-message:nth-of-type(4) { animation-delay: 1.1s; }
+    .channel-mini {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      border-radius: 8px;
+      font: 700 9px 'Archivo', sans-serif;
+    }
+    .channel-mini.wa { background: #25D366; }
+    .channel-mini.ig { background: linear-gradient(135deg,#833AB4,#FD1D1D,#FCAF45); }
+    .channel-mini.fb { background: #1877F2; }
+    .channel-message b { display: block; margin-bottom: 2px; font-size: 9px; }
+    .channel-message p { color: #A6ABB8; font-size: 8px; line-height: 1.35; }
+    .agent-work {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 17px;
+    }
+    .agent-reply {
+      padding: 11px 12px;
+      color: #F4F5F7;
+      background: #252932;
+      border-radius: 11px 11px 11px 3px;
+      font-size: 9px;
+      line-height: 1.45;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: agentReply 7.2s ease-in-out infinite;
+    }
+    .agent-reply::before {
+      content: 'Asistente';
+      display: block;
+      margin-bottom: 4px;
+      color: #C6FF3D;
+      font: 8px 'JetBrains Mono', monospace;
+    }
+    .booking-card {
+      margin-top: auto;
+      padding: 14px;
+      color: #0A0B0D;
+      background: #F4F5F7;
+      border-radius: 13px;
+      opacity: 0;
+      transform: translateY(10px) scale(.97);
+      animation: omniBooking 7.2s ease-in-out infinite;
+      box-shadow: 0 16px 32px rgba(0,0,0,.28);
+    }
+    .booking-top { display: flex; align-items: center; justify-content: space-between; }
+    .booking-top span {
+      color: #4F7A00;
+      font: 8px 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .booking-check {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      background: #C6FF3D;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .booking-card strong {
+      display: block;
+      margin: 11px 0 7px;
+      font: 700 15px 'Archivo', sans-serif;
+    }
+    .booking-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      color: #565C69;
+      font-size: 8px;
+    }
+    .booking-source {
+      margin-top: 11px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(10,11,13,.1);
+      color: #565C69;
+      font: 7px 'JetBrains Mono', monospace;
+    }
+
+    /* Automatización: la cita activa confirmación, recordatorio y seguimiento. */
+    .flow-demo { width: min(100%, 520px); }
+    .flow-title {
+      margin-bottom: 22px;
+      color: #F4F5F7;
+      font: 700 18px 'Archivo', sans-serif;
+    }
+    .flow-steps {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 16px;
+    }
+    .flow-line {
+      position: absolute;
+      top: 27px;
+      left: 16%;
+      right: 16%;
+      height: 2px;
+      overflow: hidden;
+      background: rgba(244,245,247,.1);
+    }
+    .flow-line::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #C6FF3D;
+      transform: translateX(-100%);
+      animation: flowTravels 5.4s ease-in-out infinite;
+    }
+    .flow-node {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      animation: nodeActive 5.4s ease-in-out infinite;
+    }
+    .flow-node:nth-of-type(3) { animation-delay: .75s; }
+    .flow-node:nth-of-type(4) { animation-delay: 1.5s; }
+    .flow-icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      color: #A6ABB8;
+      background: #191C22;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+    }
+    .flow-icon svg { width: 22px; height: 22px; }
+    .flow-node b { display: block; font-size: 11px; }
+    .flow-node span { color: #A6ABB8; font-size: 9px; }
+    .flow-result {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 30px;
+      padding: 14px 16px;
+      color: #F4F5F7;
+      background: rgba(198,255,61,.08);
+      border: 1px solid rgba(198,255,61,.18);
+      border-radius: 12px;
+      font-size: 11px;
+      opacity: 0;
+      animation: flowResult 5.4s ease-in-out infinite;
+    }
+    .flow-result strong { color: #C6FF3D; }
+    .visual-status {
+      position: absolute;
+      left: 22px;
+      bottom: 20px;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      color: #F4F5F7;
+      background: rgba(10,11,13,.76);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 100px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .03em;
+    }
+    .visual-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 0 rgba(198,255,61,.45);
+      animation: servicePulse 2s ease-out infinite;
+    }
+    @keyframes servicePulse {
+      70% { box-shadow: 0 0 0 8px rgba(198,255,61,0); }
+      100% { box-shadow: 0 0 0 0 rgba(198,255,61,0); }
+    }
+    @keyframes dentistPageScroll {
+      0%,18% { transform: translateY(0); }
+      34%,51% { transform: translateY(-300px); }
+      66%,84% { transform: translateY(-540px); }
+      100% { transform: translateY(0); }
+    }
+    @keyframes landingCamera {
+      0%,8% { transform: translateY(8px) scale(.84) rotateX(2deg); }
+      20% { transform: translate(-4%,0) scale(1.02) rotateX(0); }
+      38%,50% { transform: translate(3%,-2px) scale(1.1); }
+      67%,82% { transform: translate(-2%,1px) scale(1.04); }
+      100% { transform: translateY(8px) scale(.84) rotateX(2deg); }
+    }
+    @keyframes landingLightPass {
+      0%,14% { transform: translateX(-120%); opacity: 0; }
+      29% { opacity: 1; }
+      43%,100% { transform: translateX(120%); opacity: 0; }
+    }
+    @keyframes scrollArrow {
+      0%,100% { transform: translateY(-1px); }
+      50% { transform: translateY(2px); }
+    }
+    @keyframes omniMessage {
+      0%,8% { opacity: 0; transform: translateX(-9px); }
+      18%,84% { opacity: 1; transform: none; }
+      96%,100% { opacity: 0; transform: none; }
+    }
+    @keyframes agentReply {
+      0%,32% { opacity: 0; transform: translateY(8px); }
+      43%,86% { opacity: 1; transform: none; }
+      96%,100% { opacity: 0; }
+    }
+    @keyframes omniBooking {
+      0%,52% { opacity: 0; transform: translateY(10px) scale(.97); }
+      64%,88% { opacity: 1; transform: none; }
+      98%,100% { opacity: 0; }
+    }
+    @keyframes flowTravels {
+      0%,12% { transform: translateX(-100%); }
+      58%,82% { transform: translateX(0); }
+      100% { transform: translateX(100%); }
+    }
+    @keyframes nodeActive {
+      0%,12%,90%,100% { filter: none; transform: translateY(0); }
+      25%,70% { filter: drop-shadow(0 0 10px rgba(198,255,61,.35)); transform: translateY(-3px); }
+    }
+    @keyframes flowResult {
+      0%,52% { opacity: 0; transform: translateY(8px); }
+      66%,88% { opacity: 1; transform: none; }
+      100% { opacity: 0; }
     }
 
     /* ─── FEATURES ───────────────────────────────────────────── */
@@ -1203,6 +2069,18 @@
     @media (max-width: 900px) {
       .problem-layout { grid-template-columns: 1fr; gap: 40px; }
       .steps          { grid-template-columns: 1fr; }
+      .services-header{ grid-template-columns: 1fr; gap: 20px; }
+      .service-showcase,
+      .service-showcase:nth-child(even) {
+        grid-template-columns: 1fr;
+        gap: 38px;
+        padding: 44px 32px;
+      }
+      .service-showcase:nth-child(even) .service-showcase-copy,
+      .service-showcase:nth-child(even) .service-visual-slot { order: initial; }
+      .services-layout{ grid-template-columns: 1fr; }
+      .services-visual{ min-height: 440px; }
+      .services-image { min-height: 440px; }
       .features-header{ grid-template-columns: 1fr; gap: 20px; }
       .feat-grid      { grid-template-columns: 1fr 1fr; }
       .testi-grid     { grid-template-columns: 1fr; }
@@ -1264,6 +2142,36 @@
         letter-spacing: .02em;
       }
       .menu__text::after { display: none; }
+      .menu-services { width: 100%; }
+      .menu-services .menu__item { width: 100%; height: auto; }
+      .services-submenu {
+        position: static;
+        left: auto;
+        top: auto;
+        width: calc(100% - 32px);
+        margin: 0 auto;
+        padding: 0;
+        max-height: 0;
+        overflow: hidden;
+        border: 0;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none !important;
+        background: transparent;
+        transition: max-height .3s ease, padding .3s ease;
+      }
+      .menu-services.open .services-submenu {
+        max-height: 180px;
+        padding: 4px;
+        transform: none !important;
+      }
+      .services-submenu a {
+        width: 100%;
+        justify-content: space-between;
+        background: var(--surface-0);
+        text-align: left;
+      }
 
       .menu__sep {
         width: auto;
@@ -1280,6 +2188,33 @@
       .feat-grid    { grid-template-columns: 1fr; }
       .hero-actions { flex-direction: column; align-items: flex-start; }
       .cta-actions  { flex-direction: column; }
+      .service-tab  { padding: 20px; }
+      .service-showcase,
+      .service-showcase:nth-child(even) { padding: 36px 20px; }
+      .service-showcase-title { font-size: 36px; }
+      .service-visual-slot .services-visual { min-height: 430px; }
+      .services-visual, .services-image { min-height: 430px; }
+      .service-demo { inset: 20px 14px 68px; }
+      .demo-body { padding: 20px; }
+      .landing-mock { height: 340px; }
+      .landing-scroll { height: 298px; }
+      .dentist-hero { min-height: 240px; padding: 24px 18px; }
+      .dentist-title { font-size: 21px; }
+      .dentist-photo { height: 160px; }
+      .dentist-services, .dentist-about { padding: 24px 18px; }
+      .dentist-nav-links { display: none; }
+      .omni-body { min-height: 300px; }
+      .channel-inbox { padding: 11px; }
+      .agent-work { padding: 12px; }
+      .channel-message { padding: 8px; grid-template-columns: 22px 1fr; }
+      .channel-mini { width: 22px; height: 22px; }
+      .flow-steps { gap: 8px; }
+      .flow-icon { width: 46px; height: 46px; }
+      .flow-line { top: 23px; }
+      .flow-node b { font-size: 9px; }
+      .flow-node span { font-size: 8px; }
+      .flow-result { margin-top: 22px; }
+      .visual-status { left: 14px; right: 14px; bottom: 14px; justify-content: center; }
       section       { padding: 80px 0; }
       /* .rot-nowrap mantiene unidos palabra y coma, pero el espacio anterior
          sigue siendo punto de corte: en móvil la palabra baja de línea sola
@@ -1317,6 +2252,16 @@
       .badge-dot { animation: none; }
       .trust-track { animation-play-state: paused; }
       .wa-icon, .wa-blob { animation: none; }
+      .visual-status-dot { animation: none; }
+      .services-image, .service-tab, .service-demo { transition: none; }
+      .landing-mock, .landing-mock::after, .dentist-page, .dentist-scroll-label::before,
+      .channel-message, .agent-reply, .booking-card, .flow-line::after,
+      .flow-node, .flow-result { animation: none; }
+      .channel-message, .agent-reply, .booking-card, .flow-result {
+        opacity: 1;
+        transform: none;
+      }
+      .flow-line::after { transform: none; }
     }
   </style>
 </head>
@@ -1342,6 +2287,25 @@
         </div>
         <strong class="menu__text">proceso</strong>
       </button>
+      <div class="menu-services">
+        <button class="menu__item menu__item--services" type="button" aria-expanded="false" aria-haspopup="true" style="--lineWidth:0px">
+          <div class="menu__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <strong class="menu__text">servicios</strong>
+        </button>
+        <div class="services-submenu" aria-label="Servicios que ofrecemos">
+          <a href="servicios.html?servicio=landing">
+            <span class="submenu-service-label"><span class="submenu-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/><path d="M7 12h5"/><path d="M7 16h9"/></svg></span>Landing pages</span><small>01</small>
+          </a>
+          <a href="servicios.html?servicio=agentes">
+            <span class="submenu-service-label"><span class="submenu-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg></span>Agentes con IA</span><small>02</small>
+          </a>
+          <a href="servicios.html?servicio=automatizaciones">
+            <span class="submenu-service-label"><span class="submenu-service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10"/><path d="m14 7-3-3"/><path d="m14 7-3 3"/><path d="M20 17H10"/><path d="m10 17 3-3"/><path d="m10 17 3 3"/></svg></span>Automatizaciones</span><small>03</small>
+          </a>
+        </div>
+      </div>
       <button class="menu__item" data-href="#faq" style="--lineWidth:0px">
         <div class="menu__icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
@@ -1506,6 +2470,232 @@
         <p class="step-desc">Dominio propio, hosting configurado, SEO básico activo. Te mandamos un video de 2 minutos explicando todo. Luego tú editas sin código.</p>
         <div class="step-tag mono">⟶ En 48 horas hábiles</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="servicios">
+  <div class="container">
+    <div class="services-header">
+      <div>
+        <span class="label reveal">Servicios</span>
+        <h2 class="section-title reveal d1">Tu negocio no debería cerrar.</h2>
+      </div>
+      <p class="section-sub reveal d2">Tus pacientes buscan, preguntan y reservan fuera de horario. Tus sistemas también deben estar disponibles.</p>
+    </div>
+
+    <div class="service-showcases">
+      <article class="service-showcase">
+        <div class="service-showcase-copy reveal">
+          <span class="service-eyebrow">Landing pages</span>
+          <h3 class="service-showcase-title">Tu mejor vitrina nunca cierra.</h3>
+          <p>Cuando alguien busca tus servicios, tu web debe responder con claridad y confianza. Incluso si el consultorio está cerrado.</p>
+          <ul class="service-points">
+            <li>Presenta tus servicios con profesionalismo.</li>
+            <li>Responde las preguntas más importantes.</li>
+            <li>Guía cada visita hacia una acción clara.</li>
+          </ul>
+          <a class="service-detail-cta" href="servicios.html?servicio=landing">Conocer landing pages <span>→</span></a>
+        </div>
+        <div class="service-visual-slot reveal" data-demo="landing" data-status="Una web que trabaja fuera de horario"></div>
+      </article>
+
+      <article class="service-showcase">
+        <div class="service-showcase-copy reveal">
+          <span class="service-eyebrow">Agentes con IA</span>
+          <h3 class="service-showcase-title">Tus mensajes no esperan.</h3>
+          <p>Una consulta sin respuesta puede convertirse en una cita perdida. Atiende WhatsApp, Instagram y Facebook, incluso fuera de horario.</p>
+          <ul class="service-points">
+            <li>Respuestas inmediatas en 3 canales.</li>
+            <li>Disponibilidad consultada en tiempo real.</li>
+            <li>Citas reservadas sin intervención manual.</li>
+          </ul>
+          <a class="service-detail-cta" href="servicios.html?servicio=agentes">Conocer agentes con IA <span>→</span></a>
+        </div>
+        <div class="service-visual-slot reveal" data-demo="agent" data-status="De mensaje recibido a cita reservada"></div>
+      </article>
+
+      <article class="service-showcase">
+        <div class="service-showcase-copy reveal">
+          <span class="service-eyebrow">Automatizaciones</span>
+          <h3 class="service-showcase-title">Tu equipo no debería perseguir citas.</h3>
+          <p>Confirmaciones, cancelaciones y espacios vacíos consumen horas. Automatiza el seguimiento y recupera citas que normalmente perderías.</p>
+          <ul class="service-points">
+            <li>Confirmaciones y recordatorios automáticos.</li>
+            <li>Reprogramación sin llamadas repetidas.</li>
+            <li>Espacios cancelados ofrecidos nuevamente.</li>
+          </ul>
+          <a class="service-detail-cta" href="servicios.html?servicio=automatizaciones">Conocer automatizaciones <span>→</span></a>
+        </div>
+        <div class="service-visual-slot reveal" data-demo="automation" data-status="De cancelación a nuevo paciente confirmado"></div>
+      </article>
+    </div>
+
+    <div class="services-layout services-template" aria-hidden="true">
+      <div class="service-tabs reveal" role="tablist" aria-label="Servicios para tu consultorio">
+        <button class="service-tab active" type="button" role="tab" aria-selected="true" data-service="landing">
+          <span class="service-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18"/><path d="M7 12h5"/><path d="M7 16h9"/></svg>
+          </span>
+          <span>
+            <span class="service-name">Landing page</span>
+            <span class="service-copy">Tu vitrina digital. Presenta tus servicios, inspira confianza y convierte visitas en citas.</span>
+          </span>
+          <span class="service-result">Resultado · información clara y una sola acción: agendar.</span>
+        </button>
+
+        <button class="service-tab" type="button" role="tab" aria-selected="false" data-service="agent">
+          <span class="service-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg>
+          </span>
+          <span>
+            <span class="service-name">Agentes con IA</span>
+            <span class="service-copy">Responden consultas, agendan citas y dan seguimiento, incluso fuera de horario.</span>
+          </span>
+          <span class="service-result">Resultado · cada consulta recibe una respuesta a tiempo.</span>
+        </button>
+
+        <button class="service-tab" type="button" role="tab" aria-selected="false" data-service="automation">
+          <span class="service-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10"/><path d="M14 7l-3-3"/><path d="M14 7l-3 3"/><path d="M20 17H10"/><path d="M10 17l3-3"/><path d="M10 17l3 3"/><path d="M6 13a4 4 0 0 1-2-3.5V7"/><path d="M18 11a4 4 0 0 1 2 3.5V17"/></svg>
+          </span>
+          <span>
+            <span class="service-name">Automatizaciones</span>
+            <span class="service-copy">Confirmaciones, recordatorios y seguimientos funcionan sin sumar tareas a tu equipo.</span>
+          </span>
+          <span class="service-result">Resultado · menos tareas repetitivas y más tiempo para tus pacientes.</span>
+        </button>
+      </div>
+
+      <figure class="services-visual reveal d1" data-active="landing">
+        <img class="services-image" src="assets/servicios-recepcion-digital.png" alt="" width="1568" height="1003" loading="lazy">
+
+        <div class="service-demo demo-landing" aria-hidden="true">
+          <div class="demo-window landing-mock">
+            <div class="demo-bar"><i></i><i></i><i></i></div>
+            <span class="dentist-scroll-label">Recorriendo la web</span>
+            <div class="landing-scroll">
+              <div class="dentist-page">
+                <div class="dentist-nav">
+                  <div class="dentist-brand"><span class="dentist-mark">+</span>Clínica Dental Robles</div>
+                  <div class="dentist-nav-links">Servicios Equipo Contacto</div>
+                </div>
+                <div class="dentist-hero">
+                  <div>
+                    <div class="dentist-eyebrow">Odontología integral</div>
+                    <div class="dentist-title">Tu sonrisa merece atención experta.</div>
+                    <p class="dentist-text">Valoración clara. Atención profesional. Un plan pensado para ti.</p>
+                    <span class="dentist-button">Conoce la clínica</span>
+                  </div>
+                  <div class="dentist-photo"></div>
+                </div>
+                <div class="dentist-services">
+                  <div class="dentist-section-head">
+                    <h4>Servicios para cada etapa de tu sonrisa.</h4>
+                    <span>Atención personalizada</span>
+                  </div>
+                  <div class="dentist-service-grid">
+                    <div class="dentist-service">
+                      <span class="dentist-service-num">01</span>
+                      <b>Odontología general</b>
+                      <p>Valoración, limpieza y cuidado preventivo.</p>
+                    </div>
+                    <div class="dentist-service">
+                      <span class="dentist-service-num">02</span>
+                      <b>Ortodoncia</b>
+                      <p>Opciones para alinear tu sonrisa.</p>
+                    </div>
+                    <div class="dentist-service">
+                      <span class="dentist-service-num">03</span>
+                      <b>Implantes</b>
+                      <p>Soluciones para recuperar función y confianza.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="dentist-about">
+                  <div class="dentist-about-visual"></div>
+                  <div>
+                    <div class="dentist-eyebrow">Tu especialista</div>
+                    <h4>Atención cercana. Decisiones informadas.</h4>
+                    <p>Conoce la experiencia del profesional, el enfoque de la clínica y lo que puedes esperar en tu primera visita.</p>
+                    <span class="dentist-button">Ver perfil profesional</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-demo demo-agent" aria-hidden="true">
+          <div class="demo-window chat-demo">
+            <div class="omni-head">
+              <div><b>Bandeja del consultorio</b><span class="chat-online">3 canales conectados</span></div>
+              <div class="omni-channel-icons">
+                <span class="channel-logo wa">W</span>
+                <span class="channel-logo ig">I</span>
+                <span class="channel-logo fb">f</span>
+              </div>
+            </div>
+            <div class="omni-body">
+              <div class="channel-inbox">
+                <div class="inbox-label">Mensajes nuevos</div>
+                <div class="channel-message">
+                  <span class="channel-mini wa">W</span>
+                  <div><b>WhatsApp</b><p>¿Tienen espacio para una limpieza?</p></div>
+                </div>
+                <div class="channel-message">
+                  <span class="channel-mini ig">I</span>
+                  <div><b>Instagram</b><p>Vi sus tratamientos. Quiero una valoración.</p></div>
+                </div>
+                <div class="channel-message">
+                  <span class="channel-mini fb">f</span>
+                  <div><b>Facebook</b><p>¿Puedo reservar una cita para el viernes?</p></div>
+                </div>
+              </div>
+              <div class="agent-work">
+                <div class="agent-reply">Claro. Tengo un espacio el viernes a las 10:30 a. m. Lo reservo a tu nombre.</div>
+                <div class="booking-card">
+                  <div class="booking-top"><span>Cita reservada</span><i class="booking-check">✓</i></div>
+                  <strong>Valoración dental</strong>
+                  <div class="booking-details"><span>Viernes</span><span>10:30 a. m.</span></div>
+                  <div class="booking-source">Confirmación enviada al paciente</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="service-demo demo-automation" aria-hidden="true">
+          <div class="demo-window flow-demo">
+            <div class="demo-bar"><i></i><i></i><i></i></div>
+            <div class="demo-body">
+              <div class="flow-title">Un espacio libre no se pierde.</div>
+              <div class="flow-steps">
+                <div class="flow-line"></div>
+                <div class="flow-node">
+                  <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></div>
+                  <b>Cita cancelada</b><span>Espacio liberado</span>
+                </div>
+                <div class="flow-node">
+                  <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></div>
+                  <b>Horario ofrecido</b><span>Pacientes pendientes</span>
+                </div>
+                <div class="flow-node">
+                  <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="m8 11 2 2 5-5"/></svg></div>
+                  <b>Nuevo paciente</b><span>Cita confirmada</span>
+                </div>
+              </div>
+              <div class="flow-result"><strong>Horario recuperado.</strong> Un nuevo paciente confirmó la cita sin intervención del equipo.</div>
+            </div>
+          </div>
+        </div>
+
+        <figcaption class="visual-status">
+          <span class="visual-status-dot" aria-hidden="true"></span>
+          <span id="service-status">Una web que presenta tu práctica y tus servicios</span>
+        </figcaption>
+      </figure>
     </div>
   </div>
 </section>
@@ -1913,6 +3103,20 @@
 </footer>
 
 <script>
+  // Cada servicio recibe su propia demostración a partir de una plantilla común.
+  const serviceTemplate = document.querySelector('.services-template .services-visual');
+  document.querySelectorAll('.service-visual-slot').forEach(slot => {
+    if (!serviceTemplate) return;
+    const visual = serviceTemplate.cloneNode(true);
+    visual.classList.remove('reveal', 'd1');
+    visual.dataset.active = slot.dataset.demo;
+    visual.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+    const status = visual.querySelector('.visual-status span:last-child');
+    if (status) status.textContent = slot.dataset.status;
+    slot.appendChild(visual);
+  });
+  document.querySelector('.services-template')?.remove();
+
   // Scroll reveal
   const observer = new IntersectionObserver(entries => {
     entries.forEach(e => {
@@ -1942,7 +3146,9 @@
   }, { passive: true });
 
   // ── Interactive menu ────────────────────────────────────────
-  const menuItems = Array.from(document.querySelectorAll('#main-menu .menu__item'));
+  const menuItems = Array.from(document.querySelectorAll('#main-menu .menu__item:not(.menu__item--services)'));
+  const servicesMenu = document.querySelector('.menu-services');
+  const servicesTrigger = document.querySelector('.menu__item--services');
 
   function measureText(item) {
     const txt = item.querySelector('.menu__text');
@@ -1975,6 +3181,11 @@
     activateItem(item);
   }));
 
+  servicesTrigger?.addEventListener('click', () => {
+    const isOpen = servicesMenu.classList.toggle('open');
+    servicesTrigger.setAttribute('aria-expanded', String(isOpen));
+  });
+
   // ── Menú hamburguesa ────────────────────────────────────────
   const burger = document.getElementById('nav-burger');
   const scrim  = document.getElementById('nav-scrim');
@@ -1991,6 +3202,8 @@
     burger.classList.remove('open');
     burger.setAttribute('aria-expanded', 'false');
     burger.setAttribute('aria-label', 'Abrir menú');
+    servicesMenu?.classList.remove('open');
+    servicesTrigger?.setAttribute('aria-expanded', 'false');
   }
 
   burger.addEventListener('click', () => {
