@@ -389,8 +389,11 @@
   const SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
   const DOMAIN = '@abdismart.com';
+  const USER_EMAILS = {
+    'geiner.abdi': 'geiner.porras.mb@gmail.com',
+  };
 
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
   // Cambiar vista
   function showView(name) {
@@ -428,10 +431,11 @@
     document.getElementById('icon-hide').style.display = show ? 'none' : '';
   });
 
-  // Si el usuario escribe "geiner.abdi" se convierte en "geiner.abdi@abdismart.com"
+  // Permite acceder con el usuario corto o con el correo completo.
   function toEmail(raw) {
     const v = raw.trim().toLowerCase();
-    return v.includes('@') ? v : v + DOMAIN;
+    if (v.includes('@')) return v;
+    return USER_EMAILS[v] || v + DOMAIN;
   }
 
   // Login
@@ -449,7 +453,7 @@
 
     setLoading('btn-login', true);
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error } = await db.auth.signInWithPassword({
       email: toEmail(username),
       password,
     });
@@ -481,7 +485,7 @@
 
     setLoading('btn-recover', true);
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await db.auth.resetPasswordForEmail(email, {
       redirectTo: window.location.origin + '/reset-password.html',
     });
 
@@ -495,7 +499,7 @@
   });
 
   // Si ya hay sesión activa, ir directo al dashboard
-  supabase.auth.getSession().then(({ data }) => {
+  db.auth.getSession().then(({ data }) => {
     if (data.session) window.location.href = 'dashboard.html';
   });
 </script>
