@@ -2743,6 +2743,7 @@
       .flow-line::after { transform: none; }
     }
   </style>
+  <link rel="stylesheet" href="assets/agent-widget.css?v=12">
 </head>
 <body>
 
@@ -3634,60 +3635,6 @@
   </div>
 </section>
 
-<!-- WHATSAPP: CAPTURA DE CONTACTO -->
-<button class="whatsapp-float" type="button" data-open-whatsapp-modal aria-label="Escríbenos por WhatsApp" aria-haspopup="dialog" aria-controls="whatsapp-modal">
-  <span class="whatsapp-float-icon" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4.1A8 8 0 1 1 20 11.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.5c.3 2.7 1.8 4.2 4.5 4.9l1.1-1.1c.2-.2.5-.2.8-.1l2 .9c.3.1.4.4.4.7-.2 1.2-1.2 2-2.4 2-4.5-.2-8.3-3.8-8.5-8.4 0-1.2.8-2.2 2-2.4.3 0 .6.1.7.4l.9 2c.1.3.1.6-.1.8L9 8.5Z" fill="currentColor"/></svg>
-  </span>
-</button>
-
-<div class="whatsapp-modal" id="whatsapp-modal" aria-hidden="true">
-  <div class="whatsapp-dialog" role="dialog" aria-modal="true" aria-labelledby="whatsapp-modal-title" aria-describedby="whatsapp-modal-intro">
-    <button class="whatsapp-close" type="button" aria-label="Cerrar formulario de WhatsApp" data-close-whatsapp-modal>×</button>
-    <div class="whatsapp-eyebrow">Contacto directo</div>
-    <h2 class="whatsapp-title" id="whatsapp-modal-title">¿En qué podemos ayudarte?</h2>
-    <p class="whatsapp-intro" id="whatsapp-modal-intro">Déjanos tus datos. Después abrirás WhatsApp con tu consulta lista para enviar.</p>
-
-    <form class="whatsapp-form" id="whatsapp-contact-form" novalidate>
-      <div class="form-field">
-        <label class="form-label" for="wa-nombre">Tu nombre</label>
-        <input class="form-input" type="text" id="wa-nombre" name="nombre" placeholder="Andrés Morales" autocomplete="name" required>
-      </div>
-      <div class="form-field">
-        <label class="form-label" for="wa-whatsapp">Tu WhatsApp</label>
-        <input class="form-input" type="tel" id="wa-whatsapp" name="whatsapp" placeholder="+506 8888 8888" autocomplete="tel" inputmode="tel" required>
-      </div>
-      <fieldset class="form-field">
-        <legend class="form-label">¿Sobre qué servicio quieres información?</legend>
-        <div class="whatsapp-options">
-          <label class="whatsapp-choice">
-            <input type="radio" name="servicio" value="Landing Page" required>
-            <span>Landing Page</span>
-          </label>
-          <label class="whatsapp-choice">
-            <input type="radio" name="servicio" value="Agentes IA" required>
-            <span>Agentes IA</span>
-          </label>
-          <label class="whatsapp-choice">
-            <input type="radio" name="servicio" value="Automatizaciones" required>
-            <span>Automatizaciones</span>
-          </label>
-        </div>
-      </fieldset>
-      <div class="hp-field" aria-hidden="true">
-        <label for="wa-website">No completar</label>
-        <input type="text" id="wa-website" name="website" tabindex="-1" autocomplete="off">
-      </div>
-      <button class="btn-wa whatsapp-submit" id="whatsapp-contact-submit" type="submit">
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.6a8 8 0 0 1-11.8 7L4 20l1.4-4.1A8 8 0 1 1 20 11.6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8.5c.3 2.7 1.8 4.2 4.5 4.9l1.1-1.1c.2-.2.5-.2.8-.1l2 .9c.3.1.4.4.4.7-.2 1.2-1.2 2-2.4 2-4.5-.2-8.3-3.8-8.5-8.4 0-1.2.8-2.2 2-2.4.3 0 .6.1.7.4l.9 2c.1.3.1.6-.1.8L9 8.5Z" fill="currentColor"/></svg>
-        <span>Enviar WhatsApp</span>
-      </button>
-      <p class="form-error" id="whatsapp-contact-error" role="alert"></p>
-      <p class="whatsapp-privacy">Guardamos estos datos para responder tu consulta. Nada de spam.</p>
-    </form>
-  </div>
-</div>
-
 <!-- POP-UP CRECE CON ABDI -->
 <div class="founder-modal" id="founder-modal" aria-hidden="true">
   <div class="founder-dialog" role="dialog" aria-modal="true" aria-labelledby="founder-modal-title">
@@ -4047,6 +3994,10 @@
 
   function openFounderModal(manual = false) {
     if (founderModal.classList.contains('is-open')) return;
+    if (document.body.classList.contains('abdi-agent-open')) {
+      if (!manual) return;
+      document.dispatchEvent(new CustomEvent('abdi:request-close'));
+    }
     founderLastFocus = document.activeElement;
     showFounderStep('intro');
     founderModal.classList.add('is-open');
@@ -4095,6 +4046,7 @@
   let founderAutoShown = false;
   function mayShowFounderModal() {
     if (founderAutoShown || founderModal.classList.contains('is-open')) return;
+    if (document.body.classList.contains('abdi-agent-open')) return;
     if (document.body.classList.contains('whatsapp-modal-open')) {
       window.setTimeout(mayShowFounderModal, 3000);
       return;
@@ -4162,6 +4114,7 @@
   // WhatsApp: guardar el contacto antes de abrir la conversación.
   const whatsappNumber = '50689814520';
   const whatsappModal = document.getElementById('whatsapp-modal');
+  if (whatsappModal) {
   const whatsappDialog = whatsappModal.querySelector('.whatsapp-dialog');
   const whatsappForm = document.getElementById('whatsapp-contact-form');
   const whatsappSubmit = document.getElementById('whatsapp-contact-submit');
@@ -4171,6 +4124,7 @@
 
   function openWhatsappModal() {
     if (founderModal.classList.contains('is-open')) closeFounderModal();
+    document.dispatchEvent(new CustomEvent('abdi:request-close'));
     whatsappLastFocus = document.activeElement;
     whatsappModal.classList.add('is-open');
     whatsappModal.setAttribute('aria-hidden', 'false');
@@ -4184,6 +4138,13 @@
     document.body.classList.remove('whatsapp-modal-open');
     if (whatsappLastFocus && typeof whatsappLastFocus.focus === 'function') whatsappLastFocus.focus();
   }
+
+  document.addEventListener('abdi:agent-open', () => {
+    if (founderModal.classList.contains('is-open')) closeFounderModal();
+    if (whatsappModal.classList.contains('is-open')) closeWhatsappModal();
+    founderAutoShown = true;
+    try { sessionStorage.setItem(founderSeenKey, '1'); } catch (e) {}
+  });
 
   document.querySelectorAll('[data-open-whatsapp-modal]').forEach(trigger => {
     trigger.addEventListener('click', openWhatsappModal);
@@ -4240,6 +4201,7 @@
     const message = `Hola, soy ${nombre}. Me pueden enviar información sobre ${servicio}.`;
     window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   });
+  }
 
   // Formulario de waitlist
   const wlForm    = document.getElementById('waitlist-form');
@@ -4285,6 +4247,7 @@
     wlSuccess.style.display = 'block';
   });
 </script>
+<script src="assets/agent-widget.js?v=12" data-endpoint="/api/agent" data-business="abdismart" defer></script>
 
 </body>
 </html>

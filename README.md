@@ -42,6 +42,14 @@ Para verla en local:
 python3 -m http.server 5501 --directory Resultado/Landing
 ```
 
+Para probar también el Agente Abdi, usa el servidor de Cloudflare (el servidor
+estático de Python no ejecuta `/api/agent`):
+
+```bash
+cp .dev.vars.example .dev.vars
+npx wrangler dev
+```
+
 ## Despliegue
 
 El sitio se publica desde **`Resultado/Landing/`**, que no es la raíz del
@@ -77,6 +85,7 @@ Supabase. Las migraciones se aplican a mano desde el editor SQL del proyecto:
 |---|---|
 | `Resultado/Landing/supabase-waitlist.sql` | Tablas `waitlist` y `page_views` con RLS |
 | `Resultado/Landing/supabase-respuestas.sql` | Columna `respuestas` para el formulario largo |
+| `Resultado/CRM/agent-conversations.sql` | Historial del Agente Abdi, visible solo para usuarios autenticados |
 
 La `anon key` que aparece en los HTML es pública por diseño: el acceso está limitado
 por RLS, que solo permite `INSERT` a usuarios anónimos.
@@ -115,3 +124,40 @@ Las reglas de trabajo, el tono de marca y la identidad visual están en
 
 Este repositorio no contiene credenciales. Los archivos `.env` están en `.gitignore`
 y nunca deben subirse.
+
+### Agente Abdi
+
+El widget vive en `Resultado/Landing/assets/agent-widget.js`; conversa con el
+Worker en `src/worker.js`, que llama a OpenAI y guarda únicamente la ficha
+estructurada del diagnóstico y los contactos en Supabase sin exponer secretos al navegador. La información aprobada de cada
+negocio está separada en `src/businesses.js`, para poder empaquetar el agente para
+otros clientes posteriormente.
+
+Antes de publicar, aplica `Resultado/CRM/agent-conversations.sql` y configura:
+
+```bash
+npx wrangler secret put OPENAI_API_KEY
+npx wrangler secret put SUPABASE_URL
+npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+```
+
+La migración también crea `agent_learning_candidates` y `agent_knowledge` para la
+memoria supervisada del negocio. La ficha estructurada del diagnóstico queda en la
+solicitud; solo el contenido que se apruebe explícitamente debe incorporarse a la
+memoria de Abdi.
+
+El widget no guarda el transcript completo al enviar contacto. La solicitud guarda
+únicamente nombre, WhatsApp y la ficha estructurada del diagnóstico: problema,
+impacto, proceso actual y servicio recomendado.
+
+El modelo predeterminado es `gpt-5.6-luna`; puede cambiarse con la variable
+`OPENAI_MODEL`. La clave `SUPABASE_SERVICE_ROLE_KEY` solo debe existir como secreto
+del Worker: nunca debe copiarse a un HTML, JavaScript del navegador o commit.
+
+El diagnóstico del agente se cierra después de un máximo de 8 respuestas del visitante
+o cuando Abdi ya tiene una recomendación y solicita el contacto. Esto evita sesiones
+infinitas y mantiene controlado el consumo de tokens.
+
+El endpoint del agente requiere Cloudflare Workers. Un despliegue puramente
+estático en Netlify sirve la landing, pero no procesa `/api/agent` hasta crear allí
+una Function equivalente.

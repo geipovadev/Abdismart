@@ -5,6 +5,7 @@
   // porque la landing no está en la raíz del repositorio.
   "name": "abdismart",
   "compatibility_date": "2026-07-28",
+  "main": "src/worker.js",
 
   "assets": {
     // Raíz del sitio publicado. Todo lo que quede fuera de esta carpeta
@@ -15,6 +16,7 @@
     "html_handling": "auto-trailing-slash",
 
     // Sin 404.html propio: se devuelve el 404 por defecto.
-    "not_found_handling": "none"
+    "not_found_handling": "none",
+    "binding": "ASSETS"
   }
 }

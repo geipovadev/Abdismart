@@ -3,6 +3,7 @@
 # rotarla: borrarla del historial no basta.
 .env
 .env.*
+.dev.vars
 *.pem
 *.key
 
@@ -22,6 +23,8 @@ Agente Contenido/
 
 # ─── Dependencias y builds ──────────────────────────────────
 node_modules/
+.wrangler/
+.netlify/
 .next/
 dist/
 build/
