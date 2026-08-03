@@ -1,0 +1,6 @@
+client.config.json
+.env
+.env.*
+.dev.vars
+node_modules/
+dist/

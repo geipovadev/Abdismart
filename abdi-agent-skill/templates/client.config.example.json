@@ -1,0 +1,24 @@
+{
+  "business_key": "clinica-demo",
+  "name": "Clínica Demo",
+  "whatsapp": "50688888888",
+  "scope": ["consultorios", "laboratorios", "odontologia"],
+  "services": [
+    {
+      "key": "landing",
+      "name": "Landing page",
+      "description": "Presenta servicios y convierte visitas en solicitudes."
+    },
+    {
+      "key": "agentes",
+      "name": "Agentes con IA",
+      "description": "Responden consultas, califican necesidades y ayudan a agendar."
+    },
+    {
+      "key": "automatizaciones",
+      "name": "Automatizaciones",
+      "description": "Reducen confirmaciones, recordatorios y seguimientos manuales."
+    }
+  ],
+  "tone": "cálido, profesional y directo"
+}

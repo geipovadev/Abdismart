@@ -1,0 +1,11 @@
+{
+  "name": "@abdismart/abdi-agent",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "Skill y kit de implementación del agente de descubrimiento Abdi",
+  "scripts": {
+    "validate": "node scripts/validate-client-config.mjs templates/client.config.example.json"
+  },
+  "license": "MIT"
+}

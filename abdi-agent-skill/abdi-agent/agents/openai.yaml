@@ -1,0 +1,4 @@
+interface:
+  display_name: "Abdi Agent"
+  short_description: "Empaqueta y configura el agente de descubrimiento Abdi"
+  default_prompt: "Usa $abdi-agent para instalar y adaptar Abdi a los servicios de un nuevo cliente."
