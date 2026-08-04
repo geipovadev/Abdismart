@@ -1,6 +1,7 @@
 (function(){'use strict';
   var script=document.currentScript;
-  var endpoint=(script&&script.dataset.endpoint)||'/api/agent';
+  var configuredEndpoint=script&&script.dataset.endpoint;
+  var endpoint=configuredEndpoint||((location.hostname==='localhost'||location.hostname==='127.0.0.1')?'/api/agent':'https://abdismart.geiner-porras-mb.workers.dev/api/agent');
   var businessKey=(script&&script.dataset.business)||'abdismart';
   var conversationId=(window.crypto&&window.crypto.randomUUID)?window.crypto.randomUUID():'abdi-'+Date.now()+'-'+Math.random().toString(16).slice(2);
   var history=[],visitorName='',busy=false,chatClosed=false,diagnosis={business_type:'',specialty:'',problem_detected:'',impact:'',current_process:'',recommended_service:''};

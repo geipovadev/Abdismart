@@ -28,7 +28,13 @@ const REPLY_SCHEMA = {
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'POST, OPTIONS',
+      'access-control-allow-headers': 'content-type'
+    }
   });
 }
 
@@ -206,7 +212,7 @@ async function lead(request, env) {
   const saved = await fetch(`${env.SUPABASE_URL}/rest/v1/waitlist`, {
     method: 'POST',
     headers: { apikey: env.SUPABASE_SERVICE_ROLE_KEY, authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`, 'content-type': 'application/json', prefer: 'return=minimal' },
-    body: JSON.stringify({ nombre, whatsapp, negocio: [businessType, specialty].filter(Boolean).join(' · ') || 'Consulta · Agente web', respuestas, email: null, utm_source: 'agente_web' })
+    body: JSON.stringify({ nombre, whatsapp, negocio: [businessType, specialty].filter(Boolean).join(' · ') || 'Consulta · Agente web', respuestas, email: null, origen_registro: 'agente_abdi', pipeline_stage: 'new', production_stage: 'clientes', next_action: 'Contactar', utm_source: 'agente_web' })
   });
   if (!saved.ok) return json({ error: 'No pudimos guardar tus datos. Intenta de nuevo.' }, 502);
   return json({ ok: true, whatsapp_url: `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(`Hola, soy ${nombre}. Conversé con Abdi en la web y quiero más información.`)}` });
@@ -215,6 +221,7 @@ async function lead(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/agent/')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type' } });
     if (request.method === 'POST' && url.pathname === '/api/agent/chat') return chat(request, env, ctx);
     if (request.method === 'POST' && url.pathname === '/api/agent/lead') return lead(request, env);
     return env.ASSETS.fetch(request);
