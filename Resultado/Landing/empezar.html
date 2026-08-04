@@ -515,7 +515,7 @@
   <div class="done" id="done">
     <div class="done-icon">✓</div>
     <h1 class="done-title">Recibido.</h1>
-    <p class="done-text">Te escribimos por WhatsApp en menos de 24 horas con los siguientes pasos y el precio exacto de tu plan. Sin compromiso.</p>
+    <p class="done-text">Te escribiremos pronto por el medio que elegiste para coordinar los pasos finales.</p>
     <div class="done-actions">
       <a class="btn-primary" href="https://wa.me/50689814520" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>
       <a class="btn-ghost" href="index.html">Volver al inicio</a>
@@ -941,6 +941,9 @@
       negocio:    a.negocio || '',
       whatsapp:   String(a.whatsapp || '').trim(),
       email:      String(a.email || '').trim() || null,
+      origen_registro: 'brief',
+      pipeline_stage: 'new',
+      production_stage: 'clientes',
       utm_source: params.get('utm_source')
     };
 
@@ -959,16 +962,8 @@
     db.from('waitlist').insert(full).then(function (res) {
       if (!res.error) { finish(); return; }
 
-      // Si todavía no se corrió supabase-respuestas.sql, la columna
-      // `respuestas` no existe. Antes de perder el lead, guardamos los
-      // datos de contacto solos y dejamos el resto en consola.
       if (isMissingColumn(res.error)) {
-        console.warn('[abdi] Falta la columna `respuestas` en waitlist. ' +
-                     'Corre supabase-respuestas.sql. Respuestas del lead:', extra);
-        db.from('waitlist').insert(base).then(function (res2) {
-          if (res2.error) { fail(res2.error); return; }
-          finish();
-        });
+        fail(new Error('Falta preparar el campo de respuestas del brief en el CRM. Ejecuta Resultado/CRM/brief-responses.sql en Supabase.'));
         return;
       }
 
