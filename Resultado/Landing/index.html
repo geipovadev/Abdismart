@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Abdi crea webs profesionales para pequeños negocios en 48 horas. Todo incluido: dominio, hosting y soporte en español por WhatsApp.">
+  <meta name="description" content="Abdi crea y mantiene webs profesionales para laboratorios en Costa Rica. Dominio, hosting y soporte continuo en español incluidos.">
   <meta name="facebook-domain-verification" content="enh67lc9il0a00pl7qzvflesyrnnd5" />
 
   <!-- Meta Pixel Code -->
@@ -22,15 +22,15 @@
   <!-- End Meta Pixel Code -->
 
   <!-- Open Graph / redes sociales -->
-  <meta property="og:title" content="Abdi — Tu negocio, online en 48 horas">
-  <meta property="og:description" content="Webs profesionales para pequeños negocios de Costa Rica en 48 horas. Dominio, hosting y soporte en español por WhatsApp. Todo incluido.">
+  <meta property="og:title" content="Abdi — Tu Laboratorio, listo para atraer más clientes">
+  <meta property="og:description" content="Web profesional, dominio y soporte continuo para tu Laboratorio. Abdi resuelve la parte técnica por ti.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_CR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Abdi — Tu negocio, online en 48 horas">
-  <meta name="twitter:description" content="Webs profesionales para pequeños negocios de Costa Rica en 48 horas. Todo incluido.">
+  <meta name="twitter:title" content="Abdi — Tu Laboratorio, listo para atraer más clientes">
+  <meta name="twitter:description" content="Web profesional, dominio y soporte continuo para tu Laboratorio. Abdi resuelve la parte técnica por ti.">
 
-  <title>Abdi — Tu negocio, online en 48 horas</title>
+  <title>Abdi — Tu Laboratorio, listo para atraer más clientes</title>
 
   <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
 
@@ -57,7 +57,7 @@
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Abdi",
-    "description": "Webs profesionales para pequeños negocios de Costa Rica en 48 horas. Dominio, hosting y soporte en español incluidos.",
+    "description": "Webs profesionales para laboratorios de Costa Rica. Dominio, hosting y soporte continuo en español incluidos.",
     "email": "hola@abdi.com",
     "areaServed": "CR"
   }
@@ -68,6 +68,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/preview-builder.css?v=1">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -794,12 +795,26 @@
     }
     .step-desc { font-size: 14px; color: var(--fog); line-height: 1.65; }
     .step-tag {
+      display: block;
       margin-top: 24px;
       padding-top: 20px;
       border-top: 1px solid var(--edge);
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       color: var(--accent);
+    }
+    .step-tag-link {
+      text-decoration: none;
+      transition: color .2s ease, transform .2s ease;
+    }
+    .step-tag-link:hover {
+      color: var(--lime);
+      transform: translateX(4px);
+    }
+    .step-tag-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 5px;
+      border-radius: 2px;
     }
 
     /* ─── SERVICES ───────────────────────────────────────────── */
@@ -1630,12 +1645,22 @@
     .feat-card {
       background: var(--graphite);
       padding: 32px;
+      display: flex;
+      flex-direction: column;
       transition: background .2s;
     }
     .feat-card:hover { background: var(--feat-hover); }
     .feat-icon { font-size: 22px; margin-bottom: 18px; display: block; }
     .feat-title { font-weight: 600; font-size: 15px; color: var(--bone); margin-bottom: 7px; }
-    .feat-desc { font-size: 13px; color: var(--fog); line-height: 1.6; }
+    .feat-desc { font-size: 13px; color: var(--fog); line-height: 1.6; flex: 1; }
+    .feat-meta {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid var(--edge);
+      color: var(--accent);
+      font: 500 10px/1.5 'JetBrains Mono', monospace;
+      letter-spacing: .01em;
+    }
 
     /* ─── TESTIMONIALS ───────────────────────────────────────── */
     .testimonials { position: relative; }
@@ -2157,6 +2182,20 @@
       cursor: pointer;
     }
     .founder-microcopy { margin-top: 13px; color: var(--fog); text-align: center; font: 400 10px 'JetBrains Mono', monospace; }
+    .founder-details-link {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 0;
+      color: var(--accent);
+      background: none;
+      border: 0;
+      border-bottom: 1px solid var(--lime-border);
+      cursor: pointer;
+      font: 500 11px 'JetBrains Mono', monospace;
+      transition: color .2s, border-color .2s;
+    }
+    .founder-details-link:hover { color: var(--bone); border-color: var(--accent); }
+    .founder-details-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
     .founder-form-title { margin-bottom: 8px; font: 700 32px/1.05 'Archivo', sans-serif; letter-spacing: -.035em; }
     .founder-form-intro { margin-bottom: 26px; color: var(--fog); font-size: 14px; }
     .founder-back {
@@ -2835,11 +2874,11 @@
         Tu negocio con IA
       </div>
       <h1 class="hero-headline">
-        Abdi, tu <span class="rot-nowrap"><span id="rotating-word" class="rotating-word"></span>,</span><br>online en <em>48h</em>.
+        Abdi, tu <span class="rot-nowrap"><span id="rotating-word" class="rotating-word"></span>,</span><br>listo para atraer <em>más clientes.</em>
       </h1>
       <p class="hero-sub">
-        Sin agencia. Sin freelance. Sin esperas.<br>
-        Web profesional, dominio y soporte incluidos desde el día uno.
+        Web profesional, dominio y soporte continuo.<br>
+        Nosotros resolvemos la parte técnica para que tú te enfoques en tu negocio.
       </p>
       <div class="hero-actions">
         <a href="empezar.html" class="btn-primary cta-breathe">Empieza tu web →</a>
@@ -2884,41 +2923,41 @@
   <div class="container">
     <div class="problem-layout">
       <div>
-        <span class="label reveal">El problema</span>
+        <span class="label reveal">Lo que está pasando</span>
         <div class="problem-big reveal d1">
-          8 de cada<br><em>10</em> negocios<br>no tienen web.
+          Tus pacientes<br>ya te están <em>buscando.</em><br>¿Qué encuentran?
         </div>
         <p class="problem-desc reveal d2">
-          No porque no quieran. Porque todas las opciones disponibles son malas, caras o lentas.
+          Si no encuentran información clara, confianza y una forma fácil de contactarte, eligen otra opción antes de escribirte.
         </p>
       </div>
       <div class="problem-cards reveal">
         <div class="prob-card">
-          <div class="prob-icon">🏢</div>
+          <div class="prob-icon">🔎</div>
           <div>
-            <div class="prob-title">Agencia tradicional</div>
-            <div class="prob-text">USD 1.500–4.000. 4 a 8 semanas. Reuniones, propuestas, revisiones. Y luego te cobran cada cambio.</div>
+            <div class="prob-title">Tu información está dispersa</div>
+            <div class="prob-text">Un horario en Google, servicios en Instagram y precios por WhatsApp. Tus pacientes tienen que buscar demasiado para entenderte.</div>
           </div>
         </div>
         <div class="prob-card">
-          <div class="prob-icon">👤</div>
+          <div class="prob-icon">💬</div>
           <div>
-            <div class="prob-title">Freelance</div>
-            <div class="prob-text">Inconsistente. No da el ancho con volumen. Cuando desaparece, te quedas con una web que nadie sabe mantener.</div>
+            <div class="prob-title">Respondes lo mismo todos los días</div>
+            <div class="prob-text">Horarios, ubicación, servicios, requisitos y precios. Tu equipo pierde tiempo atendiendo preguntas que una buena web puede aclarar.</div>
           </div>
         </div>
         <div class="prob-card">
-          <div class="prob-icon">🔧</div>
+          <div class="prob-icon">🩺</div>
           <div>
-            <div class="prob-title">Wix / Squarespace</div>
-            <div class="prob-text">En inglés. Exige tiempo que el dueño no tiene. Sin integraciones locales. Sin soporte real en español.</div>
+            <div class="prob-title">Tu presencia no refleja tu calidad</div>
+            <div class="prob-text">Tu Laboratorio puede ser excelente, pero una presencia incompleta o desactualizada hace que nuevos pacientes duden antes de contactarte.</div>
           </div>
         </div>
         <div class="prob-card good">
-          <div class="prob-icon">⚡</div>
+          <div class="prob-icon">↗</div>
           <div>
-            <div class="prob-title lime">Abdi</div>
-            <div class="prob-text">Web profesional en 48 horas. Todo incluido. Soporte en español por WhatsApp. Sin sorpresas.</div>
+            <div class="prob-title lime">Una web que trabaja antes de que respondas</div>
+            <div class="prob-text">Presenta tus servicios, responde las dudas importantes y lleva cada consulta a WhatsApp. Abdi la crea y la mantiene por ti.</div>
           </div>
         </div>
       </div>
@@ -2930,31 +2969,57 @@
 <section id="como-funciona">
   <div class="container">
     <div class="how-header">
-      <span class="label reveal">Cómo funciona</span>
-      <h2 class="section-title reveal d1">De cero a online<br>en tres pasos.</h2>
+      <span class="label reveal">Así lo resolvemos</span>
+      <h2 class="section-title reveal d1">De información dispersa<br>a una web que trabaja por ti.</h2>
+      <p class="section-sub reveal d2">Tú nos cuentas lo esencial de tu negocio. Nosotros organizamos la información, construimos tu presencia digital y la mantenemos actualizada.</p>
     </div>
     <div class="steps">
       <div class="step reveal">
         <span class="step-num">01 ·</span>
         <div class="step-icon">📝</div>
-        <div class="step-title">Cuéntanos de tu negocio</div>
-        <p class="step-desc">Cinco preguntas. Diez minutos. Sin formularios complicados. Nos dices qué haces, a quién le vendes y qué necesitas.</p>
-        <div class="step-tag mono">⟶ Briefing guiado en español</div>
+        <div class="step-title">Cuéntanos sobre tu negocio</div>
+        <p class="step-desc">Responde unas preguntas sobre tus servicios, horarios, ubicación y la forma en que atiendes a tus clientes.</p>
+        <a class="step-tag step-tag-link mono" href="empezar.html">Cuéntanos sobre tu negocio en 5 minutos →</a>
       </div>
       <div class="step reveal d1">
         <span class="step-num">02 ·</span>
-        <div class="step-icon">🤖</div>
-        <div class="step-title">Tu web toma forma</div>
-        <p class="step-desc">Diseño profesional generado en horas. Antes de entregarte, un humano revisa todo con checklist de 10 puntos. No es automatización pura.</p>
-        <div class="step-tag mono">⟶ Revisión humana obligatoria</div>
+        <div class="step-icon">✦</div>
+        <div class="step-title">Convertimos tu información en confianza</div>
+        <p class="step-desc">Organizamos tus servicios, resolvemos las preguntas frecuentes y diseñamos una web profesional adaptada a tu especialidad.</p>
+        <div class="step-tag mono">⟶ Diseño profesional · Revisión humana</div>
       </div>
       <div class="step reveal d2">
         <span class="step-num">03 ·</span>
         <div class="step-icon">🚀</div>
-        <div class="step-title">Tu negocio, online</div>
-        <p class="step-desc">Dominio propio, hosting configurado, SEO básico activo. Te mandamos un video de 2 minutos explicando todo. Luego tú editas sin código.</p>
-        <div class="step-tag mono">⟶ En 48 horas hábiles</div>
+        <div class="step-title">Tu web empieza a trabajar por ti</div>
+        <p class="step-desc">Publicamos tu página con dominio propio, contacto por WhatsApp y todo listo para que nuevos clientes te encuentren y den el siguiente paso.</p>
+        <div class="step-tag mono">⟶ Dominio · Hosting · Soporte continuo</div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- IMAGINA TU WEB -->
+<section class="imagine-section" id="imagina-tu-web">
+  <div class="container imagine-shell">
+    <div class="reveal">
+      <span class="label">Prueba Abdi</span>
+      <h2 class="imagine-title">No la imagines.<br><em>Mírala funcionar.</em></h2>
+      <p class="imagine-copy">Cuéntanos cinco cosas sobre tu negocio y crea una primera versión de tu página: con tus servicios, tu ciudad y el contacto que quieres recibir.</p>
+      <div class="imagine-actions">
+        <button class="btn-primary" type="button" data-open-preview-builder>Imaginar mi web →</button>
+        <span class="imagine-note">1 VISTA PREVIA · SIN COMPROMISO</span>
+      </div>
+    </div>
+    <div class="imagine-card reveal d1" aria-hidden="true">
+      <div class="imagine-card-bar"><i></i><i></i><i></i></div>
+      <div class="imagine-card-stage">
+        <div class="imagine-card-kicker">Vista previa personalizada</div>
+        <div class="imagine-card-title">Tu negocio,<br>presentado con claridad.</div>
+        <div class="imagine-card-lines"><span></span><span></span></div>
+        <span class="imagine-card-button">Consultar por WhatsApp →</span>
+      </div>
+      <span class="imagine-card-float">Abdi está organizando tu información ✦</span>
     </div>
   </div>
 </section>
@@ -3190,41 +3255,47 @@
   <div class="container">
     <div class="features-header">
       <div>
-        <span class="label reveal">Qué incluye</span>
-        <h2 class="section-title reveal d1">Todo lo que tu negocio<br>necesita. Sin extras.</h2>
+        <span class="label reveal">Lo que recibes</span>
+        <h2 class="section-title reveal d1">Una web que informa,<br>genera confianza y facilita el contacto.</h2>
       </div>
-      <p class="section-sub reveal d2">Cada plan incluye dominio, hosting, soporte y las integraciones que los negocios de Costa Rica realmente usan.</p>
+      <p class="section-sub reveal d2">Todo configurado y mantenido por nosotros. Sin aprender herramientas, administrar servidores ni depender de diferentes proveedores.</p>
     </div>
     <div class="feat-grid">
       <div class="feat-card reveal">
-        <span class="feat-icon">⏱</span>
-        <div class="feat-title">SLA 48h garantizado</div>
-        <div class="feat-desc">De tu pago al dominio live. Si no cumplimos, te regresamos el setup fee. Sin letra chica.</div>
+        <span class="feat-icon">🗂️</span>
+        <div class="feat-title">Toda tu información en un solo lugar</div>
+        <div class="feat-desc">Servicios, horarios, ubicación, requisitos y preguntas frecuentes, organizados para que tus clientes encuentren respuestas rápidamente.</div>
+        <div class="feat-meta">Servicios · Horarios · Ubicación</div>
+      </div>
+      <div class="feat-card reveal d1">
+        <span class="feat-icon">💬</span>
+        <div class="feat-title">Consultas directas por WhatsApp</div>
+        <div class="feat-desc">Cada página guía al visitante hacia una acción clara para que pueda escribirte sin buscar números ni completar formularios complicados.</div>
+        <div class="feat-meta">Botones de contacto · Mensajes preparados</div>
+      </div>
+      <div class="feat-card reveal d2">
+        <span class="feat-icon">✦</span>
+        <div class="feat-title">Una imagen a la altura de tu negocio</div>
+        <div class="feat-desc">Diseño profesional adaptado a tu especialidad para transmitir orden, confianza y credibilidad desde la primera visita.</div>
+        <div class="feat-meta">Diseño móvil · Identidad visual</div>
+      </div>
+      <div class="feat-card reveal">
+        <span class="feat-icon">🔍</span>
+        <div class="feat-title">Preparada para aparecer en Google</div>
+        <div class="feat-desc">Configuramos títulos, descripciones, estructura y velocidad para que Google pueda entender e indexar correctamente tu web.</div>
+        <div class="feat-meta">SEO básico · Sitemap · Rendimiento</div>
       </div>
       <div class="feat-card reveal d1">
         <span class="feat-icon">🌐</span>
-        <div class="feat-title">Dominio + hosting incluido</div>
-        <div class="feat-desc">Sin costos ocultos. Sin configurar nada. Llega la web, llega el dominio, llega el SSL. Todo en uno.</div>
-      </div>
-      <div class="feat-card reveal d2">
-        <span class="feat-icon">🔍</span>
-        <div class="feat-title">SEO básico configurado</div>
-        <div class="feat-desc">Títulos, meta tags, sitemap y velocidad optimizada para que Google te encuentre desde el día uno.</div>
-      </div>
-      <div class="feat-card reveal">
-        <span class="feat-icon">💬</span>
-        <div class="feat-title">Soporte por WhatsApp</div>
-        <div class="feat-desc">En español. Con tiempos de respuesta reales. Sin tickets, sin bots inútiles, sin esperas.</div>
-      </div>
-      <div class="feat-card reveal d1">
-        <span class="feat-icon">💳</span>
-        <div class="feat-title">Pagos en línea integrados</div>
-        <div class="feat-desc">SINPE Móvil y tarjetas, conectados a tu web. Tus clientes pagan sin salir de la página. Sin redireccionamientos raros.</div>
+        <div class="feat-title">Dominio, hosting y seguridad resueltos</div>
+        <div class="feat-desc">Nos encargamos de mantener tu página disponible, protegida y conectada con un dominio profesional. Tú no tienes que configurar nada.</div>
+        <div class="feat-meta">Dominio · Hosting · SSL</div>
       </div>
       <div class="feat-card reveal d2">
         <span class="feat-icon">✏️</span>
-        <div class="feat-title">Cambios incluidos en tu mensualidad</div>
-        <div class="feat-desc">Un equipo especializado hace los cambios por ti. Textos, imágenes, precios, secciones nuevas. Pides por WhatsApp, nosotros lo resolvemos.</div>
+        <div class="feat-title">Cambios sin tocar la parte técnica</div>
+        <div class="feat-desc">¿Cambió un horario, servicio o imagen? Nos escribes por WhatsApp y nuestro equipo mantiene tu web actualizada.</div>
+        <div class="feat-meta">Soporte continuo · Cambios incluidos</div>
       </div>
     </div>
   </div>
@@ -3234,32 +3305,35 @@
 <section id="crece-con-abdi">
   <div class="container">
     <div class="testimonials-header reveal">
-      <span class="label">Crece con Abdi</span>
-      <h2 class="section-title">Sé de los primeros<br>10 negocios.</h2>
-      <p class="section-sub" style="max-width:520px; margin:16px auto 0;">Crece con Abdi abre 10 lugares para consultorios y clínicas que quieran atender mejor y reducir tareas manuales.</p>
+      <span class="label">Programa fundador · Solo 7 lugares</span>
+      <h2 class="section-title">No queremos cientos de clientes.<br>Queremos crecer con los primeros 7.</h2>
+      <p class="section-sub" style="max-width:680px; margin:16px auto 0;">Seleccionaremos 7 negocios de salud de Costa Rica para trabajar de cerca con nuestro equipo, construir su presencia digital y automatizar una parte importante de su atención.</p>
     </div>
     <div class="testi-grid">
       <div class="testi-card reveal">
-        <div class="testi-sla">Beneficio 01</div>
+        <div class="testi-sla">Exclusivo para fundadores</div>
         <span class="feat-icon">🔒</span>
-        <div class="step-title" style="margin-top:14px;">Mensualidad congelada</div>
-        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">El precio que pagas al entrar no sube nunca, mientras sigas siendo cliente. Sin letra chica.</p>
+        <div class="step-title" style="margin-top:14px;">Tu tarifa de fundador no aumenta</div>
+        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Conservas la mensualidad con la que ingresaste mientras mantengas activo tu servicio, aunque nuestros planes cambien en el futuro.</p>
       </div>
       <div class="testi-card reveal d1">
-        <div class="testi-sla">Beneficio 02</div>
+        <div class="testi-sla">Información aprobada por ti</div>
         <span class="feat-icon" aria-hidden="true">💬</span>
-        <div class="step-title" style="margin-top:14px;">Tu agente Abdi</div>
-        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Responde WhatsApp y redes sociales, atiende preguntas frecuentes y ayuda a agendar citas, incluso fuera de horario.</p>
+        <div class="step-title" style="margin-top:14px;">Tu agente Abdi, adaptado a tu negocio</div>
+        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Configuramos un asistente que conoce tus servicios y responde preguntas frecuentes para ayudarte a atender consultas fuera de horario.</p>
       </div>
       <div class="testi-card reveal d2">
-        <div class="testi-sla">Beneficio 03</div>
+        <div class="testi-sla">Implementación personalizada</div>
         <span class="feat-icon" aria-hidden="true">↻</span>
-        <div class="step-title" style="margin-top:14px;">Tu proceso más pesado, automatizado</div>
-        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Elegimos contigo la tarea que más tiempo consume y la automatizamos para que tu equipo deje de hacerla manualmente.</p>
+        <div class="step-title" style="margin-top:14px;">Automatizamos una tarea que te quita tiempo</div>
+        <p class="testi-quote" style="margin-bottom:0; font-size:14px; color:var(--fog);">Revisamos contigo cuál proceso repetitivo pesa más en tu operación y diseñamos una primera automatización para reducir el trabajo manual.</p>
       </div>
     </div>
     <div style="text-align:center; margin-top:44px;" class="reveal">
-      <a href="#crece-con-abdi" class="btn-primary" data-open-founder-modal>Apartar mi lugar →</a>
+      <p class="section-sub" style="max-width:620px; margin:0 auto 24px;"><strong style="color:var(--bone);">Entras como cliente. Creces como parte del grupo fundador de Abdi.</strong><br>Estos beneficios están reservados para los 7 negocios fundadores.</p>
+      <a href="#contacto" class="btn-primary">Quiero ser fundador →</a>
+      <p class="founder-microcopy">Solicitar no implica ningún pago. Primero revisamos si Abdi encaja con tu negocio.</p>
+      <button class="founder-details-link" type="button" data-open-founder-modal>Ver beneficios del programa</button>
     </div>
   </div>
 </section>
@@ -3520,10 +3594,10 @@
       <div class="faq-list reveal">
         <div class="faq-item">
           <button class="faq-q">
-            ¿De verdad en 48 horas?
+            ¿Cuánto tarda en estar lista mi web?
             <span class="faq-arrow">+</span>
           </button>
-          <div class="faq-a">48 horas hábiles desde que confirmas el pago y nos das la información de tu negocio. Si no cumplimos, te regresamos el setup fee sin preguntas. Así de simple.</div>
+          <div class="faq-a">Al confirmar el alcance y recibir la información de tu Laboratorio, te indicamos una fecha de entrega clara. El plazo depende del contenido y las funciones que necesites, para que nunca sacrifiquemos calidad por velocidad.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q">
@@ -3563,8 +3637,8 @@
   <div class="container" style="display:flex; flex-direction:column; align-items:center;">
     <div style="text-align:center; margin-bottom:40px;" class="reveal">
       <span class="label" style="margin-bottom:14px;">Crece con Abdi</span>
-      <h2 class="wa-title">Aparta tu lugar.</h2>
-      <p class="wa-desc" style="margin:0 auto;">Déjanos tus datos y te contactamos para apartar uno de los 10 lugares de Crece con Abdi. Sin compromiso.</p>
+      <h2 class="wa-title">Solicita tu lugar como fundador.</h2>
+      <p class="wa-desc" style="margin:0 auto;">Cuéntanos sobre tu negocio. Revisaremos tu solicitud y te contactaremos para confirmar si Abdi encaja contigo.</p>
     </div>
     <div class="waitlist-card reveal d1">
       <form id="waitlist-form" novalidate>
@@ -3600,7 +3674,7 @@
             <input type="text" id="wl-web" name="website" tabindex="-1" autocomplete="off">
           </div>
           <div class="form-field full">
-            <button type="submit" class="btn-primary form-submit" id="wl-submit">Apartar mi lugar →</button>
+            <button type="submit" class="btn-primary form-submit" id="wl-submit">Enviar mi solicitud →</button>
           </div>
         </div>
         <div class="form-error" id="wl-error">No pudimos guardar tus datos. Intenta de nuevo en un momento.</div>
@@ -3608,8 +3682,8 @@
       </form>
       <div class="form-success" id="wl-success">
         <div class="form-success-icon">✓</div>
-        <div class="form-success-title">Lugar apartado.</div>
-        <p class="form-success-text">Te contactamos en menos de 24 horas para contarte los siguientes pasos.</p>
+        <div class="form-success-title">Solicitud recibida.</div>
+        <p class="form-success-text">Revisaremos tu negocio y te contactaremos para contarte los siguientes pasos.</p>
       </div>
     </div>
   </div>
@@ -3621,14 +3695,14 @@
   <div class="cta-final-grid"></div>
   <div class="cta-inner reveal">
     <span class="label" style="display:block; text-align:center;">¿Empezamos?</span>
-    <h2 class="cta-headline">Tu negocio merece<br>estar <em>online hoy</em>.</h2>
-    <p class="cta-sub">En 48 horas, te entregamos. Nosotros nos encargamos.</p>
+    <h2 class="cta-headline">Tu presencia digital<br>debe reflejar <em>tu calidad</em>.</h2>
+    <p class="cta-sub">Cuéntanos sobre tu Laboratorio. Nosotros nos encargamos de la parte técnica.</p>
     <div class="cta-actions">
       <a href="empezar.html" class="btn-primary cta-breathe" style="font-size:16px; padding:18px 36px;">Empieza tu web →</a>
-      <a href="#contacto" class="btn-ghost">Apartar mi lugar</a>
+      <a href="#contacto" class="btn-ghost">Quiero ser fundador</a>
     </div>
     <div class="cta-meta">
-      <span>SLA 48h garantizado</span>
+      <span>Fecha de entrega clara</span>
       · <span>Sin contrato largo</span>
       · <span>Soporte en español</span>
     </div>
@@ -3642,39 +3716,39 @@
 
     <aside class="founder-rail" aria-hidden="true">
       <span class="founder-rail-label">Crece con Abdi</span>
-      <div class="founder-slots"><strong>10</strong><span>lugares disponibles</span></div>
+      <div class="founder-slots"><strong>7</strong><span>lugares para fundadores</span></div>
       <span class="founder-rail-foot">Abdismart<br>Costa Rica</span>
     </aside>
 
     <div class="founder-panel">
       <div class="founder-step is-active" data-founder-step="intro">
-        <div class="founder-eyebrow">Condiciones para los primeros 10 negocios</div>
-        <h2 class="founder-title" id="founder-modal-title">Tu negocio puede seguir trabajando cuando cierras.</h2>
-        <p class="founder-intro">Únete a Crece con Abdi y recibe herramientas para atender clientes y reducir tareas manuales.</p>
+        <div class="founder-eyebrow">Solicitud · Programa fundador</div>
+        <h2 class="founder-title" id="founder-modal-title">Los primeros 7 reciben mucho más que una página web.</h2>
+        <p class="founder-intro">Trabajaremos directamente contigo para crear tu web, configurar tu agente Abdi y automatizar una tarea importante de tu negocio.</p>
 
         <div class="founder-benefits">
           <div class="founder-benefit">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M7 7.5C7 5.6 9 4 12 4s5 1.4 5 3.5S15 11 12 11s-5 1.5-5 3.5S9 20 12 20s5-1.6 5-3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <b>Mensualidad congelada.</b>
+            <b>Tarifa de fundador protegida.</b>
           </div>
           <div class="founder-benefit">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5h14v10H9l-4 4V5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 9h8M8 12h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <b>Tu agente Abdi para mensajes y citas.</b>
+            <b>Agente adaptado a tu negocio.</b>
           </div>
           <div class="founder-benefit">
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h11M4 12h7M4 17h14M17 4l3 3-3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <b>Una automatización personalizada.</b>
+            <b>Primera automatización personalizada.</b>
           </div>
         </div>
 
-        <button class="btn-primary founder-primary" type="button" data-founder-next>Quiero uno de los 10 lugares →</button>
-        <p class="founder-microcopy">Sin compromiso. Revisamos tu caso antes de avanzar.</p>
+        <button class="btn-primary founder-primary" type="button" data-founder-next>Quiero saber si mi negocio aplica →</button>
+        <p class="founder-microcopy">Sin pago ni compromiso. Revisamos tu caso antes de avanzar.</p>
       </div>
 
       <div class="founder-step" data-founder-step="form">
         <button class="founder-back" type="button" data-founder-back>← Volver a los beneficios</button>
-        <h2 class="founder-form-title">Cuéntanos sobre tu negocio.</h2>
-        <p class="founder-form-intro">Completa tus datos y te contactaremos por WhatsApp.</p>
+        <h2 class="founder-form-title">Solicita tu lugar como fundador.</h2>
+        <p class="founder-form-intro">Cuéntanos qué quieres mejorar. Revisaremos personalmente cada solicitud.</p>
 
         <form id="founder-popup-form" novalidate>
           <div class="form-grid">
@@ -3704,12 +3778,27 @@
               <label class="form-label" for="fp-email">Email, opcional</label>
               <input class="form-input" type="email" id="fp-email" name="email" placeholder="doctor@clinica.com">
             </div>
+            <div class="form-field full">
+              <label class="form-label" for="fp-desafio">¿Qué te quita más tiempo actualmente?</label>
+              <select class="form-select" id="fp-desafio" name="desafio" required>
+                <option value="" disabled selected>Elige el principal reto</option>
+                <option>Responder preguntas repetitivas</option>
+                <option>Coordinar o confirmar citas</option>
+                <option>Enviar requisitos o instrucciones</option>
+                <option>Dar seguimiento a clientes</option>
+                <option>Otro proceso</option>
+              </select>
+            </div>
+            <div class="form-field full">
+              <label class="form-label" for="fp-automatizacion">Si pudieras automatizar una tarea, ¿cuál sería?</label>
+              <textarea class="form-input" id="fp-automatizacion" name="automatizacion" placeholder="Cuéntanos brevemente. Esta respuesta es opcional."></textarea>
+            </div>
             <div class="hp-field" aria-hidden="true">
               <label for="fp-website">No completar</label>
               <input type="text" id="fp-website" name="website" tabindex="-1" autocomplete="off">
             </div>
             <div class="form-field full">
-              <button type="submit" class="btn-primary founder-primary" id="founder-popup-submit">Solicitar mi lugar →</button>
+              <button type="submit" class="btn-primary founder-primary" id="founder-popup-submit">Enviar mi solicitud →</button>
             </div>
           </div>
           <p class="form-error" id="founder-popup-error" role="alert"></p>
@@ -3718,8 +3807,8 @@
 
       <div class="founder-step" data-founder-step="success">
         <div class="form-success-icon">✓</div>
-        <h2 class="founder-form-title" style="text-align:center;">Recibimos tu solicitud.</h2>
-        <p class="founder-form-intro" style="text-align:center; margin-bottom:0;">Revisaremos tu negocio y te contactaremos por WhatsApp.</p>
+        <h2 class="founder-form-title" style="text-align:center;">Solicitud recibida.</h2>
+        <p class="founder-form-intro" style="text-align:center; margin-bottom:0;">Revisaremos tu caso y te contactaremos por WhatsApp para confirmar si tu negocio puede formar parte de Crece con Abdi.</p>
       </div>
     </div>
   </div>
@@ -3985,7 +4074,7 @@
   const founderModal = document.getElementById('founder-modal');
   const founderDialog = founderModal.querySelector('.founder-dialog');
   const founderSteps = founderModal.querySelectorAll('[data-founder-step]');
-  const founderSeenKey = 'abdismart_founder_popup_seen_session_v2';
+  const founderSeenKey = 'abdismart_founder_popup_seen_session_v3';
   let founderLastFocus = null;
 
   function showFounderStep(step) {
@@ -4057,7 +4146,7 @@
     founderAutoShown = true;
     openFounderModal(false);
   }
-  window.setTimeout(mayShowFounderModal, 15000);
+  window.setTimeout(mayShowFounderModal, 7000);
   window.addEventListener('scroll', () => {
     const progress = window.scrollY / Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     if (progress >= .4) mayShowFounderModal();
@@ -4076,9 +4165,11 @@
     const negocio = founderPopupForm.negocio.value;
     const whatsapp = founderPopupForm.whatsapp.value.trim();
     const email = founderPopupForm.email.value.trim();
+    const desafio = founderPopupForm.desafio.value;
+    const automatizacion = founderPopupForm.automatizacion.value.trim();
 
-    if (!nombre || !negocio || whatsapp.replace(/\D/g, '').length < 8) {
-      founderPopupError.textContent = 'Revisa tu nombre, negocio y número de WhatsApp.';
+    if (!nombre || !negocio || whatsapp.replace(/\D/g, '').length < 8 || !desafio) {
+      founderPopupError.textContent = 'Revisa tu nombre, negocio, WhatsApp y principal reto.';
       founderPopupError.style.display = 'block';
       return;
     }
@@ -4088,12 +4179,17 @@
     const { error } = await db.from('waitlist').insert({
       nombre, negocio, whatsapp,
       email: email || null,
+      respuestas: {
+        origen: 'programa_fundador',
+        principal_reto: desafio,
+        automatizacion_deseada: automatizacion || null
+      },
       utm_source: new URLSearchParams(location.search).get('utm_source')
     });
 
     if (error) {
       founderPopupSubmit.disabled = false;
-      founderPopupSubmit.textContent = 'Solicitar mi lugar →';
+      founderPopupSubmit.textContent = 'Enviar mi solicitud →';
       founderPopupError.textContent = 'No pudimos guardar tus datos. Intenta de nuevo en un momento.';
       founderPopupError.style.display = 'block';
       return;
@@ -4237,7 +4333,7 @@
 
     if (error) {
       wlSubmit.disabled = false;
-      wlSubmit.textContent = 'Apartar mi lugar →';
+      wlSubmit.textContent = 'Enviar mi solicitud →';
       wlError.textContent = 'No pudimos guardar tus datos. Intenta de nuevo en un momento.';
       wlError.style.display = 'block';
       return;
@@ -4247,6 +4343,7 @@
     wlSuccess.style.display = 'block';
   });
 </script>
+<script src="assets/preview-builder.js?v=1" defer></script>
 <script src="assets/agent-widget.js?v=16" data-business="abdismart" defer></script>
 
 </body>

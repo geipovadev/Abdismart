@@ -651,6 +651,34 @@
     sending: false
   };
 
+  // Si la persona viene de “Imagina tu web”, reutilizamos lo que ya contó.
+  // Los datos permanecen en esta pestaña y nunca viajan en la URL.
+  try {
+    var previewDraft = JSON.parse(sessionStorage.getItem('abdi_preview_brief_draft_v1') || 'null');
+    if (previewDraft) {
+      var goalNeed = {
+        whatsapp: 'Que me escriban por WhatsApp',
+        cita: 'Que agenden cita en línea',
+        precios: 'Mostrar mis servicios',
+        informacion: 'Mostrar mis servicios'
+      }[previewDraft.goal];
+      state.answers = {
+        nombre: previewDraft.nombre || '',
+        negocio_nombre: previewDraft.business_name || '',
+        negocio: previewDraft.specialty || '',
+        ciudad: previewDraft.city || '',
+        presencia: '',
+        servicios: Array.from(new Set(['Mostrar mis servicios', goalNeed].filter(Boolean))),
+        detalle: previewDraft.services?.length ? 'Servicios principales: ' + previewDraft.services.join(', ') : '',
+        urgencia: '',
+        origen: '',
+        whatsapp: previewDraft.whatsapp || '',
+        email: previewDraft.email || '',
+        preview_id: previewDraft.preview_id || ''
+      };
+    }
+  } catch (e) {}
+
   /* ── Nodos ─────────────────────────────────────────────────── */
   var wrap      = document.getElementById('step-wrap');
   var counterEl = document.getElementById('counter');
@@ -954,7 +982,8 @@
       servicios:      a.servicios || [],
       detalle:        String(a.detalle || '').trim(),
       urgencia:       a.urgencia || '',
-      origen:         a.origen || ''
+      origen:         a.origen || '',
+      preview_id:      String(a.preview_id || '').trim() || null
     };
 
     var full = Object.assign({ respuestas: extra }, base);

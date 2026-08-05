@@ -1,4 +1,5 @@
 import { getBusiness } from './businesses.js';
+import { previewEvent, previewGenerate, previewLead } from './preview.js';
 
 const OPENAI_URL = 'https://api.openai.com/v1/responses';
 const MAX_MESSAGE_LENGTH = 600;
@@ -221,7 +222,10 @@ async function lead(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/agent/')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type' } });
+    if (request.method === 'OPTIONS' && (url.pathname.startsWith('/api/agent/') || url.pathname.startsWith('/api/preview'))) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type' } });
+    if (request.method === 'POST' && url.pathname === '/api/preview') return previewGenerate(request, env, ctx);
+    if (request.method === 'POST' && url.pathname === '/api/preview/event') return previewEvent(request, env);
+    if (request.method === 'POST' && url.pathname === '/api/preview/lead') return previewLead(request, env);
     if (request.method === 'POST' && url.pathname === '/api/agent/chat') return chat(request, env, ctx);
     if (request.method === 'POST' && url.pathname === '/api/agent/lead') return lead(request, env);
     return env.ASSETS.fetch(request);
