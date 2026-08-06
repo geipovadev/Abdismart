@@ -15,9 +15,23 @@
     </section>';
   document.body.appendChild(root);
   var launcher=root.querySelector('.abdi-agent-launcher'),greeting=root.querySelector('.abdi-agent-greeting'),panel=root.querySelector('.abdi-agent-panel'),close=root.querySelector('.abdi-agent-close'),messages=root.querySelector('.abdi-agent-messages'),form=root.querySelector('form'),input=root.querySelector('.abdi-agent-input'),send=root.querySelector('.abdi-agent-send');
+  function syncVisualViewport(){
+    var viewport=window.visualViewport;
+    var height=viewport?viewport.height:window.innerHeight;
+    var top=viewport?viewport.offsetTop:0;
+    var keyboardOpen=window.innerWidth<=600&&window.innerHeight-height>120&&panel.classList.contains('is-open');
+    root.style.setProperty('--abdi-viewport-height',Math.round(height)+'px');
+    root.style.setProperty('--abdi-viewport-top',Math.round(top)+'px');
+    root.classList.toggle('is-keyboard-open',keyboardOpen);
+    if(keyboardOpen)requestAnimationFrame(function(){messages.scrollTop=messages.scrollHeight});
+  }
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',syncVisualViewport);window.visualViewport.addEventListener('scroll',syncVisualViewport)}
+  window.addEventListener('resize',syncVisualViewport);
+  input.addEventListener('focus',function(){setTimeout(syncVisualViewport,80);setTimeout(syncVisualViewport,320)});
+  input.addEventListener('blur',function(){setTimeout(syncVisualViewport,80)});
   function hideGreeting(){if(!greeting)return;greeting.hidden=true;greeting.classList.remove('is-visible')}
-  function open(){hideGreeting();panel.classList.add('is-open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');document.body.classList.add('abdi-agent-open');document.dispatchEvent(new CustomEvent('abdi:agent-open'));setTimeout(function(){input.focus()},60)}
-  function shut(){panel.classList.remove('is-open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');document.body.classList.remove('abdi-agent-open');document.dispatchEvent(new CustomEvent('abdi:agent-close'));launcher.focus()}
+  function open(){hideGreeting();panel.classList.add('is-open');root.classList.add('is-chat-open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');document.body.classList.add('abdi-agent-open');document.dispatchEvent(new CustomEvent('abdi:agent-open'));syncVisualViewport();setTimeout(function(){input.focus();syncVisualViewport()},60)}
+  function shut(){panel.classList.remove('is-open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');root.classList.remove('is-keyboard-open','is-chat-open');document.body.classList.remove('abdi-agent-open');document.dispatchEvent(new CustomEvent('abdi:agent-close'));launcher.focus()}
   launcher.onclick=function(){panel.classList.contains('is-open')?shut():open()};close.onclick=shut;
   document.addEventListener('abdi:request-close',function(){if(panel.classList.contains('is-open'))shut()});
   window.setTimeout(function(){if(!panel.classList.contains('is-open')&&greeting){greeting.hidden=false;requestAnimationFrame(function(){greeting.classList.add('is-visible')})}},4200);

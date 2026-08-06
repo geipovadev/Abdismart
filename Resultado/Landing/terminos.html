@@ -212,10 +212,10 @@
       border-top: 1px solid var(--edge);
     }
 
-    /* Aviso de borrador */
+    /* Estado del documento */
     .aviso {
-      border: 1px solid rgba(255,180,80,.35);
-      background: rgba(255,180,80,.07);
+      border: 1px solid var(--lime-border);
+      background: var(--lime-dim);
       border-radius: 14px;
       padding: 20px 22px;
       margin-bottom: 44px;
@@ -224,8 +224,7 @@
       color: var(--bone);
     }
     /* Solo el primer strong es el título del aviso; los de adentro van en línea. */
-    .aviso > strong:first-child { color: #FFB950; display: block; margin-bottom: 6px; font-size: 13px; }
-    :root[data-theme="light"] .aviso > strong:first-child { color: #A96500; }
+    .aviso > strong:first-child { color: var(--accent); display: block; margin-bottom: 6px; font-size: 13px; }
 
     /* Secciones */
     section { margin-bottom: 44px; scroll-margin-top: 96px; }
@@ -291,18 +290,6 @@
       padding-top: 3px;
     }
     .ficha dd { color: var(--bone); }
-
-    /* Marcador de dato pendiente */
-    .pendiente {
-      background: rgba(255,180,80,.15);
-      border: 1px dashed rgba(255,180,80,.5);
-      border-radius: 5px;
-      padding: 1px 8px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #FFB950;
-    }
-    :root[data-theme="light"] .pendiente { color: #8A5200; background: rgba(255,180,80,.22); }
 
     /* Bloque destacado */
     .destacado {
@@ -401,15 +388,15 @@
       <span class="label">Legal</span>
       <h1>Términos y condiciones.</h1>
       <div class="doc-meta">
-        <span>Versión 1.0</span>
-        <span>Vigente desde el 28 de julio de 2026</span>
+        <span>Versión 1.1</span>
+        <span>Vigente desde el 5 de agosto de 2026</span>
         <span>Costa Rica</span>
       </div>
     </div>
 
     <div class="aviso">
-      <strong>Borrador pendiente de revisión legal</strong>
-      Este documento fue redactado siguiendo la normativa costarricense vigente, pero <strong>no sustituye la asesoría de un abogado</strong>. Antes de publicarlo debe ser revisado y firmado por un profesional en derecho incorporado al Colegio de Abogados y Abogadas de Costa Rica. Los datos marcados en naranja están pendientes de completar.
+      <strong>Versión vigente para contratación</strong>
+      Estas condiciones presentan de forma clara el alcance general de los servicios de Abdismart. La cotización aceptada por el cliente completa las condiciones particulares —alcance, precio, impuestos y fecha de entrega— y prevalece cuando resulte más favorable para el cliente.
     </div>
 
     <section id="s1">
@@ -418,11 +405,10 @@
       <dl class="ficha">
         <div><dt>Razón social</dt><dd>Grupo Abdi S.R.L.</dd></div>
         <div><dt>Nombre comercial</dt><dd>Abdismart</dd></div>
-        <div><dt>Cédula jurídica</dt><dd><span class="pendiente">pendiente: 3-102-XXXXXX</span></dd></div>
-        <div><dt>Domicilio social</dt><dd><span class="pendiente">pendiente: dirección exacta</span></dd></div>
-        <div><dt>Correo electrónico</dt><dd><a class="link" href="mailto:hola@abdi.com">hola@abdi.com</a></dd></div>
+        <div><dt>País de operación</dt><dd>Costa Rica</dd></div>
+        <div><dt>Correo electrónico</dt><dd><a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a></dd></div>
         <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
-        <div><dt>Horario de atención</dt><dd><span class="pendiente">pendiente: p. ej. lunes a viernes, 8:00 a 17:00</span></dd></div>
+        <div><dt>Canal de atención</dt><dd>WhatsApp y correo electrónico</dd></div>
       </dl>
       <p>En adelante, «Abdismart», «nosotros» o «el proveedor». La persona física o jurídica que contrata los servicios se denomina «el cliente» o «usted».</p>
     </section>
@@ -438,16 +424,16 @@
       <h2><span class="num">03</span> Definiciones</h2>
       <ul>
         <li><strong>Brief:</strong> cuestionario mediante el cual el cliente entrega la información y los materiales de su negocio necesarios para producir la web.</li>
-        <li><strong>Setup fee:</strong> pago único inicial que cubre el diseño, desarrollo y publicación de la web.</li>
-        <li><strong>Mensualidad:</strong> cuota periódica que cubre hosting, soporte, actualizaciones de seguridad y los cambios incluidos.</li>
-        <li><strong>Horas hábiles:</strong> las comprendidas dentro del horario de atención indicado en la cláusula 01, de lunes a viernes, excluyendo sábados, domingos y feriados de ley en Costa Rica.</li>
-        <li><strong>Entregable:</strong> la web publicada y funcionando en el dominio acordado.</li>
+        <li><strong>Pago inicial:</strong> monto indicado en la cotización para iniciar el diseño, configuración o implementación contratada.</li>
+        <li><strong>Mensualidad:</strong> cuota periódica por los servicios recurrentes descritos en la cotización, como hosting, soporte, mantenimiento, agentes o automatizaciones.</li>
+        <li><strong>Días hábiles:</strong> de lunes a viernes, excluyendo feriados de ley en Costa Rica.</li>
+        <li><strong>Entregable:</strong> la página web, agente, automatización, configuración o documentación indicada en la cotización.</li>
       </ul>
     </section>
 
     <section id="s4">
       <h2><span class="num">04</span> Servicios</h2>
-      <p>Abdismart diseña, desarrolla y publica páginas web para pequeños negocios, e incluye según el plan contratado: registro y configuración de dominio, hosting, certificado SSL, configuración de SEO básico, integraciones y soporte en español.</p>
+      <p>Abdismart diseña, desarrolla y mantiene páginas web, agentes con inteligencia artificial y automatizaciones para negocios. Según el plan contratado, el servicio puede incluir dominio, hosting, certificado SSL, SEO básico, integraciones, configuración de canales digitales, mantenimiento y soporte en español.</p>
       <p>El alcance exacto de cada contratación —número de páginas, secciones, integraciones y plazos— es el que conste en la <strong>cotización aceptada por el cliente</strong>. Esa cotización prevalece sobre cualquier descripción general publicada en el sitio web.</p>
       <p>La producción combina herramientas de inteligencia artificial con revisión humana. En todos los casos existe una revisión humana antes de publicar.</p>
     </section>
@@ -458,9 +444,9 @@
       <ol class="lista">
         <li>El cliente completa el formulario del sitio web con los datos de su negocio.</li>
         <li>Abdismart contacta al cliente y envía una cotización con el alcance, el precio y el plazo.</li>
-        <li>El cliente acepta la cotización y realiza el pago del setup fee.</li>
-        <li>Abdismart envía el brief. El cliente lo completa y entrega los materiales.</li>
-        <li>Se produce la web, se envía una versión de revisión y, tras la aprobación del cliente, se publica.</li>
+        <li>El cliente acepta la cotización y realiza el pago inicial acordado.</li>
+        <li>Abdismart recopila el brief, accesos y materiales necesarios.</li>
+        <li>Se implementa el servicio, se presenta para revisión cuando corresponda y se activa o publica después de la aprobación del cliente.</li>
       </ol>
       <p>Antes de que el cliente confirme el pago, Abdismart le informará de manera clara el precio total con impuestos incluidos, la descripción del servicio, el plazo de entrega y las condiciones de estos términos, conforme al <strong>Capítulo IX del Reglamento a la Ley 7472 (Decreto Ejecutivo 37899-MEIC)</strong>, que regula el comercio electrónico.</p>
       <p>El contrato se perfecciona cuando Abdismart confirma la recepción del pago. El cliente recibirá esa confirmación por medio electrónico, junto con una copia de estos términos.</p>
@@ -500,14 +486,14 @@
 
     <section id="s9">
       <h2><span class="num">09</span> Plazo de entrega y garantía</h2>
-      <p>Abdismart se compromete a entregar la web en un plazo de <strong>48 horas hábiles</strong>. Ese plazo empieza a correr cuando se cumplen <strong>ambas</strong> condiciones:</p>
+      <p>La fecha o plazo de entrega será el indicado en la <strong>cotización aceptada</strong>, de acuerdo con el alcance y la disponibilidad comunicada antes del pago. El plazo empieza a correr cuando se cumplen <strong>ambas</strong> condiciones:</p>
       <ul>
-        <li>El pago del setup fee está confirmado.</li>
+        <li>El pago inicial está confirmado.</li>
         <li>El cliente entregó el brief completo con los materiales mínimos.</li>
       </ul>
       <p>El plazo se suspende mientras Abdismart esté a la espera de información, materiales o aprobaciones del cliente, y se reanuda al recibirlos.</p>
       <div class="destacado">
-        <p><strong>Garantía de plazo.</strong> Si Abdismart incumple el plazo de 48 horas hábiles por causas que le sean atribuibles, devolverá el setup fee íntegro, sin necesidad de que el cliente justifique el reclamo.</p>
+        <p><strong>Compromiso de entrega.</strong> Si surge una demora atribuible a Abdismart, informaremos al cliente y acordaremos por escrito una nueva fecha o la solución que corresponda conforme a la cotización y la legislación aplicable.</p>
       </div>
       <p>Si el resultado no corresponde con lo acordado en el brief, Abdismart lo corregirá sin costo. No se publica ninguna web sin la aprobación previa del cliente.</p>
       <p>Esta garantía comercial es adicional y no sustituye la garantía legal ni los derechos que la Ley 7472 reconoce al consumidor.</p>
@@ -529,7 +515,7 @@
     <section id="s11">
       <h2><span class="num">11</span> Revisiones y cambios</h2>
       <p>Antes de publicar, el cliente cuenta con <strong>una ronda de revisión incluida</strong> para solicitar ajustes sobre lo acordado en el brief.</p>
-      <p>Si el cliente no responde dentro de las <strong>seis horas hábiles</strong> siguientes al envío de la versión de revisión, Abdismart podrá publicar la web tal como está para no incumplir el plazo de entrega. Los ajustes pendientes se atenderán después como cambios incluidos en la mensualidad.</p>
+      <p>La falta de respuesta del cliente suspende el plazo mientras se espera su información o aprobación. Abdismart no publicará ni activará el entregable sin aprobación cuando esta sea necesaria.</p>
       <p>La mensualidad incluye los cambios menores descritos en la cotización: textos, imágenes, precios y secciones. Los trabajos que excedan ese alcance —rediseños completos, nuevas funcionalidades o integraciones adicionales— se cotizan por separado y requieren aprobación previa del cliente.</p>
     </section>
 
@@ -551,7 +537,7 @@
       <p>La materia se rige por la <strong>Ley 6683, Ley de Derechos de Autor y Derechos Conexos</strong>, y por la <strong>Ley 8039, Ley de Procedimientos de Observancia de los Derechos de Propiedad Intelectual</strong>.</p>
 
       <h3>Lo que es del cliente</h3>
-      <p>El material que el cliente aporta sigue siendo suyo. Además, una vez pagado íntegramente el setup fee, Abdismart <strong>cede al cliente los derechos patrimoniales</strong> sobre el diseño y los contenidos producidos específicamente para su web, de forma exclusiva, sin límite territorial y por todo el plazo de protección legal.</p>
+      <p>El material que el cliente aporta sigue siendo suyo. Además, una vez pagado íntegramente el monto inicial acordado, Abdismart <strong>cede al cliente los derechos patrimoniales</strong> sobre el diseño y los contenidos producidos específicamente para su web, de forma exclusiva, sin límite territorial y por todo el plazo de protección legal.</p>
 
       <h3>Lo que es de Abdismart</h3>
       <p>Abdismart conserva la titularidad de sus plantillas base, componentes reutilizables, código de plataforma, herramientas internas, metodología y de la marca Abdismart. Nada en estos términos transfiere esos elementos al cliente; sobre ellos el cliente recibe una licencia de uso no exclusiva mientras dure la relación contractual.</p>
@@ -582,7 +568,7 @@
       <p>Conforme al artículo 5 de la Ley 8968, la recolección se basa en el <strong>consentimiento expreso, libre e informado</strong> del titular, que se otorga al enviar el formulario. Ese consentimiento puede revocarse en cualquier momento, sin efecto retroactivo sobre el tratamiento ya realizado.</p>
       <p>El titular puede ejercer sus derechos de <strong>acceso, rectificación, actualización, eliminación y revocación del consentimiento</strong> escribiendo a los canales de la cláusula 01. Abdismart atenderá la solicitud dentro de los plazos de ley.</p>
       <p>Los datos no se venden ni se ceden a terceros con fines comerciales. Se comparten únicamente con los proveedores tecnológicos necesarios para prestar el servicio y con las autoridades cuando exista obligación legal.</p>
-      <p><span class="pendiente">Pendiente: publicar el aviso de privacidad completo e inscribir la base de datos ante la PRODHAB si corresponde según el volumen y tipo de tratamiento.</span></p>
+      <p>Abdismart aplicará medidas razonables de seguridad y conservará los datos solo durante el tiempo necesario para estas finalidades, atender responsabilidades contractuales y cumplir obligaciones legales. Algunos proveedores tecnológicos pueden procesar datos fuera de Costa Rica bajo compromisos contractuales de confidencialidad y seguridad.</p>
     </section>
 
     <section id="s17">
@@ -625,7 +611,7 @@
       <p>Para consultas sobre estos términos, para ejercer el derecho de retracto o para gestionar sus datos personales:</p>
       <dl class="ficha">
         <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
-        <div><dt>Correo</dt><dd><a class="link" href="mailto:hola@abdi.com">hola@abdi.com</a></dd></div>
+        <div><dt>Correo</dt><dd><a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a></dd></div>
         <div><dt>Responsable</dt><dd>Grupo Abdi S.R.L.</dd></div>
       </dl>
     </section>

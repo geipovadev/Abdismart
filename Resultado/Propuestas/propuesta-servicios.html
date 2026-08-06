@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Propuesta de servicios — Abdismart</title>
+  <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
+
+  <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
+  <script>
+    (function () {
+      var saved;
+      try { saved = localStorage.getItem('abdi-theme'); } catch (e) {}
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Tokens del sistema Monolito — idénticos a la landing. */
+    :root {
+      --onyx:     #0A0B0D;
+      --graphite: #1C1F27;
+      --lime:     #C6FF3D;
+      --fog:      #A6ABB8;
+      --bone:     #F4F5F7;
+      --lime-dim:    rgba(198,255,61,.07);
+      --lime-border: rgba(198,255,61,.18);
+      --edge:        rgba(255,255,255,.07);
+      --accent:      #C6FF3D;
+      --on-accent:   #0A0B0D;
+      --surface-0: rgba(255,255,255,.02);
+      --surface-1: rgba(255,255,255,.04);
+      --surface-2: rgba(255,255,255,.06);
+      --nav-bg:    rgba(10,11,13,.88);
+      color-scheme: dark;
+    }
+    :root[data-theme="light"] {
+      --onyx:     #F6F7F9;
+      --graphite: #FFFFFF;
+      --fog:      #565C69;
+      --bone:     #0A0B0D;
+      --lime-dim:    rgba(122,168,0,.10);
+      --lime-border: rgba(122,168,0,.30);
+      --edge:        rgba(10,11,13,.11);
+      --accent:      #4F7A00;
+      --surface-0: rgba(10,11,13,.025);
+      --surface-1: rgba(10,11,13,.045);
+      --surface-2: rgba(10,11,13,.07);
+      --nav-bg:    rgba(246,247,249,.88);
+      color-scheme: light;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--onyx);
+      color: var(--bone);
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── BARRA SUPERIOR (no se imprime) ──────────────────────── */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px;
+      padding: 14px 28px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--edge);
+    }
+    .logo { display: flex; align-items: center; }
+    .logo img { height: 26px; width: auto; display: block; }
+    .logo .logo-light { display: none; }
+    :root[data-theme="light"] .logo .logo-dark  { display: none; }
+    :root[data-theme="light"] .logo .logo-light { display: block; }
+
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .theme-toggle { display: flex; align-items: center; gap: 2px; border: 1px solid var(--edge); border-radius: 999px; padding: 3px; }
+    .theme-btn {
+      display: grid; place-items: center;
+      width: 28px; height: 28px;
+      border: none; border-radius: 999px;
+      background: transparent; color: var(--fog);
+      cursor: pointer; transition: background .2s, color .2s;
+    }
+    .theme-btn svg { width: 15px; height: 15px; }
+    .theme-btn[aria-pressed="true"] { background: var(--surface-2); color: var(--bone); }
+
+    .btn-print {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      border: 1px solid var(--lime-border);
+      background: var(--lime-dim);
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .btn-print:hover { background: var(--accent); color: var(--on-accent); }
+
+    /* ─── LAYOUT ──────────────────────────────────────────────── */
+    .doc { max-width: 880px; margin: 0 auto; padding: 48px 28px 96px; }
+
+    /* Panel de instrucciones internas — nunca se imprime. */
+    .instrucciones {
+      border: 1px solid rgba(255,180,80,.35);
+      background: rgba(255,180,80,.07);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 48px;
+      font-size: 14px;
+    }
+    .instrucciones strong:first-child { display: block; color: #FFB950; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; font-family: 'JetBrains Mono', monospace; }
+    :root[data-theme="light"] .instrucciones strong:first-child { color: #A96500; }
+    .instrucciones ul { padding-left: 18px; margin-top: 8px; }
+    .instrucciones li { color: var(--fog); margin-bottom: 5px; }
+
+    /* ─── PORTADA ─────────────────────────────────────────────── */
+    .portada { padding-bottom: 56px; border-bottom: 1px solid var(--edge); margin-bottom: 56px; }
+    .label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(36px, 6vw, 60px);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.02;
+      margin-bottom: 20px;
+    }
+    h1 em { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; }
+    .portada > p { color: var(--fog); font-size: 17px; max-width: 56ch; }
+
+    .ficha { border: 1px solid var(--edge); border-radius: 14px; overflow: hidden; margin-top: 36px; }
+    .ficha > div {
+      display: grid; grid-template-columns: 190px 1fr; gap: 16px;
+      padding: 12px 18px; font-size: 14px;
+      border-bottom: 1px solid var(--edge);
+    }
+    .ficha > div:last-child { border-bottom: none; }
+    .ficha dt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; text-transform: uppercase; letter-spacing: .07em;
+      color: var(--fog); padding-top: 3px;
+    }
+    .ficha dd { color: var(--bone); }
+
+    /* Marcador de dato por completar. */
+    .dato {
+      background: rgba(255,180,80,.15);
+      border: 1px dashed rgba(255,180,80,.5);
+      border-radius: 5px;
+      padding: 1px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #FFB950;
+    }
+    :root[data-theme="light"] .dato { color: #8A5200; background: rgba(255,180,80,.22); }
+    h1 .dato { font-size: .42em; padding: 2px 12px; vertical-align: middle; }
+
+    /* ─── ÍNDICE ──────────────────────────────────────────────── */
+    .indice { margin-bottom: 72px; }
+    .indice ol { list-style: none; counter-reset: idx; }
+    .indice li { counter-increment: idx; border-bottom: 1px solid var(--edge); }
+    .indice li:first-child { border-top: 1px solid var(--edge); }
+    .indice a {
+      display: grid;
+      grid-template-columns: 96px 1fr;
+      align-items: baseline;
+      gap: 12px;
+      padding: 14px 4px;
+      text-decoration: none;
+      color: var(--bone);
+      font-family: 'Archivo', sans-serif;
+      font-weight: 600;
+      font-size: clamp(20px, 3.4vw, 30px);
+      letter-spacing: -.02em;
+      transition: color .2s, padding-left .2s;
+    }
+    .indice a::before {
+      content: "0" counter(idx) ".";
+      color: var(--fog);
+      font-variant-numeric: tabular-nums;
+    }
+    .indice a:hover { color: var(--accent); padding-left: 10px; }
+    .indice a:hover::before { color: var(--accent); }
+
+    /* ─── SECCIONES ───────────────────────────────────────────── */
+    section { margin-bottom: 64px; scroll-margin-top: 88px; }
+    h2 {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(24px, 3.6vw, 32px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.15;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--edge);
+      display: flex; gap: 14px;
+    }
+    h2 .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; font-weight: 400;
+      color: var(--accent);
+      padding-top: 10px;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 600;
+      color: var(--bone);
+      margin: 30px 0 10px;
+    }
+    p { color: var(--fog); margin-bottom: 14px; }
+    p strong, li strong, td strong { color: var(--bone); font-weight: 600; }
+    ul, ol.lista { margin: 0 0 16px 0; padding-left: 20px; }
+    li { color: var(--fog); margin-bottom: 7px; }
+    li::marker { color: var(--accent); }
+    a.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+    /* Tarjetas de entregables */
+    .bloques { display: grid; gap: 14px; }
+    .bloque {
+      border: 1px solid var(--edge);
+      border-radius: 14px;
+      padding: 20px 22px;
+      background: var(--surface-0);
+      break-inside: avoid;
+    }
+    .bloque h4 {
+      font-family: 'Archivo', sans-serif;
+      font-size: 17px; font-weight: 600; letter-spacing: -.01em;
+      margin-bottom: 4px;
+    }
+    .bloque .kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent);
+      display: block; margin-bottom: 10px;
+    }
+    .bloque ul { margin: 10px 0 0; padding-left: 18px; }
+    .bloque li { font-size: 14px; }
+
+    /* Tablas */
+    table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 14px; }
+    caption {
+      text-align: left;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--fog);
+      padding-bottom: 10px;
+    }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--edge); vertical-align: top; }
+    thead th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 400; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--fog);
+      border-bottom: 1px solid var(--edge);
+    }
+    td { color: var(--fog); }
+    td:first-child { color: var(--bone); font-weight: 500; }
+    .num-col { text-align: right; white-space: nowrap; font-family: 'JetBrains Mono', monospace; color: var(--bone); }
+    tfoot td { border-bottom: none; padding-top: 16px; }
+    tfoot .total { font-family: 'Archivo', sans-serif; font-size: 18px; font-weight: 700; color: var(--bone); }
+
+    /* Cronograma */
+    .fases { border-left: 1px solid var(--edge); padding-left: 24px; margin-bottom: 20px; }
+    .fase { position: relative; padding-bottom: 26px; break-inside: avoid; }
+    .fase:last-child { padding-bottom: 0; }
+    .fase::before {
+      content: "";
+      position: absolute; left: -29px; top: 7px;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .fase .hora {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--accent);
+      display: block; margin-bottom: 3px;
+    }
+    .fase h4 { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+    .fase p { margin-bottom: 0; font-size: 14px; }
+
+    /* Bloque destacado */
+    .destacado {
+      border-left: 2px solid var(--accent);
+      background: var(--lime-dim);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-bottom: 18px;
+      break-inside: avoid;
+    }
+    .destacado p:last-child { margin-bottom: 0; }
+
+    /* Firma */
+    .firma { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 32px; break-inside: avoid; }
+    .firma-col { border-top: 1px solid var(--edge); padding-top: 14px; }
+    .firma-linea {
+      height: 54px;
+      border-bottom: 1px solid var(--edge);
+      margin-bottom: 10px;
+    }
+    .firma-col span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+      color: var(--fog);
+      display: block;
+    }
+    .firma-col b { display: block; font-weight: 600; font-size: 14px; margin-top: 4px; }
+
+    .cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 8px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: var(--on-accent);
+      font-weight: 600; font-size: 15px;
+      text-decoration: none;
+    }
+
+    footer {
+      border-top: 1px solid var(--edge);
+      padding: 28px 0 0;
+      text-align: center;
+    }
+    .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--fog); }
+    .footer-legal { display: block; margin-top: 4px; opacity: .75; }
+
+    @media (max-width: 640px) {
+      .topbar { padding: 12px 18px; }
+      .doc { padding: 32px 18px 72px; }
+      .ficha > div { grid-template-columns: 1fr; gap: 4px; }
+      .indice a { grid-template-columns: 62px 1fr; }
+      .firma { grid-template-columns: 1fr; }
+      table { font-size: 13px; }
+      th, td { padding: 10px 8px; }
+    }
+
+    /* ─── IMPRESIÓN / EXPORTAR A PDF ──────────────────────────── */
+    @page { size: A4; margin: 16mm 14mm; }
+    @media print {
+      /* Se imprime siempre en modo claro: más legible y más liviano. */
+      :root, :root[data-theme="dark"] {
+        --onyx: #FFFFFF;
+        --graphite: #FFFFFF;
+        --fog: #4A505C;
+        --bone: #0A0B0D;
+        --lime-dim: rgba(122,168,0,.10);
+        --lime-border: rgba(122,168,0,.30);
+        --edge: rgba(10,11,13,.16);
+        --accent: #3F6300;
+        --surface-0: transparent;
+        --surface-1: transparent;
+        --surface-2: transparent;
+      }
+      body { font-size: 11pt; line-height: 1.55; }
+      .topbar, .instrucciones, .btn-print, .cta { display: none !important; }
+      .doc { max-width: none; padding: 0; }
+      .portada { padding-bottom: 28px; margin-bottom: 28px; }
+      .indice { margin-bottom: 0; break-after: page; }
+      section { margin-bottom: 34px; break-inside: avoid-page; }
+      h2 { break-after: avoid; }
+      section#cotizacion, section#terminos, section#acuerdo { break-before: page; }
+      a { color: inherit; text-decoration: none; }
+      .dato { color: #7A4E00; background: none; border: 1px dashed #B98A3A; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="logo">
+    <img class="logo-dark"  src="../Landing/assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
+    <img class="logo-light" src="../Landing/assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+  </span>
+  <div class="topbar-right">
+    <div class="theme-toggle" role="group" aria-label="Modo de color">
+      <button type="button" class="theme-btn" data-theme-set="light" aria-pressed="false" aria-label="Modo claro" title="Modo claro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <button type="button" class="theme-btn" data-theme-set="dark" aria-pressed="false" aria-label="Modo oscuro" title="Modo oscuro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+    <button type="button" class="btn-print" id="btn-print">Guardar en PDF</button>
+  </div>
+</header>
+
+<main class="doc">
+
+  <!-- Panel interno: no se imprime ni se envía al cliente. -->
+  <div class="instrucciones">
+    <strong>Uso interno · borrar antes de enviar</strong>
+    Todo lo marcado en naranja es un dato por completar. Reemplázalo antes de exportar.
+    <ul>
+      <li>Deja solo los servicios cotizados. Borra los bloques y filas que no apliquen.</li>
+      <li>Los montos van con IVA del 13% incluido. Si cotizas en dólares, indícalo en la fila del total.</li>
+      <li>Exporta con «Guardar en PDF». El PDF sale en modo claro, listo para enviar por WhatsApp o correo.</li>
+      <li>Nombra el archivo así: <em>Propuesta-Abdismart-NombreDelNegocio-AAAA-MM-DD.pdf</em></li>
+      <li>Guarda una copia de la propuesta enviada. Es el documento que define el alcance acordado.</li>
+    </ul>
+  </div>
+
+  <!-- ─── PORTADA ─────────────────────────────────────────── -->
+  <div class="portada">
+    <span class="label">Propuesta de servicios</span>
+    <h1><span class="dato">Nombre del negocio</span><br>en <em>manos</em> de Abdismart.</h1>
+    <p>Esta propuesta describe el trabajo, el plazo y la inversión para el servicio que conversamos. Es válida hasta la fecha indicada abajo.</p>
+
+    <dl class="ficha">
+      <div><dt>Preparada para</dt><dd><span class="dato">Nombre y apellidos del contacto</span> · <span class="dato">Nombre del negocio</span></dd></div>
+      <div><dt>Servicio solicitado</dt><dd><span class="dato">Landing page / Agente con IA / Automatización</span></dd></div>
+      <div><dt>Propuesta N.º</dt><dd><span class="dato">2026-000</span></dd></div>
+      <div><dt>Fecha de emisión</dt><dd><span class="dato">00 de mes de 2026</span></dd></div>
+      <div><dt>Válida hasta</dt><dd><span class="dato">00 de mes de 2026</span> (<span class="dato">15</span> días naturales)</dd></div>
+      <div><dt>Preparada por</dt><dd>Grupo Abdi S.R.L. · Abdismart · hola@abdismart.com · +506 8981 4520</dd></div>
+    </dl>
+  </div>
+
+  <!-- ─── ÍNDICE ──────────────────────────────────────────── -->
+  <nav class="indice" aria-label="Contenido de la propuesta">
+    <ol>
+      <li><a href="#descripcion">Descripción general del proyecto</a></li>
+      <li><a href="#alcance">Alcance y entregables</a></li>
+      <li><a href="#cronograma">Cronograma del proyecto</a></li>
+      <li><a href="#cotizacion">Cotización</a></li>
+      <li><a href="#terminos">Términos y condiciones</a></li>
+      <li><a href="#acuerdo">Acuerdo de servicios</a></li>
+    </ol>
+  </nav>
+
+  <!-- ─── 01 ──────────────────────────────────────────────── -->
+  <section id="descripcion">
+    <h2><span class="num">01</span> Descripción general del proyecto</h2>
+
+    <h3>Dónde está hoy tu negocio</h3>
+    <p><span class="dato">Resume en 2 o 3 frases la situación que el cliente contó: qué tiene hoy, qué le está costando, qué intentó antes. Sin adornos, con sus propias palabras.</span></p>
+
+    <h3>Qué quieres lograr</h3>
+    <p><span class="dato">Objetivo concreto y medible acordado en la llamada. Ejemplo: recibir consultas de pacientes nuevos sin depender de Instagram.</span></p>
+
+    <h3>Qué vamos a hacer</h3>
+    <p><span class="dato">Explica en una frase la solución propuesta.</span> Trabajamos con inteligencia artificial y revisión humana. Nada se publica sin que una persona lo revise y sin tu aprobación.</p>
+
+    <div class="destacado">
+      <p><strong>Resultado esperado:</strong> <span class="dato">Describe el resultado en una sola frase, en lenguaje del cliente.</span></p>
+    </div>
+
+    <h3>Qué necesitamos de tu parte</h3>
+    <ul>
+      <li>El brief completo: preguntas guiadas sobre tu negocio, desde el celular.</li>
+      <li>Logo, si lo tienes. Si no, lo resolvemos con el nombre del negocio.</li>
+      <li>Fotos, textos o materiales que quieras usar, con derecho a usarlos.</li>
+      <li>Datos de contacto reales: WhatsApp, teléfono, dirección y horario.</li>
+      <li>Una persona que apruebe la versión de revisión.</li>
+    </ul>
+  </section>
+
+  <!-- ─── 02 ──────────────────────────────────────────────── -->
+  <section id="alcance">
+    <h2><span class="num">02</span> Alcance y entregables</h2>
+    <p>Este es el alcance exacto de la contratación. Prevalece sobre cualquier descripción general del sitio web.</p>
+
+    <div class="bloques">
+
+      <div class="bloque">
+        <span class="kicker">Servicio 01</span>
+        <h4>Landing page</h4>
+        <p>Una página que presenta tu negocio, explica tus servicios y facilita el contacto.</p>
+        <ul>
+          <li>Diseño y desarrollo de <span class="dato">1</span> página con <span class="dato">5</span> secciones.</li>
+          <li>Textos redactados a partir de tu brief.</li>
+          <li>Adaptación a celular, tableta y computadora.</li>
+          <li>Botón de WhatsApp y formulario de contacto.</li>
+          <li>Dominio registrado a tu nombre, primer año incluido.</li>
+          <li>Hosting y certificado SSL.</li>
+          <li>SEO básico: títulos, descripciones y datos del negocio.</li>
+          <li>Una ronda de revisión antes de publicar.</li>
+        </ul>
+      </div>
+
+      <div class="bloque">
+        <span class="kicker">Servicio 02</span>
+        <h4>Agente con IA</h4>
+        <p>Atiende consultas, responde dudas y agenda citas en tus canales de mensajería.</p>
+        <ul>
+          <li>Conexión de <span class="dato">WhatsApp, Instagram y Facebook</span>.</li>
+          <li>Base de respuestas aprobadas por ti: servicios, horarios, requisitos y precios.</li>
+          <li>Consulta de disponibilidad y reserva de citas en <span class="dato">la agenda que uses</span>.</li>
+          <li>Traspaso a una persona cuando la consulta lo requiera.</li>
+          <li>Pruebas con casos reales antes de activarlo.</li>
+        </ul>
+      </div>
+
+      <div class="bloque">
+        <span class="kicker">Servicio 03</span>
+        <h4>Automatización personalizada</h4>
+        <p>Confirma citas, gestiona cancelaciones y vuelve a ofrecer los espacios libres.</p>
+        <ul>
+          <li>Mapa del flujo actual y del flujo automatizado, aprobado por ti.</li>
+          <li>Recordatorios de cita y confirmación por <span class="dato">WhatsApp</span>.</li>
+          <li>Liberación del espacio cuando el paciente cancela.</li>
+          <li>Aviso a la lista de espera y confirmación del primer disponible.</li>
+          <li>Conexión con <span class="dato">las herramientas que ya usas</span>.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <h3>No incluido en esta propuesta</h3>
+    <ul>
+      <li>Producción de fotos o video.</li>
+      <li>Redacción de contenido legal propio de tu actividad, como el aviso de privacidad.</li>
+      <li>Publicidad pagada y gestión de redes sociales.</li>
+      <li>Tienda en línea, pasarela de pagos o facturación electrónica.</li>
+      <li>Funcionalidades o integraciones que no aparezcan en la lista de arriba.</li>
+    </ul>
+    <p>Todo lo anterior se puede agregar. Se cotiza aparte y requiere tu aprobación antes de empezar.</p>
+  </section>
+
+  <!-- ─── 03 ──────────────────────────────────────────────── -->
+  <section id="cronograma">
+    <h2><span class="num">03</span> Cronograma del proyecto</h2>
+    <p>El reloj arranca cuando se cumplen dos condiciones: el pago está confirmado y el brief está completo. Si esperamos información o aprobaciones tuyas, el reloj se pausa y se reanuda cuando llegan.</p>
+
+    <div class="fases">
+      <div class="fase">
+        <span class="hora">Hora 0</span>
+        <h4>Pago y brief</h4>
+        <p>Confirmas el pago y completas el brief. Recibes la fecha y hora exacta de entrega.</p>
+      </div>
+      <div class="fase">
+        <span class="hora">Hora 0 a 12</span>
+        <h4>Producción</h4>
+        <p>Redactamos, diseñamos y armamos tu <span class="dato">web / agente / flujo</span>. Registramos el dominio.</p>
+      </div>
+      <div class="fase">
+        <span class="hora">Hora 12 a 24</span>
+        <h4>Revisión interna</h4>
+        <p>Una persona revisa contenido, datos de contacto, velocidad y visualización en celular.</p>
+      </div>
+      <div class="fase">
+        <span class="hora">Hora 24</span>
+        <h4>Versión de revisión</h4>
+        <p>Recibes el enlace para verlo. Tienes una ronda de ajustes incluida.</p>
+      </div>
+      <div class="fase">
+        <span class="hora">Hora 24 a 36</span>
+        <h4>Tus ajustes</h4>
+        <p>Envías los cambios o apruebas directo. Si no hay respuesta en 6 horas hábiles, publicamos como está para no romper el plazo y los ajustes quedan para después.</p>
+      </div>
+      <div class="fase">
+        <span class="hora">Hora 36 a 48</span>
+        <h4>Publicación y entrega</h4>
+        <p>Aplicamos los ajustes, publicamos en tu dominio y te enviamos un video corto de 2 minutos con todo lo que necesitas saber.</p>
+      </div>
+    </div>
+
+    <div class="destacado">
+      <p><strong>Plazo comprometido:</strong> <span class="dato">48</span> horas hábiles desde la hora 0. Si incumplimos ese plazo por causas nuestras, devolvemos el pago inicial completo.</p>
+    </div>
+
+    <p><span class="dato">Nota para agentes con IA y automatizaciones: sustituye la línea de tiempo por el plazo acordado en días hábiles y borra la garantía de 48 horas si no aplica.</span></p>
+  </section>
+
+  <!-- ─── 04 ──────────────────────────────────────────────── -->
+  <section id="cotizacion">
+    <h2><span class="num">04</span> Cotización</h2>
+
+    <table>
+      <caption>Pago inicial</caption>
+      <thead>
+        <tr><th scope="col">Concepto</th><th scope="col">Detalle</th><th scope="col" class="num-col">Monto</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Landing page</td>
+          <td>Diseño, desarrollo, dominio, hosting y publicación</td>
+          <td class="num-col"><span class="dato">000.000</span></td>
+        </tr>
+        <tr>
+          <td>Agente con IA</td>
+          <td>Configuración, canales conectados y pruebas</td>
+          <td class="num-col"><span class="dato">000.000</span></td>
+        </tr>
+        <tr>
+          <td>Automatización</td>
+          <td>Diseño del flujo, conexiones y puesta en marcha</td>
+          <td class="num-col"><span class="dato">000.000</span></td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2" class="total">Total inicial</td>
+          <td class="num-col total"><span class="dato">₡000.000</span></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <table>
+      <caption>Mensualidad</caption>
+      <thead>
+        <tr><th scope="col">Concepto</th><th scope="col">Detalle</th><th scope="col" class="num-col">Monto</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Servicio mensual</td>
+          <td>Hosting, dominio, seguridad, respaldos, cambios incluidos y soporte</td>
+          <td class="num-col"><span class="dato">₡00.000</span> / mes</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">La mensualidad se cobra por adelantado y empieza el día que publicamos, no el día del pago inicial. Se renueva mes a mes, sin plazo mínimo de permanencia.</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <h3>Condiciones de la cotización</h3>
+    <ul>
+      <li>Todos los montos incluyen el impuesto al valor agregado del 13%.</li>
+      <li>Medios de pago: transferencia, SINPE Móvil, tarjeta de débito o crédito.</li>
+      <li>Por cada pago recibido emitimos el comprobante electrónico autorizado por Tributación.</li>
+      <li>Esta cotización es válida hasta el <span class="dato">00 de mes de 2026</span>.</li>
+      <li>Al aceptar esta cotización y pagar, aceptas los términos de la sección 05.</li>
+    </ul>
+  </section>
+
+  <!-- ─── 05 ──────────────────────────────────────────────── -->
+  <section id="terminos">
+    <h2><span class="num">05</span> Términos y condiciones</h2>
+    <p>Resumen de las condiciones que aplican a esta contratación. El documento completo está en <a class="link" href="https://abdi.com/terminos">abdi.com/terminos</a> y prevalece sobre este resumen en lo no previsto aquí.</p>
+
+    <h3>Plazo y garantía</h3>
+    <p>El plazo corre en horas hábiles y arranca con el pago confirmado y el brief completo. Se suspende mientras esperamos información o aprobaciones tuyas. Si incumplimos el plazo por causas nuestras, devolvemos el pago inicial completo, sin que tengas que justificar el reclamo.</p>
+
+    <h3>Revisiones y cambios</h3>
+    <p>Antes de publicar tienes una ronda de revisión incluida sobre lo acordado en el brief. Después de publicar, la mensualidad cubre cambios menores: textos, imágenes, precios y secciones. Rediseños completos, funcionalidades nuevas o integraciones adicionales se cotizan aparte.</p>
+
+    <h3>Lo que es tuyo</h3>
+    <p>El material que aportas sigue siendo tuyo. Una vez pagado el monto inicial completo, te cedemos los derechos patrimoniales sobre el diseño y los contenidos producidos para tu proyecto. El dominio se registra a tu nombre.</p>
+
+    <h3>Lo que es nuestro</h3>
+    <p>Conservamos la titularidad de nuestras plantillas base, componentes, código de plataforma, herramientas internas y metodología. Sobre ellos recibes una licencia de uso mientras dure la relación.</p>
+
+    <h3>Cancelación</h3>
+    <p>Puedes cancelar la mensualidad cuando quieras, sin penalización. Surte efecto al final del período ya pagado. Al cancelar te trasladamos el dominio y te entregamos una exportación de los archivos. Conservamos un respaldo por 30 días naturales.</p>
+
+    <h3>Derecho de retracto</h3>
+    <p>Conforme al artículo 40 de la Ley 7472, tienes ocho días hábiles para rescindir el contrato desde que se perfecciona. Si lo ejerces antes de entregar el brief, el reembolso es total. Si la producción ya empezó, retenemos la parte proporcional del trabajo hecho y la detallamos. Una vez publicado y aceptado, el servicio se considera consumido.</p>
+
+    <h3>Tus obligaciones</h3>
+    <p>Entregar información veraz y contar con los derechos sobre el material que aportas. Cumplir la normativa de tu actividad, incluidas las disposiciones del Ministerio de Salud y de tu colegio profesional sobre publicidad, cuando corresponda. Publicar la información legal que tu actividad requiera, incluido tu propio aviso de privacidad.</p>
+
+    <h3>Datos personales</h3>
+    <p>Grupo Abdi S.R.L. es responsable de la base de datos. Tratamos tus datos conforme a la Ley 8968 y solo para contactarte, prestar el servicio y cumplir obligaciones legales y tributarias. No se venden ni se ceden con fines comerciales.</p>
+
+    <h3>Portafolio</h3>
+    <p>Podemos mostrar el trabajo publicado y el nombre de tu negocio en nuestro portafolio. Si prefieres que no, escríbenos y lo retiramos.</p>
+
+    <h3>Ley aplicable</h3>
+    <p>Esta contratación se rige por las leyes de Costa Rica.</p>
+  </section>
+
+  <!-- ─── 06 ──────────────────────────────────────────────── -->
+  <section id="acuerdo">
+    <h2><span class="num">06</span> Acuerdo de servicios</h2>
+    <p>Lo que cubre la mensualidad mientras te mantengas activo.</p>
+
+    <table>
+      <thead>
+        <tr><th scope="col">Compromiso</th><th scope="col">Qué significa</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Disponibilidad</td><td>Tu web funcionando de forma continua, con mantenimiento programado avisado con antelación.</td></tr>
+        <tr><td>Hosting y dominio</td><td>Hosting, certificado SSL y renovación del dominio a tu nombre.</td></tr>
+        <tr><td>Seguridad y respaldos</td><td>Actualizaciones de seguridad y respaldo de tu sitio.</td></tr>
+        <tr><td>Cambios incluidos</td><td><span class="dato">Hasta 0</span> solicitudes de cambios menores por mes: textos, imágenes, precios y secciones.</td></tr>
+        <tr><td>Canal de soporte</td><td>WhatsApp al +506 8981 4520 y correo a hola@abdismart.com.</td></tr>
+        <tr><td>Horario de atención</td><td><span class="dato">Lunes a viernes, 00:00 a 00:00</span>. Fuera de ese horario respondemos el siguiente día hábil.</td></tr>
+        <tr><td>Tiempo de respuesta</td><td>Primera respuesta en menos de <span class="dato">4</span> horas hábiles.</td></tr>
+        <tr><td>Reclamos</td><td>Respondemos cualquier reclamo dentro de los cinco días hábiles siguientes.</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Cómo aceptar esta propuesta</h3>
+    <ol class="lista">
+      <li>Responde por WhatsApp o correo que aceptas la propuesta.</li>
+      <li>Realiza el pago inicial por el medio que prefieras.</li>
+      <li>Recibes el brief. Lo completas desde el celular y arrancamos.</li>
+    </ol>
+
+    <div class="destacado">
+      <p>La aceptación por medios electrónicos tiene la misma validez que una firma manuscrita, conforme a la Ley 8454. Si prefieres firmar, usa el espacio de abajo.</p>
+    </div>
+
+    <div class="firma">
+      <div class="firma-col">
+        <div class="firma-linea"></div>
+        <span>Por el cliente</span>
+        <b><span class="dato">Nombre y apellidos</span></b>
+        <span style="margin-top:8px">Cédula <span class="dato">0-0000-0000</span> · Fecha <span class="dato">00/00/2026</span></span>
+      </div>
+      <div class="firma-col">
+        <div class="firma-linea"></div>
+        <span>Por Abdismart</span>
+        <b>Grupo Abdi S.R.L.</b>
+        <span style="margin-top:8px">Cédula jurídica <span class="dato">3-102-XXXXXX</span> · Fecha <span class="dato">00/00/2026</span></span>
+      </div>
+    </div>
+
+    <p style="margin-top:28px"><a class="cta" href="https://wa.me/50689814520?text=Hola.%20Acepto%20la%20propuesta%20de%20Abdismart.">Aceptar por WhatsApp →</a></p>
+  </section>
+
+  <footer>
+    <p class="footer-copy">
+      © 2026 Abdismart · Propuesta <span class="dato">2026-000</span>
+      <span class="footer-legal">Grupo Abdi S.R.L. · hola@abdismart.com · +506 8981 4520</span>
+    </p>
+  </footer>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+  var THEME_KEY = 'abdi-theme';
+  var themeBtns = Array.prototype.slice.call(document.querySelectorAll('.theme-btn'));
+  var metaColor = document.getElementById('meta-theme-color');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme));
+    });
+    if (metaColor) metaColor.setAttribute('content', theme === 'light' ? '#F6F7F9' : '#0A0B0D');
+  }
+
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
+  themeBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyTheme(btn.dataset.themeSet);
+      try { localStorage.setItem(THEME_KEY, btn.dataset.themeSet); } catch (e) {}
+    });
+  });
+
+  var printBtn = document.getElementById('btn-print');
+  if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
+})();
+</script>
+
+</body>
+</html>

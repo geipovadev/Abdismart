@@ -58,7 +58,7 @@
     "@type": "Organization",
     "name": "Abdi",
     "description": "Webs profesionales para laboratorios de Costa Rica. Dominio, hosting y soporte continuo en español incluidos.",
-    "email": "hola@abdi.com",
+    "email": "hola@abdismart.com",
     "areaServed": "CR"
   }
   </script>
@@ -68,7 +68,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/preview-builder.css?v=1">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -2217,26 +2216,40 @@
     .founder-modal .form-field.full textarea { min-height: 78px; resize: vertical; }
 
     @media (max-width: 720px) {
-      .founder-modal { padding: 10px; align-items: end; }
-      .founder-dialog { grid-template-columns: 1fr; max-height: calc(100vh - 20px); border-radius: 22px; }
+      .founder-modal { padding: 8px; align-items: center; }
+      .founder-dialog { grid-template-columns: 1fr; max-height: calc(100dvh - 16px); border-radius: 20px; }
       .founder-rail {
         min-height: auto;
         flex-direction: row;
         align-items: center;
-        padding: 16px 66px 16px 20px;
-        border-radius: 21px 21px 0 0;
+        padding: 11px 58px 11px 18px;
+        border-radius: 19px 19px 0 0;
       }
       .founder-slots { display: flex; align-items: baseline; gap: 10px; }
-      .founder-slots strong { font-size: 38px; }
+      .founder-slots strong { font-size: 32px; }
       .founder-slots span { max-width: none; margin: 0; font-size: 9px; }
       .founder-rail-foot { display: none; }
       .founder-close { top: 11px; right: 12px; color: #0A0B0D; background: rgba(10,11,13,.08); border-color: rgba(10,11,13,.14); }
-      .founder-panel { padding: 30px 22px 24px; }
-      .founder-title { font-size: clamp(31px,10vw,42px); }
-      .founder-benefits { grid-template-columns: 1fr; margin: 24px 0; }
-      .founder-benefit { min-height: 0; display: grid; grid-template-columns: 26px 1fr; align-items: center; gap: 10px; padding: 13px 15px; }
+      .founder-panel { padding: 20px 18px 18px; }
+      .founder-eyebrow { margin-bottom: 10px; font-size: 9px; }
+      .founder-title { margin-bottom: 10px; font-size: clamp(27px,8.3vw,34px); line-height: .98; }
+      .founder-intro { font-size: 13px; line-height: 1.5; }
+      .founder-benefits { grid-template-columns: 1fr; gap: 7px; margin: 16px 0; }
+      .founder-benefit { min-height: 0; display: grid; grid-template-columns: 22px 1fr; align-items: center; gap: 9px; padding: 10px 12px; border-radius: 11px; }
       .founder-benefit svg { margin: 0; }
+      .founder-benefit b { font-size: 11px; }
+      .founder-primary { min-height: 48px; font-size: 13px; }
+      .founder-microcopy { margin-top: 9px; font-size: 8px; }
       .founder-modal .form-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 380px), (max-height: 700px) and (max-width: 720px) {
+      .founder-rail-label { display: none; }
+      .founder-panel { padding-top: 16px; }
+      .founder-title { font-size: 26px; }
+      .founder-intro { font-size: 12px; }
+      .founder-benefits { margin: 12px 0; }
+      .founder-benefit { padding: 8px 10px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2782,7 +2795,7 @@
       .flow-line::after { transform: none; }
     }
   </style>
-  <link rel="stylesheet" href="assets/agent-widget.css?v=15">
+  <link rel="stylesheet" href="assets/agent-widget.css?v=17">
 </head>
 <body>
 
@@ -2995,31 +3008,6 @@
         <p class="step-desc">Publicamos tu página con dominio propio, contacto por WhatsApp y todo listo para que nuevos clientes te encuentren y den el siguiente paso.</p>
         <div class="step-tag mono">⟶ Dominio · Hosting · Soporte continuo</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- IMAGINA TU WEB -->
-<section class="imagine-section" id="imagina-tu-web">
-  <div class="container imagine-shell">
-    <div class="reveal">
-      <span class="label">Prueba Abdi</span>
-      <h2 class="imagine-title">No la imagines.<br><em>Mírala funcionar.</em></h2>
-      <p class="imagine-copy">Cuéntanos cinco cosas sobre tu negocio y crea una primera versión de tu página: con tus servicios, tu ciudad y el contacto que quieres recibir.</p>
-      <div class="imagine-actions">
-        <button class="btn-primary" type="button" data-open-preview-builder>Imaginar mi web →</button>
-        <span class="imagine-note">1 VISTA PREVIA · SIN COMPROMISO</span>
-      </div>
-    </div>
-    <div class="imagine-card reveal d1" aria-hidden="true">
-      <div class="imagine-card-bar"><i></i><i></i><i></i></div>
-      <div class="imagine-card-stage">
-        <div class="imagine-card-kicker">Vista previa personalizada</div>
-        <div class="imagine-card-title">Tu negocio,<br>presentado con claridad.</div>
-        <div class="imagine-card-lines"><span></span><span></span></div>
-        <span class="imagine-card-button">Consultar por WhatsApp →</span>
-      </div>
-      <span class="imagine-card-float">Abdi está organizando tu información ✦</span>
     </div>
   </div>
 </section>
@@ -4343,8 +4331,7 @@
     wlSuccess.style.display = 'block';
   });
 </script>
-<script src="assets/preview-builder.js?v=1" defer></script>
-<script src="assets/agent-widget.js?v=16" data-business="abdismart" defer></script>
+<script src="assets/agent-widget.js?v=17" data-business="abdismart" defer></script>
 
 </body>
 </html>
