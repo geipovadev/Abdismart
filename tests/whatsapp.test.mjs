@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHmac, webcrypto } from 'node:crypto';
-import { buildOutboundMessage, ensureTeamContact, extractInboundMessages, isOptOut, readMessageText, verifySignature, whatsappVerify } from '../src/whatsapp.js';
+import { buildOutboundMessage, ensureTeamContact, extensionFor, extractInboundMessages, isOptOut, readAudioId, readMessageText, transcribeVoiceNote, verifySignature, whatsappVerify } from '../src/whatsapp.js';
 import { formatWhatsapp } from '../src/businesses.js';
 
 // El Worker usa Web Crypto; en Node hay que exponerlo antes de importar nada más.
@@ -107,6 +107,33 @@ test('lee el título del botón que la persona presionó', () => {
 test('marca como no conversable un audio o una imagen', () => {
   assert.equal(readMessageText({ type: 'audio', audio: { id: 'x' } }), '');
   assert.equal(readMessageText({ type: 'image', image: { id: 'x' } }), '');
+});
+
+test('expone el identificador del audio para transcribirlo', () => {
+  assert.equal(readAudioId({ type: 'audio', audio: { id: 'media-123', voice: true } }), 'media-123');
+  assert.equal(readAudioId({ type: 'image', image: { id: 'x' } }), '');
+  assert.equal(readAudioId({ type: 'text', text: { body: 'hola' } }), '');
+});
+
+test('el payload de una nota de voz llega con su audioId', () => {
+  const payload = webhookPayload([{ id: 'wamid.voz', from: '506', type: 'audio', audio: { id: 'media-abc', voice: true, mime_type: 'audio/ogg; codecs=opus' } }]);
+  const [inbound] = extractInboundMessages(payload);
+  assert.equal(inbound.audioId, 'media-abc');
+  assert.equal(inbound.text, '');
+});
+
+test('deduce la extensión del audio según el tipo que manda WhatsApp', () => {
+  assert.equal(extensionFor('audio/ogg; codecs=opus'), 'ogg');
+  assert.equal(extensionFor('audio/mpeg'), 'mp3');
+  assert.equal(extensionFor('audio/mp4'), 'm4a');
+  // Un tipo desconocido cae en ogg, que es lo que WhatsApp usa para las notas de voz.
+  assert.equal(extensionFor('audio/rarisimo'), 'ogg');
+  assert.equal(extensionFor(''), 'ogg');
+});
+
+test('no intenta transcribir sin token o sin clave de OpenAI', async () => {
+  assert.equal(await transcribeVoiceNote({ OPENAI_API_KEY: 'x' }, 'media-1'), '');
+  assert.equal(await transcribeVoiceNote({ WHATSAPP_TOKEN: 'x' }, 'media-1'), '');
 });
 
 test('detecta bajas explícitas sin confundirlas con conversación normal', () => {

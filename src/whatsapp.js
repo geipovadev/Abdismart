@@ -16,7 +16,10 @@ const INTERACTIVE_BODY_MAX = 1024;
 const TEXT_BODY_MAX = 4096;
 const MAX_BUTTONS = 3;
 
-const FALLBACK_UNSUPPORTED = 'Por ahora solo puedo leer mensajes de texto. ¿Me lo cuentas escrito, en pocas palabras?';
+const FALLBACK_UNSUPPORTED = 'Por ahora puedo leer mensajes de texto y escuchar notas de voz. ¿Me lo cuentas de alguna de las dos formas?';
+// Llegó la nota de voz pero no se pudo transcribir. Distinto de un tipo de mensaje
+// que no atendemos: aquí la persona sí hizo lo correcto y conviene no culparla.
+const FALLBACK_AUDIO_ILEGIBLE = 'Recibí tu nota de voz pero no logré entenderla bien. ¿Me la repites o me lo escribes?';
 const FALLBACK_ERROR = 'Se me complicó responder en este momento. Escríbeme de nuevo en un minuto y seguimos.';
 const OPT_OUT_CONFIRMATION = 'Listo, no vuelvo a escribirte por aquí. Si más adelante quieres retomarlo, solo mándame un mensaje.';
 
@@ -87,7 +90,8 @@ export function extractInboundMessages(payload, expectedPhoneNumberId = '') {
           phoneNumberId,
           profileName: cleanText(profiles.get(message.from) || '', 80),
           type: message.type || '',
-          text: readMessageText(message)
+          text: readMessageText(message),
+          audioId: readAudioId(message)
         });
       }
     }
@@ -106,6 +110,16 @@ export function readMessageText(message) {
   // Respuesta rápida de una plantilla enviada por nosotros.
   if (message.type === 'button') return cleanText(message.button?.text, 800);
   return '';
+}
+
+/**
+ * Identificador del audio de una nota de voz. En LATAM mucha gente responde
+ * hablando, así que estos mensajes se transcriben en vez de rechazarse.
+ * WhatsApp usa `audio` tanto para notas de voz como para archivos de sonido.
+ */
+export function readAudioId(message) {
+  if (!message || message.type !== 'audio') return '';
+  return cleanText(message.audio?.id, 120);
 }
 
 export function isOptOut(text) {
@@ -185,6 +199,77 @@ async function callGraph(env, phoneNumberId, payload) {
     console.error('WhatsApp Graph request inválida', String(error).slice(0, 300));
     return { ok: false };
   }
+}
+
+// --- Notas de voz -----------------------------------------------------------
+
+const TRANSCRIBE_URL = 'https://api.openai.com/v1/audio/transcriptions';
+// Una nota de voz de WhatsApp no pasa de 16 MB, y el limite de OpenAI es 25 MB.
+// Este tope solo protege de un archivo de sonido largo enviado como adjunto.
+const MAX_AUDIO_BYTES = 16 * 1024 * 1024;
+
+/**
+ * Convierte una nota de voz en texto. Meta entrega el audio en dos pasos: primero
+ * una URL temporal y despues el binario, y las dos peticiones van firmadas con el
+ * token. Devuelve '' si algo falla, para que el canal siga la ruta de respaldo.
+ */
+export async function transcribeVoiceNote(env, audioId) {
+  const token = graphAuth(env);
+  if (!token || !env.OPENAI_API_KEY) return '';
+  try {
+    const meta = await fetch(`${GRAPH_HOST}/${apiVersion(env)}/${encodeURIComponent(audioId)}`, {
+      headers: { authorization: `Bearer ${token}` }
+    });
+    if (!meta.ok) {
+      console.error('WhatsApp media lookup error', meta.status, (await meta.text()).slice(0, 200));
+      return '';
+    }
+    const { url, mime_type: mimeType, file_size: fileSize } = await meta.json();
+    if (!url) return '';
+    if (fileSize && Number(fileSize) > MAX_AUDIO_BYTES) {
+      console.error('WhatsApp audio demasiado grande', fileSize);
+      return '';
+    }
+
+    // La URL de descarga tambien exige el token: no es publica.
+    const media = await fetch(url, { headers: { authorization: `Bearer ${token}` } });
+    if (!media.ok) {
+      console.error('WhatsApp media download error', media.status);
+      return '';
+    }
+    const audio = await media.blob();
+    if (audio.size > MAX_AUDIO_BYTES) {
+      console.error('WhatsApp audio demasiado grande', audio.size);
+      return '';
+    }
+
+    const form = new FormData();
+    // WhatsApp manda ogg/opus; la extension le indica el formato a OpenAI.
+    form.append('file', audio, `nota-de-voz.${extensionFor(mimeType)}`);
+    form.append('model', env.OPENAI_TRANSCRIBE_MODEL || 'whisper-1');
+    // Fijar el idioma mejora bastante la precision con acento costarricense.
+    form.append('language', 'es');
+
+    const response = await fetch(TRANSCRIBE_URL, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${env.OPENAI_API_KEY}` },
+      body: form
+    });
+    if (!response.ok) {
+      console.error('OpenAI transcription error', response.status, (await response.text()).slice(0, 300));
+      return '';
+    }
+    const { text } = await response.json();
+    return cleanText(text, 800);
+  } catch (error) {
+    console.error('WhatsApp transcription error', String(error).slice(0, 300));
+    return '';
+  }
+}
+
+export function extensionFor(mimeType) {
+  const type = String(mimeType || '').split(';')[0].trim().toLowerCase();
+  return { 'audio/ogg': 'ogg', 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'audio/aac': 'm4a', 'audio/amr': 'amr', 'audio/wav': 'wav', 'audio/webm': 'webm' }[type] || 'ogg';
 }
 
 async function sendToWhatsApp(env, phoneNumberId, message) {
@@ -354,6 +439,13 @@ async function handleMessage(env, inbound) {
     last_inbound_at: new Date().toISOString()
   };
 
+  // Una nota de voz se transcribe antes de decidir nada: a partir de aqui es
+  // texto normal y recorre el mismo camino, incluidas las bajas dictadas en voz.
+  if (!inbound.text && inbound.audioId) {
+    inbound.text = await transcribeVoiceNote(env, inbound.audioId);
+    if (inbound.text) inbound.transcribed = true;
+  }
+
   if (isOptOut(inbound.text)) {
     await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, OPT_OUT_CONFIRMATION));
     await saveConversation(env, { ...base, status: 'opted_out', history: [] });
@@ -368,7 +460,8 @@ async function handleMessage(env, inbound) {
   }
 
   if (!inbound.text) {
-    await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, FALLBACK_UNSUPPORTED));
+    const fallback = inbound.audioId ? FALLBACK_AUDIO_ILEGIBLE : FALLBACK_UNSUPPORTED;
+    await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, fallback));
     return;
   }
 
@@ -395,7 +488,13 @@ async function handleMessage(env, inbound) {
     handoff_ready: base.handoff_ready || reply.wants_human,
     turn_count: base.turn_count + 1,
     status: 'activa',
-    history: [...history, { role: 'user', content: inbound.text }, { role: 'assistant', content: answer }].slice(-MAX_HISTORY),
+    // `voice` es solo para que el CRM muestre que ese turno llegó hablado.
+    // normalizeHistory lo descarta al reconstruir la entrada del modelo.
+    history: [
+      ...history,
+      inbound.transcribed ? { role: 'user', content: inbound.text, voice: true } : { role: 'user', content: inbound.text },
+      { role: 'assistant', content: answer }
+    ].slice(-MAX_HISTORY),
     last_outbound_at: new Date().toISOString()
   };
   state.lead_id = await syncLead(env, state, inbound.waId, inbound.profileName);
