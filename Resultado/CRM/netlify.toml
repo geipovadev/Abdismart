@@ -1,0 +1,40 @@
+# Configuración del sitio `abdi-crm` (crm.abdismart.com).
+#
+# Existe porque el repositorio tiene dos sitios de Netlify: la landing y el CRM.
+# El netlify.toml de la raíz publica `Resultado/Landing`, y Netlify le da
+# prioridad sobre lo que se configure en el panel — al conectar el CRM al
+# repositorio, terminó sirviendo la landing en crm.abdismart.com.
+#
+# Con el directorio base del sitio puesto en `Resultado/CRM`, Netlify lee ESTE
+# archivo en lugar del de la raíz. Los dos sitios quedan independientes.
+
+[build]
+  # Relativo al directorio base, que ya es Resultado/CRM.
+  publish = "."
+  command = ""
+
+[build.processing]
+  skip_processing = true
+
+# La raíz manda al login; el tablero comprueba la sesión por su cuenta.
+[[redirects]]
+  from = "/"
+  to = "/login.html"
+  status = 302
+  force = false
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=()"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    # El CRM no debe quedar en caché de buscadores ni indexado.
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
