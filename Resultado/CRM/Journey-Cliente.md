@@ -15,7 +15,7 @@ Documento operativo: qué vive el cliente paso a paso y qué pasa detrás en cad
 ```
 FASE 0          FASE 1           FASE 2            FASE 3           FASE 4
 Interés    →    Venta       →    Producción   →    Entrega     →    Retención
-(sin reloj)     (sin reloj)      (H0 – H36)        (H36 – H48)      (mes a mes)
+(sin reloj)     (sin reloj)      (P1 – P4)         (P5 – entrega)   (mes a mes)
 
 waitlist        llamada          status:           status:          status:
 contactado=     + pago           brief → diseno    revision →       activo
@@ -25,8 +25,8 @@ false/true      + contrato       → revision        publicado
 El pipeline vive en la tabla `clients` de Supabase con estos estados reales:
 `brief` → `diseno` → `revision` → `publicado` → `activo` (y `pausa` para bajas temporales).
 
-**El reloj de 48 horas hábiles arranca cuando se cumplen las DOS condiciones:**
-pago del setup fee confirmado **y** brief completo con materiales mínimos (logo o nombre + 3 datos del negocio). Así lo dice el FAQ de la landing: *"desde que confirmas el pago y nos das la información de tu negocio"*. Nunca arrancar el reloj con brief incompleto — es la causa #1 de SLA roto.
+**El reloj de producción arranca cuando se cumplen las DOS condiciones:**
+pago del setup fee confirmado **y** brief completo con materiales mínimos (logo o nombre + 3 datos del negocio). Así lo dice el FAQ de la landing: *"desde que confirmas el pago y nos das la información de tu negocio"*. Nunca arrancar el reloj con brief incompleto — es la causa #1 de entrega tardía.
 
 ---
 
@@ -37,7 +37,7 @@ pago del setup fee confirmado **y** brief completo con materiales mínimos (logo
 | Paso | Experiencia del cliente |
 |---|---|
 | 0.1 | Ve contenido de Abdi (Instagram/TikTok) o recibe recomendación de un colega. |
-| 0.2 | Entra a la landing. Lee la promesa: web profesional en 48 horas, todo incluido. |
+| 0.2 | Entra a la landing. Lee la propuesta: web profesional con fecha de entrega clara, todo incluido. |
 | 0.3 | Llena el formulario de lista fundadora: nombre, tipo de negocio, WhatsApp, email. 30 segundos. |
 | 0.4 | Ve confirmación inmediata: "Lugar apartado. Te contactamos en menos de 24 horas." |
 
@@ -81,45 +81,47 @@ pago del setup fee confirmado **y** brief completo con materiales mínimos (logo
 
 ---
 
-## FASE 2 · Producción (H0 – H36)
+## FASE 2 · Producción (P1 – P4)
 
-**H0 = momento en que el brief queda completo (con pago ya confirmado).**
+**El reloj arranca cuando el brief queda completo, con el pago ya confirmado.**
+Las etapas van numeradas porque su duración depende del alcance acordado; lo que
+no cambia es el orden ni lo que ocurre en cada una.
 
 ### Lo que vive el cliente
 
-| Hora | Paso | Experiencia del cliente |
+| Etapa | Paso | Experiencia del cliente |
 |---|---|---|
-| H0 | 2.1 | Termina el brief: 18 preguntas guiadas en español, 10 minutos, desde el celular. Sube logo y fotos si las tiene. |
-| H0 | 2.2 | Confirmación: "Recibido. Tu web estará lista el [fecha y hora exacta]. Te avisamos en cada paso." |
-| H12–H24 | 2.3 | Recibe aviso de progreso: "Tu web está en diseño. Vamos bien." (un mensaje, no spam). |
-| H24–H30 | 2.4 | Recibe link de preview: "Tu web está lista para que la veas. Tienes una ronda de ajustes incluida. Respóndenos antes de [hora] para mantener la entrega en 48h." |
-| H30–H36 | 2.5 | Envía sus ajustes (o aprueba directo). |
+| Inicio | 2.1 | Termina el brief: 18 preguntas guiadas en español, 10 minutos, desde el celular. Sube logo y fotos si las tiene. |
+| Inicio | 2.2 | Confirmación: "Recibido. Tu web estará lista el [fecha y hora exacta]. Te avisamos en cada paso." |
+| P2 | 2.3 | Recibe aviso de progreso: "Tu web está en diseño. Vamos bien." (un mensaje, no spam). |
+| P3 | 2.4 | Recibe link de preview: "Tu web está lista para que la veas. Tienes una ronda de ajustes incluida. Respóndenos antes de [hora] para mantener la fecha de entrega." |
+| P4 | 2.5 | Envía sus ajustes (o aprueba directo). |
 
 ### Lo que pasa detrás
 
-| Hora | Pieza | Estado | Detalle |
+| Etapa | Pieza | Estado | Detalle |
 |---|---|---|---|
-| H0 | Formulario de brief → `brief_answers` | ✅ HOY (tabla) 🔧 (formulario) | La tabla con 18 preguntas existe. Falta la página pública del brief conectada (con rate limiting, que ya está en la base). |
-| H0 | Upload de logo/fotos → `documents` + Storage | ✅ HOY (tabla) 🔧 (upload) | Tabla `documents` lista (logo/foto/documento). Falta bucket de Storage + upload en el formulario. |
-| H0 | `status` pasa a `diseno` + registro en `activity_log` | ✅ HOY (estructura) | La bitácora ya registra `brief_received` y `stage_change`. |
-| H0 | Cálculo y registro del deadline | 🔧 CONSTRUIR | n8n calcula H48 en horas hábiles y agenda los recordatorios internos (H24: "¿ya hay preview?", H40: "¡faltan 8 horas!"). |
-| H0–H12 | Generación con IA | 🔧 CONSTRUIR | Pipeline: brief JSON → Claude genera copy + estructura sobre la plantilla del vertical → primera versión completa. Mientras no exista el pipeline, este paso es manual contigo + Claude (2–3 horas por web). |
-| H0–H12 | Registro de dominio | 🔧 CONSTRUIR | Cloudflare Registrar. Verificar disponibilidad ANTES de prometer (idealmente en la llamada de venta). |
-| H12–H24 | Revisión humana — checklist 10 puntos | 🔧 CONSTRUIR (checklist) | Tus 15 minutos por cliente: ortografía, datos correctos, WhatsApp del negocio funciona, responsive, velocidad, SEO básico, aviso de privacidad del cliente (crítico en vertical médico). |
-| H24 | Deploy de preview + aviso al cliente | 🔧 CONSTRUIR | Subdominio de staging (preview.abdi.com/cliente). Mensaje automático con el link. `status` → `revision`. |
-| H24–H36 | Ventana de ajustes del cliente | — | **Regla:** una ronda incluida. Si el cliente no responde en 6 horas hábiles, se le avisa que la entrega se publica como está y los ajustes se hacen después (la mensualidad incluye cambios — el SLA no se rompe por silencio del cliente). |
+| Inicio | Formulario de brief → `brief_answers` | ✅ HOY (tabla) 🔧 (formulario) | La tabla con 18 preguntas existe. Falta la página pública del brief conectada (con rate limiting, que ya está en la base). |
+| Inicio | Upload de logo/fotos → `documents` + Storage | ✅ HOY (tabla) 🔧 (upload) | Tabla `documents` lista (logo/foto/documento). Falta bucket de Storage + upload en el formulario. |
+| Inicio | `status` pasa a `diseno` + registro en `activity_log` | ✅ HOY (estructura) | La bitácora ya registra `brief_received` y `stage_change`. |
+| Inicio | Cálculo y registro del deadline | 🔧 CONSTRUIR | n8n calcula la fecha comprometida en horas hábiles y agenda los recordatorios internos («¿ya hay preview?» a mitad de camino y «se acerca la entrega» antes del cierre). |
+| P1 | Generación con IA | 🔧 CONSTRUIR | Pipeline: brief JSON → Claude genera copy + estructura sobre la plantilla del vertical → primera versión completa. Mientras no exista el pipeline, este paso es manual contigo + Claude (2–3 horas por web). |
+| P1 | Registro de dominio | 🔧 CONSTRUIR | Cloudflare Registrar. Verificar disponibilidad ANTES de prometer (idealmente en la llamada de venta). |
+| P2 | Revisión humana — checklist 10 puntos | 🔧 CONSTRUIR (checklist) | Tus 15 minutos por cliente: ortografía, datos correctos, WhatsApp del negocio funciona, responsive, velocidad, SEO básico, aviso de privacidad del cliente (crítico en vertical médico). |
+| P3 | Deploy de preview + aviso al cliente | 🔧 CONSTRUIR | Subdominio de staging (preview.abdi.com/cliente). Mensaje automático con el link. `status` → `revision`. |
+| P4 | Ventana de ajustes del cliente | — | **Regla:** una ronda incluida. Si el cliente no responde en 6 horas hábiles, se le avisa que la entrega se publica como está y los ajustes se hacen después (la mensualidad incluye cambios — la fecha comprometida no se rompe por silencio del cliente). |
 
 ---
 
-## FASE 3 · Entrega (H36 – H48)
+## FASE 3 · Entrega (P5)
 
 ### Lo que vive el cliente
 
-| Hora | Paso | Experiencia del cliente |
+| Etapa | Paso | Experiencia del cliente |
 |---|---|---|
-| H36–H44 | 3.1 | Recibe los ajustes aplicados (si los pidió). |
-| H44–H48 | 3.2 | Recibe el mensaje de entrega: su web viva en su dominio + video Loom de 2 minutos explicando cómo pedir cambios y qué incluye su mensualidad. |
-| H48 | 3.3 | Su web está online. Dominio propio, SSL, Google ya la puede encontrar. |
+| P5 | 3.1 | Recibe los ajustes aplicados (si los pidió). |
+| P5 | 3.2 | Recibe el mensaje de entrega: su web viva en su dominio + video Loom de 2 minutos explicando cómo pedir cambios y qué incluye su mensualidad. |
+| Entrega | 3.3 | Su web está online. Dominio propio, SSL, Google ya la puede encontrar. |
 
 ### Lo que pasa detrás
 
@@ -156,18 +158,22 @@ pago del setup fee confirmado **y** brief completo con materiales mínimos (logo
 
 ---
 
-## Cronograma de las 48 horas (vista operador)
+## Ritmo de producción (vista operador)
+
+> Este es el **orden interno** del trabajo, no un plazo que se le prometa al cliente.
+> La duración de cada etapa depende del alcance; la fecha comprometida se acuerda en
+> la cotización y es la única que se comunica.
 
 ```
-H0    Brief completo. Reloj corre. status=diseno. Dominio registrado.
-H0-12 IA genera la web (o tú + Claude mientras no haya pipeline).
-H12   Primera versión completa en staging.
-H12-24 Tu revisión humana: checklist 10 puntos, 15-20 min.
-H24   Preview al cliente. status=revision. Ventana de ajustes abre.
-H30   Si no hay respuesta: recordatorio automático al cliente.
-H36   Cierre de ventana. Ajustes aplicados.
-H44   Deploy final: dominio, SSL, SEO. status=publicado.
-H44-48 Loom de handoff + mensaje de entrega. sla_met=true.
+Inicio  Brief completo. Reloj corre. status=diseno. Dominio registrado.
+P1      IA genera la web (o tú + Claude mientras no haya pipeline).
+        → primera versión completa en staging.
+P2      Tu revisión humana: checklist 10 puntos, 15-20 min.
+P3      Preview al cliente. status=revision. Ventana de ajustes abre.
+        Si no hay respuesta: recordatorio automático al cliente.
+P4      Cierre de ventana. Ajustes aplicados.
+P5      Deploy final: dominio, SSL, SEO. status=publicado.
+        Loom de handoff + mensaje de entrega. delivered_at registrado.
 ```
 
 **Tu tiempo humano total por cliente: ~45 minutos** (15 llamada + 20 revisión + 10 Loom y entrega). Todo lo demás es IA o automatización — o lo será.
@@ -176,7 +182,7 @@ H44-48 Loom de handoff + mensaje de entrega. sla_met=true.
 
 ## Documentos legales necesarios (antes del primer cliente pagado)
 
-1. **Contrato de servicio** — mes a mes, sin permanencia. Cláusulas mínimas: alcance por plan, SLA 48h con garantía de devolución del setup, propiedad intelectual de la web es del cliente (ya definido en tu contexto), qué incluye la mensualidad (hosting, soporte, cambios), política de cancelación (el dominio es del cliente, exportación de archivos).
+1. **Contrato de servicio** — mes a mes, sin permanencia. Cláusulas mínimas: alcance por plan, fecha de entrega acordada en la cotización, con garantía de devolución del setup si se incumple por causas nuestras, propiedad intelectual de la web es del cliente (ya definido en tu contexto), qué incluye la mensualidad (hosting, soporte, cambios), política de cancelación (el dominio es del cliente, exportación de archivos).
 2. **Aviso de privacidad de Abdi** — LFPDPPP (MX). Cubre los datos de la waitlist y del brief. Va linkeado en el footer de la landing (hoy apunta a `#`).
 3. **Aviso de privacidad para la web del cliente** — plantilla que cada web entregada incluye. En vertical médico es obligatorio y es un diferenciador de venta frente al freelance que lo omite.
 4. **Facturación** — CFDI si operas como entidad MX; definir antes del primer cobro real.
