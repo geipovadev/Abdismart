@@ -191,6 +191,23 @@ Dos comprobaciones importantes de ese endpoint:
 Requiere el secreto `SUPABASE_JWT_SECRET`, que está en Supabase, en
 Project Settings → API → JWT Settings.
 
+### El CRM es el único lugar desde donde se contesta este hilo
+
+El +506 6186 5587 vive en el Cloud API y **no existe en ninguna app de WhatsApp**.
+Un número no puede estar en los dos sitios a la vez, así que nadie del equipo puede
+abrir ese chat desde un teléfono: responder desde el CRM no es una comodidad, es la
+única forma de seguir la conversación donde empezó.
+
+Por eso el agente dice que el equipo responde por el mismo chat, y deja el
++506 8981 4520 como alternativa para quien prefiera hablar de inmediato. Ese
+segundo número sí tiene una app y sirve además de salida cuando la ventana de 24
+horas ya se cerró y el hilo original quedó bloqueado.
+
+El botón «Escribirle desde tu teléfono» del CRM abre el chat desde el WhatsApp de
+quien lo pulsa, no desde el número del agente. La persona lo recibe de un remitente
+distinto, así que conviene usarlo solo cuando el hilo original ya no admite
+respuesta.
+
 ## Bajas
 
 Un mensaje corto con «stop», «baja», «no me escriban» o equivalentes marca la

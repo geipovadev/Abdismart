@@ -283,10 +283,11 @@
       +(c.status==='humano'
         ? '<button class="action" data-conv-status="activa" data-conv-id="'+esc(c.wa_id)+'">Devolver al agente</button>'
         : '<button class="action primary" data-conv-status="humano" data-conv-id="'+esc(c.wa_id)+'">Tomar la conversación</button>')
-      +'<a class="action" target="_blank" rel="noopener" href="https://wa.me/'+esc(c.wa_id)+'">Abrir en WhatsApp</a>'
+      +'<a class="action" target="_blank" rel="noopener" title="Le llega desde tu número personal, no desde el del agente" href="https://wa.me/'+esc(c.wa_id)+'">Escribirle desde tu teléfono</a>'
       +(lead?'<button class="action" data-conv-lead="'+esc(lead.id)+'">Ver su solicitud</button>':'')
       +'</div>'
       +(c.status==='humano'?'<div class="detail-sub">El agente no responde a este número mientras esté tomada.</div>':'')
+      +'<div class="detail-sub">El +506 6186 5587 vive en la API de Meta y no existe en ninguna app de WhatsApp. Para seguir este mismo hilo hay que responder desde aquí.</div>'
       +'<div class="chat">'+(chat||moduleEmpty('Sin mensajes guardados','El historial se guarda a partir del primer intercambio.'))+'</div>'
       +convReplyBox(c);
     document.querySelectorAll('[data-conv-status]').forEach(function(b){
