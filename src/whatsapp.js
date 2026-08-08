@@ -259,6 +259,24 @@ function leadName(state, profileName, waId) {
   return state.known_name || profileName || `WhatsApp ${waId.slice(-4)}`;
 }
 
+/**
+ * Busca una solicitud previa de este número. El `lead_id` de la conversación es la
+ * vía normal, pero si ese guardado falló alguna vez, sin esta búsqueda cada mensaje
+ * abriría una solicitud nueva y el CRM terminaría con la misma persona repetida.
+ */
+async function findExistingLead(env, waId) {
+  const url = `${env.SUPABASE_URL}/rest/v1/waitlist?whatsapp=eq.${encodeURIComponent(`+${waId}`)}&origen_registro=eq.agente_whatsapp&select=id&order=created_at.asc&limit=1`;
+  try {
+    const response = await fetch(url, { headers: supabaseHeaders(env) });
+    if (!response.ok) return null;
+    const rows = await response.json();
+    return Array.isArray(rows) && rows.length ? rows[0].id : null;
+  } catch (error) {
+    console.error('WhatsApp lead lookup error', error);
+    return null;
+  }
+}
+
 /** Crea la solicitud en el CRM la primera vez y luego la mantiene al día. */
 async function syncLead(env, state, waId, profileName) {
   if (!hasSupabase(env)) return null;
@@ -270,6 +288,7 @@ async function syncLead(env, state, waId, profileName) {
     next_action: state.handoff_ready ? 'Responder en WhatsApp' : 'Revisar conversación de WhatsApp'
   };
   try {
+    if (!state.lead_id) state.lead_id = await findExistingLead(env, waId);
     if (state.lead_id) {
       await fetch(`${env.SUPABASE_URL}/rest/v1/waitlist?id=eq.${encodeURIComponent(state.lead_id)}`, {
         method: 'PATCH',
