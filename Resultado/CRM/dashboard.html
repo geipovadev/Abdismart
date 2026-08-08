@@ -25,9 +25,14 @@
     .grid-2{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.card{padding:20px}.card-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:17px}.card-title{font:500 17px 'Clash Display',sans-serif}.card-kicker{font:9px 'JetBrains Mono',monospace;color:var(--fog);letter-spacing:.1em;text-transform:uppercase}.link-btn{border:0;background:none;color:var(--lime);font-size:12px;cursor:pointer}.empty{padding:38px 18px;text-align:center;color:var(--fog);border:1px dashed var(--edge);border-radius:12px}.empty strong{display:block;color:var(--bone);font-weight:500;margin-bottom:3px}.notice{border:1px solid rgba(255,188,87,.25);background:rgba(255,188,87,.055);color:var(--fog);border-radius:12px;padding:12px 14px;font-size:13px}.notice b{color:var(--amber)}
     .mini-list{display:grid;gap:8px}.mini-row{display:grid;grid-template-columns:9px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--edge)}.mini-row:last-child{border:0}.dot{width:7px;height:7px;border-radius:50%;background:var(--lime)}.dot.muted{background:#555c68}.mini-row strong{font-size:13px;font-weight:500}.mini-row small{display:block;color:var(--fog);font-size:11px}.mini-row time{font:9px 'JetBrains Mono',monospace;color:#747b88}
     .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:15px}.search{min-width:240px;flex:1;background:var(--graphite);border:1px solid var(--edge);border-radius:10px;padding:10px 13px;color:var(--bone);outline:none}.search:focus{border-color:var(--lime-edge)}.chips{display:flex;gap:5px}.chip{border:1px solid var(--edge);background:var(--graphite);color:var(--fog);padding:9px 12px;border-radius:99px;font:10px 'JetBrains Mono',monospace;cursor:pointer}.chip.on{color:var(--lime);border-color:var(--lime-edge);background:var(--lime-wash)}
-    .split{display:grid;grid-template-columns:360px minmax(0,1fr);gap:14px;align-items:start}.lead-list{display:grid;gap:7px;max-height:68vh;overflow:auto;padding-right:3px}.lead{border:1px solid var(--edge);background:var(--graphite);border-radius:12px;padding:13px 14px;text-align:left;cursor:pointer;color:var(--bone)}.lead:hover,.lead.on{border-color:var(--lime-edge)}.lead.on{background:var(--lime-wash)}.lead-top{display:flex;justify-content:space-between;gap:12px}.lead-name{font-weight:600}.lead-meta{font:9px 'JetBrains Mono',monospace;color:var(--fog);margin-top:4px}.detail{min-height:420px}.detail-head{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid var(--edge);padding-bottom:16px;margin-bottom:18px}.detail h2{font:500 24px 'Clash Display',sans-serif}.conv-facts{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+    .split{display:grid;grid-template-columns:360px minmax(0,1fr);gap:14px;align-items:start}.lead-list{display:grid;gap:7px;max-height:68vh;overflow:auto;padding-right:3px}.lead{border:1px solid var(--edge);background:var(--graphite);border-radius:12px;padding:13px 14px;text-align:left;cursor:pointer;color:var(--bone)}.lead:hover,.lead.on{border-color:var(--lime-edge)}.lead.on{background:var(--lime-wash)}.lead-top{display:flex;justify-content:space-between;gap:12px}.lead-name{font-weight:600}.lead-meta{font:9px 'JetBrains Mono',monospace;color:var(--fog);margin-top:4px}.detail{min-height:420px}.detail-head{display:flex;justify-content:space-between;gap:15px;border-bottom:1px solid var(--edge);padding-bottom:16px;margin-bottom:18px}.detail h2{font:500 24px 'Clash Display',sans-serif}.reply-box{margin-top:14px;padding-top:14px;border-top:1px solid var(--edge)}
+    .reply-box textarea{width:100%;background:var(--surface-1);border:1px solid var(--edge);border-radius:10px;padding:10px 12px;color:var(--bone);font:inherit;font-size:13.5px;resize:vertical}
+    .reply-box textarea:focus{outline:none;border-color:var(--lime-border)}
+    .reply-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:9px;flex-wrap:wrap}
+    .conv-facts{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
     .chat{display:flex;flex-direction:column;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--edge);max-height:460px;overflow-y:auto}
     .chat-line{max-width:82%;align-self:flex-end;background:var(--surface-1);border:1px solid var(--edge);border-radius:12px 12px 2px 12px;padding:9px 12px}
+    .chat-line.from-human{border-color:var(--lime-border)}
     .chat-line.from-client{align-self:flex-start;background:transparent;border-radius:12px 12px 12px 2px}
     .chat-who{font:10px 'JetBrains Mono',monospace;color:var(--fog);margin-bottom:4px;display:flex;align-items:center;gap:6px}
     .chat-text{font-size:13.5px;line-height:1.55;white-space:pre-wrap}
@@ -96,6 +101,7 @@
 (function(){'use strict';
   var URL='https://zmlslhftqjljhvetmbya.supabase.co';
   var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
+  var WORKER='https://abdismart.geiner-porras-mb.workers.dev';
   var db=window.supabase.createClient(URL,KEY);var inviteDb=window.supabase.createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});var OWNER_EMAIL='geiner.porras.mb@gmail.com';var USER_NAMES={'geiner.porras.mb@gmail.com':'geiner.abdi'};var state={leads:[],prospects:[],conversations:[],convFilter:'todas',convSearch:'',convSelected:null,learning:[],clients:[],documents:[],activity:[],team:[],errors:{},filter:'todos',leadSection:'todos',search:'',selected:null,isOwner:false};
   var $=function(id){return document.getElementById(id)};var soundEnabled=false,audioContext=null,leadChannel=null;try{soundEnabled=localStorage.getItem('crm-lead-sound')==='on'}catch(e){}function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
   function date(v){if(!v)return '—';var d=new Date(v);return isNaN(d)?'—':d.toLocaleDateString('es-CR',{day:'2-digit',month:'short',year:'numeric'})}
@@ -258,8 +264,11 @@
     if(!c){$('conv-detail').innerHTML=moduleEmpty('Elige una conversación','Aquí verás el chat completo y sus datos.');return}
     var chat=convHistory(c).map(function(m){
       var suyo=m.role!=='assistant';
-      return '<div class="chat-line'+(suyo?' from-client':'')+'">'
-        +'<div class="chat-who">'+(suyo?esc(convName(c)):'Abdi')+(m.voice?' <span class="tag">nota de voz</span>':'')+'</div>'
+      // Un mensaje que escribió el equipo no puede figurar como si lo hubiera
+      // dicho Abdi: al releer el chat hay que distinguir quién respondió qué.
+      var quien=suyo?esc(convName(c)):(m.human?(esc(m.by||'Equipo')+' <span class="tag">manual</span>'):'Abdi');
+      return '<div class="chat-line'+(suyo?' from-client':'')+(m.human?' from-human':'')+'">'
+        +'<div class="chat-who">'+quien+(m.voice?' <span class="tag">nota de voz</span>':'')+'</div>'
         +'<div class="chat-text">'+esc(m.content||'')+'</div></div>';
     }).join('');
     var lead=state.leads.filter(function(l){return digits(l.whatsapp||'')===String(c.wa_id||'')})[0];
@@ -278,13 +287,61 @@
       +(lead?'<button class="action" data-conv-lead="'+esc(lead.id)+'">Ver su solicitud</button>':'')
       +'</div>'
       +(c.status==='humano'?'<div class="detail-sub">El agente no responde a este número mientras esté tomada.</div>':'')
-      +'<div class="chat">'+(chat||moduleEmpty('Sin mensajes guardados','El historial se guarda a partir del primer intercambio.'))+'</div>';
+      +'<div class="chat">'+(chat||moduleEmpty('Sin mensajes guardados','El historial se guarda a partir del primer intercambio.'))+'</div>'
+      +convReplyBox(c);
     document.querySelectorAll('[data-conv-status]').forEach(function(b){
       b.onclick=function(){setConversationStatus(b.dataset.convId,b.dataset.convStatus)};
     });
+    var enviar=$('conv-send');
+    if(enviar)enviar.onclick=function(){sendConversationReply(enviar.dataset.convId,enviar)};
     document.querySelectorAll('[data-conv-lead]').forEach(function(b){
       b.onclick=function(){go('solicitudes');state.leadSection='todos';state.selected=b.dataset.convLead;renderLeadSectionMeta();renderLeads();renderLeadDetail(state.leads.filter(function(x){return String(x.id)===String(state.selected)})[0])};
     });
+  }
+  // Meta solo deja escribir libremente dentro de las 24 horas del último mensaje
+  // de la persona. Mostrarlo evita que alguien redacte una respuesta que se va a
+  // rechazar, y explica por qué cuando ya no se puede.
+  function convWindowLeft(c){
+    var t=Date.parse(c.last_inbound_at||'');
+    if(!isFinite(t))return 0;
+    return Math.max(0,86400000-(Date.now()-t));
+  }
+  function convReplyBox(c){
+    if(c.status==='opted_out')return '<div class="detail-sub">Esta persona pidió no ser contactada. No se le puede escribir.</div>';
+    var queda=convWindowLeft(c);
+    if(queda<=0){
+      return '<div class="reply-box"><div class="detail-sub">Pasaron más de 24 horas desde su último mensaje. '
+        +'Meta solo permite retomar con una plantilla aprobada, así que desde aquí no se puede responder.</div></div>';
+    }
+    var horas=Math.floor(queda/3600000),min=Math.floor((queda%3600000)/60000);
+    return '<div class="reply-box">'
+      +'<textarea id="conv-reply" rows="3" placeholder="Escribe tu respuesta…"></textarea>'
+      +'<div class="reply-foot"><span class="detail-sub">Quedan '+horas+' h '+min+' min de la ventana de respuesta</span>'
+      +'<button class="action primary" id="conv-send" data-conv-id="'+esc(c.wa_id)+'">Enviar</button></div></div>';
+  }
+  async function sendConversationReply(waId,boton){
+    var caja=$('conv-reply'),texto=(caja&&caja.value||'').trim();
+    if(!texto)return;
+    boton.disabled=true;boton.textContent='Enviando…';
+    try{
+      var sesion=await db.auth.getSession();
+      var token=sesion.data.session&&sesion.data.session.access_token;
+      if(!token)throw new Error('Tu sesión expiró. Vuelve a entrar.');
+      var r=await fetch(WORKER+'/api/whatsapp/reply',{method:'POST',
+        headers:{'content-type':'application/json',authorization:'Bearer '+token},
+        body:JSON.stringify({wa_id:waId,message:texto})});
+      var d=await r.json().catch(function(){return {}});
+      if(!r.ok)throw new Error(d.error||('El envío falló ('+r.status+')'));
+      var c=state.conversations.filter(function(x){return x.wa_id===waId})[0];
+      if(c){
+        c.history=(Array.isArray(c.history)?c.history:[]).concat([{role:'assistant',content:texto,human:true}]);
+        c.status='humano';c.last_outbound_at=new Date().toISOString();
+      }
+      renderConversations();renderConversationDetail();
+    }catch(e){
+      alert(e.message);
+      boton.disabled=false;boton.textContent='Enviar';
+    }
   }
   async function setConversationStatus(waId,next){
     var c=state.conversations.filter(function(x){return x.wa_id===waId})[0];if(!c)return;

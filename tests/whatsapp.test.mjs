@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHmac, webcrypto } from 'node:crypto';
-import { buildOutboundMessage, ensureTeamContact, extensionFor, extractInboundMessages, isOptOut, readAudioId, readMessageText, transcribeVoiceNote, verifySignature, whatsappVerify } from '../src/whatsapp.js';
+import { buildOutboundMessage, ensureTeamContact, extensionFor, extractInboundMessages, isOptOut, readAudioId, readMessageText, transcribeVoiceNote, verifySignature, verifySupabaseJwt, whatsappVerify, windowRemainingMs } from '../src/whatsapp.js';
 import { formatWhatsapp } from '../src/businesses.js';
 
 // El Worker usa Web Crypto; en Node hay que exponerlo antes de importar nada más.
@@ -193,4 +193,59 @@ test('degrada a texto plano cuando el cuerpo excede el límite interactivo', () 
   const message = buildOutboundMessage('506', 'a'.repeat(1100), ['Sí', 'No']);
   assert.equal(message.type, 'text');
   assert.equal(message.text.body.length, 1100);
+});
+
+// --- Respuesta manual desde el CRM ---
+
+test('la ventana de servicio se agota a las 24 horas del último mensaje', () => {
+  const ahora = Date.parse('2026-08-08T12:00:00Z');
+  const hace1h = '2026-08-08T11:00:00Z';
+  const hace23h = '2026-08-07T13:00:00Z';
+  const hace25h = '2026-08-07T11:00:00Z';
+  assert.ok(windowRemainingMs(hace1h, ahora) > 22 * 3600 * 1000);
+  assert.ok(windowRemainingMs(hace23h, ahora) > 0);
+  assert.equal(windowRemainingMs(hace25h, ahora), 0);
+  // Sin fecha no se asume ventana abierta: se bloquea.
+  assert.equal(windowRemainingMs(null, ahora), 0);
+  assert.equal(windowRemainingMs('cualquier cosa', ahora), 0);
+});
+
+async function firmarJwt(secreto, payload) {
+  const b64 = obj => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const cuerpo = `${b64({ alg: 'HS256', typ: 'JWT' })}.${b64(payload)}`;
+  const key = await webcrypto.subtle.importKey('raw', new TextEncoder().encode(secreto), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const firma = await webcrypto.subtle.sign('HMAC', key, new TextEncoder().encode(cuerpo));
+  return `${cuerpo}.${Buffer.from(new Uint8Array(firma)).toString('base64url')}`;
+}
+
+const JWT_SECRET = 'secreto-jwt-de-prueba';
+const futuro = Math.floor(Date.now() / 1000) + 3600;
+
+test('acepta el token de un usuario del CRM con sesión válida', async () => {
+  const token = await firmarJwt(JWT_SECRET, { role: 'authenticated', email: 'geiner@abdismart.com', exp: futuro });
+  const user = await verifySupabaseJwt(JWT_SECRET, `Bearer ${token}`);
+  assert.equal(user?.email, 'geiner@abdismart.com');
+});
+
+test('rechaza la anon key, que está firmada con el mismo secreto', async () => {
+  // Sin comprobar el rol, la clave pública de la landing serviría para enviar
+  // mensajes desde el número de Abdismart.
+  const anon = await firmarJwt(JWT_SECRET, { role: 'anon', exp: futuro });
+  assert.equal(await verifySupabaseJwt(JWT_SECRET, anon), null);
+});
+
+test('rechaza tokens vencidos, mal firmados o de otro algoritmo', async () => {
+  const vencido = await firmarJwt(JWT_SECRET, { role: 'authenticated', exp: Math.floor(Date.now() / 1000) - 10 });
+  assert.equal(await verifySupabaseJwt(JWT_SECRET, vencido), null);
+
+  const otroSecreto = await firmarJwt('secreto-equivocado', { role: 'authenticated', exp: futuro });
+  assert.equal(await verifySupabaseJwt(JWT_SECRET, otroSecreto), null);
+
+  // Un token "alg: none" es el ataque clásico contra verificadores ingenuos.
+  const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
+  const sinFirma = `${b64({ alg: 'none', typ: 'JWT' })}.${b64({ role: 'authenticated', exp: futuro })}.`;
+  assert.equal(await verifySupabaseJwt(JWT_SECRET, sinFirma), null);
+
+  assert.equal(await verifySupabaseJwt(JWT_SECRET, 'basura'), null);
+  assert.equal(await verifySupabaseJwt('', await firmarJwt(JWT_SECRET, { role: 'authenticated', exp: futuro })), null);
 });

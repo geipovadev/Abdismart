@@ -6,3 +6,4 @@ WHATSAPP_TOKEN=reemplazar
 WHATSAPP_PHONE_NUMBER_ID=reemplazar
 WHATSAPP_APP_SECRET=reemplazar
 WHATSAPP_VERIFY_TOKEN=cadena-larga-inventada-por-ti
+SUPABASE_JWT_SECRET=reemplazar

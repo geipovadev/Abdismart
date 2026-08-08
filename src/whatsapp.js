@@ -42,6 +42,22 @@ function hasSupabase(env) {
   return Boolean(env.SUPABASE_URL && env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
+// El CRM vive en crm.abdismart.com y el Worker en otro dominio, así que las
+// respuestas de la API necesitan CORS. Es seguro abrirlo porque la autorización
+// va en la cabecera Authorization, no en cookies: un sitio ajeno no obtiene nada.
+export function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'no-store',
+      'access-control-allow-origin': '*',
+      'access-control-allow-methods': 'POST, OPTIONS',
+      'access-control-allow-headers': 'content-type, authorization'
+    }
+  });
+}
+
 // --- Verificación de firma -------------------------------------------------
 
 function timingSafeEqual(a, b) {
@@ -541,4 +557,88 @@ export async function whatsappWebhook(request, env, ctx) {
     ctx.waitUntil(handleMessage(env, inbound).catch(error => console.error('WhatsApp handler error', error)));
   }
   return new Response('EVENT_RECEIVED', { status: 200 });
+}
+
+// --- Respuesta manual desde el CRM ------------------------------------------
+
+// Meta solo permite escribir libremente dentro de las 24 horas siguientes al
+// último mensaje de la persona. Pasado ese punto hace falta una plantilla
+// aprobada, así que conviene avisar antes de intentar el envío.
+export const SERVICE_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+export function windowRemainingMs(lastInboundAt, now = Date.now()) {
+  const last = Date.parse(lastInboundAt || '');
+  if (!Number.isFinite(last)) return 0;
+  return Math.max(0, SERVICE_WINDOW_MS - (now - last));
+}
+
+function base64UrlToBytes(value) {
+  const padded = value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (value.length % 4)) % 4);
+  const binary = atob(padded);
+  return Uint8Array.from(binary, char => char.charCodeAt(0));
+}
+
+/**
+ * Valida el token de sesión de Supabase que envía el CRM. Es lo que impide que
+ * cualquiera con la URL del Worker escriba mensajes desde el número de Abdismart:
+ * el token del navegador no sirve de nada sin la firma del proyecto.
+ */
+export async function verifySupabaseJwt(secret, token) {
+  const clean = String(token || '').replace(/^Bearer\s+/i, '').trim();
+  const parts = clean.split('.');
+  if (!secret || parts.length !== 3) return null;
+  try {
+    const header = JSON.parse(new TextDecoder().decode(base64UrlToBytes(parts[0])));
+    // El proyecto firma con HS256. Otro algoritmo significa configuración
+    // distinta, no un token válido que debamos aceptar por las dudas.
+    if (header.alg !== 'HS256') return null;
+
+    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
+    const valid = await crypto.subtle.verify('HMAC', key, base64UrlToBytes(parts[2]), new TextEncoder().encode(`${parts[0]}.${parts[1]}`));
+    if (!valid) return null;
+
+    const payload = JSON.parse(new TextDecoder().decode(base64UrlToBytes(parts[1])));
+    if (payload.exp && Date.now() >= payload.exp * 1000) return null;
+    // La anon key también está firmada con este secreto: sin comprobar el rol,
+    // cualquiera con la clave pública de la landing podría enviar mensajes.
+    if (payload.role !== 'authenticated') return null;
+    return payload;
+  } catch { return null; }
+}
+
+/** POST: el equipo responde a una conversación desde el CRM. */
+export async function whatsappReply(request, env) {
+  const user = await verifySupabaseJwt(env.SUPABASE_JWT_SECRET, request.headers.get('authorization'));
+  if (!user) return json({ error: 'No autorizado.' }, 401);
+
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Solicitud inválida.' }, 400); }
+  const waId = cleanText(body.wa_id, 30).replace(/\D/g, '');
+  const message = cleanText(body.message, TEXT_BODY_MAX);
+  if (!waId || !message) return json({ error: 'Falta el número o el mensaje.' }, 400);
+  if (!hasSupabase(env)) return json({ error: 'La base no está configurada.' }, 503);
+
+  const businessKey = String(env.WHATSAPP_BUSINESS_KEY || '').trim() || 'abdismart';
+  const conversation = await loadConversation(env, businessKey, waId);
+  if (!conversation) return json({ error: 'No existe esa conversación.' }, 404);
+  if (conversation.status === 'opted_out') return json({ error: 'Esta persona pidió no ser contactada.' }, 409);
+
+  if (windowRemainingMs(conversation.last_inbound_at) <= 0) {
+    return json({ error: 'Pasaron más de 24 horas desde su último mensaje. Meta solo permite responder con una plantilla aprobada.' }, 409);
+  }
+
+  const phoneNumberId = String(env.WHATSAPP_PHONE_NUMBER_ID || '').trim();
+  const sent = await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(waId, message));
+  if (!sent) return json({ error: 'WhatsApp rechazó el envío. Revisa los registros del Worker.' }, 502);
+
+  const history = Array.isArray(conversation.history) ? conversation.history : [];
+  await saveConversation(env, {
+    ...conversation,
+    // Responder a mano es tomar la conversación: el agente deja de contestar.
+    status: 'humano',
+    // `human` distingue en el CRM lo que escribió una persona de lo que escribió Abdi.
+    history: [...history, { role: 'assistant', content: message, human: true, by: user.email || '' }].slice(-MAX_HISTORY),
+    last_outbound_at: new Date().toISOString()
+  });
+  return json({ ok: true });
 }

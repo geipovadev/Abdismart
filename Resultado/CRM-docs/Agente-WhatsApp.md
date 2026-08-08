@@ -171,9 +171,25 @@ de la ventana y necesita plantilla. Hay que aprobarla antes de usar ese flujo.
 Cuando alguien pide hablar con el equipo, el agente marca `handoff_ready` en la
 conversación y deja `Responder en WhatsApp` como próxima acción de la solicitud.
 
-Para que una persona tome el chat, cambiar `status` a `humano` en
-`whatsapp_conversations`. El agente deja de responder ese número hasta que se
-devuelva a `activa`.
+En el CRM, la sección **Conversaciones** muestra el chat completo y permite
+responder desde ahí. Al enviar, la conversación pasa a `humano` y el agente deja
+de contestar ese número hasta que se le devuelva con «Devolver al agente».
+
+El mensaje sale por `POST /api/whatsapp/reply` del Worker, que verifica el token
+de sesión de Supabase antes de enviar nada. El token de WhatsApp no puede vivir
+en el navegador, así que el CRM nunca habla con Meta directamente.
+
+Dos comprobaciones importantes de ese endpoint:
+
+- Rechaza la `anon key`, que está firmada con el mismo secreto del proyecto. Sin
+  esa comprobación de rol, la clave pública de la landing serviría para enviar
+  mensajes desde el número de Abdismart.
+- Bloquea el envío pasadas 24 horas del último mensaje de la persona, porque Meta
+  solo permite retomar con una plantilla aprobada. El CRM muestra cuánto queda de
+  esa ventana junto a la caja de texto.
+
+Requiere el secreto `SUPABASE_JWT_SECRET`, que está en Supabase, en
+Project Settings → API → JWT Settings.
 
 ## Bajas
 
