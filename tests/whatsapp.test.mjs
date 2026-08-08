@@ -223,7 +223,7 @@ const futuro = Math.floor(Date.now() / 1000) + 3600;
 
 test('acepta el token de un usuario del CRM con sesión válida', async () => {
   const token = await firmarJwt(JWT_SECRET, { role: 'authenticated', email: 'geiner@abdismart.com', exp: futuro });
-  const user = await verifySupabaseJwt(JWT_SECRET, `Bearer ${token}`);
+  const user = await verifySupabaseJwt({ SUPABASE_JWT_SECRET: JWT_SECRET }, `Bearer ${token}`);
   assert.equal(user?.email, 'geiner@abdismart.com');
 });
 
@@ -231,21 +231,50 @@ test('rechaza la anon key, que está firmada con el mismo secreto', async () => 
   // Sin comprobar el rol, la clave pública de la landing serviría para enviar
   // mensajes desde el número de Abdismart.
   const anon = await firmarJwt(JWT_SECRET, { role: 'anon', exp: futuro });
-  assert.equal(await verifySupabaseJwt(JWT_SECRET, anon), null);
+  assert.equal(await verifySupabaseJwt({ SUPABASE_JWT_SECRET: JWT_SECRET }, anon), null);
 });
 
 test('rechaza tokens vencidos, mal firmados o de otro algoritmo', async () => {
   const vencido = await firmarJwt(JWT_SECRET, { role: 'authenticated', exp: Math.floor(Date.now() / 1000) - 10 });
-  assert.equal(await verifySupabaseJwt(JWT_SECRET, vencido), null);
+  assert.equal(await verifySupabaseJwt({ SUPABASE_JWT_SECRET: JWT_SECRET }, vencido), null);
 
   const otroSecreto = await firmarJwt('secreto-equivocado', { role: 'authenticated', exp: futuro });
-  assert.equal(await verifySupabaseJwt(JWT_SECRET, otroSecreto), null);
+  assert.equal(await verifySupabaseJwt({ SUPABASE_JWT_SECRET: JWT_SECRET }, otroSecreto), null);
 
   // Un token "alg: none" es el ataque clásico contra verificadores ingenuos.
   const b64 = o => Buffer.from(JSON.stringify(o)).toString('base64url');
   const sinFirma = `${b64({ alg: 'none', typ: 'JWT' })}.${b64({ role: 'authenticated', exp: futuro })}.`;
-  assert.equal(await verifySupabaseJwt(JWT_SECRET, sinFirma), null);
+  assert.equal(await verifySupabaseJwt({ SUPABASE_JWT_SECRET: JWT_SECRET }, sinFirma), null);
 
-  assert.equal(await verifySupabaseJwt(JWT_SECRET, 'basura'), null);
-  assert.equal(await verifySupabaseJwt('', await firmarJwt(JWT_SECRET, { role: 'authenticated', exp: futuro })), null);
+  assert.equal(await verifySupabaseJwt({ SUPABASE_JWT_SECRET: JWT_SECRET }, 'basura'), null);
+  assert.equal(await verifySupabaseJwt({ SUPABASE_JWT_SECRET: '' }, await firmarJwt(JWT_SECRET, { role: 'authenticated', exp: futuro })), null);
+});
+
+test('acepta el token ES256 que firma Supabase con su clave publicada', async () => {
+  // Los proyectos actuales firman las sesiones con ES256 y publican la clave
+  // pública en su JWKS. Un verificador solo-HS256 rechaza a todos los usuarios.
+  const par = await webcrypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+  const publica = await webcrypto.subtle.exportKey('jwk', par.publicKey);
+  publica.kid = 'clave-de-prueba';
+  publica.alg = 'ES256';
+
+  const b64 = obj => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const cuerpo = `${b64({ alg: 'ES256', typ: 'JWT', kid: 'clave-de-prueba' })}.${b64({ role: 'authenticated', email: 'geiner@abdismart.com', exp: futuro })}`;
+  const firma = await webcrypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, par.privateKey, new TextEncoder().encode(cuerpo));
+  const token = `${cuerpo}.${Buffer.from(new Uint8Array(firma)).toString('base64url')}`;
+
+  const real = globalThis.fetch;
+  globalThis.fetch = async url => String(url).includes('jwks.json')
+    ? new Response(JSON.stringify({ keys: [publica] }), { headers: { 'content-type': 'application/json' } })
+    : real(url);
+  try {
+    const user = await verifySupabaseJwt({ SUPABASE_URL: 'https://proyecto.supabase.co' }, `Bearer ${token}`);
+    assert.equal(user?.email, 'geiner@abdismart.com');
+
+    // Firmado con otra clave, el mismo kid no debe alcanzar.
+    const otro = await webcrypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+    const mala = await webcrypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, otro.privateKey, new TextEncoder().encode(cuerpo));
+    const falso = `${cuerpo}.${Buffer.from(new Uint8Array(mala)).toString('base64url')}`;
+    assert.equal(await verifySupabaseJwt({ SUPABASE_URL: 'https://proyecto.supabase.co' }, falso), null);
+  } finally { globalThis.fetch = real; }
 });

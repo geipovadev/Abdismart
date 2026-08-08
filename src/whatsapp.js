@@ -578,29 +578,75 @@ function base64UrlToBytes(value) {
   return Uint8Array.from(binary, char => char.charCodeAt(0));
 }
 
+// Supabase firma los tokens de sesión con claves asimétricas (ES256) y publica
+// la parte pública en su JWKS. Se guardan en memoria del isolate para no pedir
+// el documento en cada mensaje; el TTL cubre la rotación de claves.
+const JWKS_TTL_MS = 10 * 60 * 1000;
+const jwks = { url: '', fetchedAt: 0, keys: new Map() };
+
+async function loadJwk(supabaseUrl, kid) {
+  const fresh = jwks.url === supabaseUrl && Date.now() - jwks.fetchedAt < JWKS_TTL_MS;
+  if (fresh && jwks.keys.has(kid)) return jwks.keys.get(kid);
+  // Un kid desconocido puede ser rotación, pero también un token inventado: sin
+  // el margen de tiempo, cualquiera podría forzar una petición por mensaje.
+  if (fresh && Date.now() - jwks.fetchedAt < 30 * 1000) return null;
+  try {
+    const response = await fetch(`${supabaseUrl}/auth/v1/.well-known/jwks.json`);
+    if (!response.ok) return null;
+    const { keys } = await response.json();
+    jwks.url = supabaseUrl;
+    jwks.fetchedAt = Date.now();
+    jwks.keys = new Map((keys || []).filter(k => k.kid).map(k => [k.kid, k]));
+  } catch (error) {
+    console.error('Supabase JWKS error', String(error).slice(0, 200));
+    return null;
+  }
+  return jwks.keys.get(kid) || null;
+}
+
+async function verifyEs256(supabaseUrl, header, signedPart, signature) {
+  if (!supabaseUrl || !header.kid) return false;
+  const jwk = await loadJwk(supabaseUrl, header.kid);
+  if (!jwk) return false;
+  const key = await crypto.subtle.importKey('jwk', jwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
+  // En un JWT la firma ES256 viene como r||s en crudo, que es justo lo que
+  // espera Web Crypto. No hace falta desenvolver DER.
+  return crypto.subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, key, signature, new TextEncoder().encode(signedPart));
+}
+
+async function verifyHs256(secret, signedPart, signature) {
+  if (!secret) return false;
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
+  return crypto.subtle.verify('HMAC', key, signature, new TextEncoder().encode(signedPart));
+}
+
 /**
  * Valida el token de sesión de Supabase que envía el CRM. Es lo que impide que
- * cualquiera con la URL del Worker escriba mensajes desde el número de Abdismart:
- * el token del navegador no sirve de nada sin la firma del proyecto.
+ * cualquiera con la URL del Worker escriba mensajes desde el número de Abdismart.
+ *
+ * Acepta las dos formas en que Supabase firma: ES256 con la clave publicada en el
+ * JWKS del proyecto, que es lo que usan los proyectos actuales, y HS256 con el
+ * secreto heredado. Cualquier otro algoritmo se rechaza; en particular «none»,
+ * que es el ataque clásico contra verificadores que confían en la cabecera.
  */
-export async function verifySupabaseJwt(secret, token) {
+export async function verifySupabaseJwt(env, token) {
   const clean = String(token || '').replace(/^Bearer\s+/i, '').trim();
   const parts = clean.split('.');
-  if (!secret || parts.length !== 3) return null;
+  if (parts.length !== 3) return null;
   try {
     const header = JSON.parse(new TextDecoder().decode(base64UrlToBytes(parts[0])));
-    // El proyecto firma con HS256. Otro algoritmo significa configuración
-    // distinta, no un token válido que debamos aceptar por las dudas.
-    if (header.alg !== 'HS256') return null;
+    const signedPart = `${parts[0]}.${parts[1]}`;
+    const signature = base64UrlToBytes(parts[2]);
 
-    const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
-    const valid = await crypto.subtle.verify('HMAC', key, base64UrlToBytes(parts[2]), new TextEncoder().encode(`${parts[0]}.${parts[1]}`));
+    let valid = false;
+    if (header.alg === 'ES256') valid = await verifyEs256(String(env.SUPABASE_URL || '').trim(), header, signedPart, signature);
+    else if (header.alg === 'HS256') valid = await verifyHs256(String(env.SUPABASE_JWT_SECRET || '').trim(), signedPart, signature);
     if (!valid) return null;
 
     const payload = JSON.parse(new TextDecoder().decode(base64UrlToBytes(parts[1])));
     if (payload.exp && Date.now() >= payload.exp * 1000) return null;
-    // La anon key también está firmada con este secreto: sin comprobar el rol,
-    // cualquiera con la clave pública de la landing podría enviar mensajes.
+    // La anon key también sale firmada por el proyecto: sin comprobar el rol,
+    // la clave pública de la landing serviría para enviar mensajes.
     if (payload.role !== 'authenticated') return null;
     return payload;
   } catch { return null; }
@@ -608,7 +654,7 @@ export async function verifySupabaseJwt(secret, token) {
 
 /** POST: el equipo responde a una conversación desde el CRM. */
 export async function whatsappReply(request, env) {
-  const user = await verifySupabaseJwt(env.SUPABASE_JWT_SECRET, request.headers.get('authorization'));
+  const user = await verifySupabaseJwt(env, request.headers.get('authorization'));
   if (!user) return json({ error: 'No autorizado.' }, 401);
 
   let body;
