@@ -1,6 +1,7 @@
 # Abdismart
 
-Plataforma que crea webs profesionales para pequeños negocios de **Costa Rica en 48 horas**.
+Plataforma que crea webs profesionales para pequeños negocios de **Costa Rica**, con
+fecha de entrega acordada en la cotización.
 Dominio, hosting, SEO básico y soporte en español incluidos.
 
 Operado por **Grupo Abdi S.R.L.**
@@ -161,3 +162,55 @@ infinitas y mantiene controlado el consumo de tokens.
 El endpoint del agente requiere Cloudflare Workers. Un despliegue puramente
 estático en Netlify sirve la landing, pero no procesa `/api/agent` hasta crear allí
 una Function equivalente.
+
+### Agente Abdi WhatsApp
+
+El número dedicado **+506 6186 5587** atiende un agente **informativo**, distinto del
+de la landing. El de la web diagnostica: pregunta para entender un problema y
+recomendar un servicio. El de WhatsApp responde preguntas sobre Abdismart: qué es,
+qué servicios ofrece, cómo es el proceso y qué resultado esperar.
+
+`src/agent.js` define los dos perfiles —`discovery` para la web e `info` para
+WhatsApp—, cada uno con su prompt y su esquema de respuesta. El canal está en
+`src/whatsapp.js`. La información aprobada del perfil informativo vive en
+`src/businesses.js` como `knowledgeInfo` y proviene de la landing publicada: no
+contiene precios ni plazos concretos, porque no hay ninguno publicado.
+
+El webhook vive en `/api/whatsapp/webhook`: responde al handshake de Meta por GET y
+recibe los mensajes por POST. Valida la firma HMAC de cada evento, responde 200 de
+inmediato y procesa en segundo plano, porque Meta reintenta la entrega si el webhook
+tarda. La deduplicación por identificador de mensaje evita respuestas repetidas.
+
+Antes de publicar, aplica `Resultado/CRM/whatsapp-agent.sql` y
+`Resultado/CRM/whatsapp-agent-info.sql`, y configura:
+
+```bash
+npx wrangler secret put WHATSAPP_TOKEN
+npx wrangler secret put WHATSAPP_PHONE_NUMBER_ID
+npx wrangler secret put WHATSAPP_APP_SECRET
+npx wrangler secret put WHATSAPP_VERIFY_TOKEN
+```
+
+El alta en Meta, la ventana de 24 horas, el traspaso a una persona y las bajas están
+documentados en `Resultado/CRM/Agente-WhatsApp.md`.
+
+A diferencia del widget web, este canal sí guarda los últimos 14 turnos en
+`whatsapp_conversations`: Meta solo entrega el mensaje nuevo, así que sin ese
+historial no hay conversación. La función `whatsapp_purge_old_data()` vacía el
+historial de conversaciones inactivas.
+
+### Abdi Leads · Agente de captación
+
+El endpoint protegido `POST /api/abdi-leads/run` ejecuta Actors configurables de
+Apify para Instagram, Facebook, Google o LinkedIn, normaliza los negocios, los
+califica contra los tres servicios y evita duplicados entre fuentes mediante
+identidades únicas en Supabase. La estrategia, el ICP, el copy y la operación están
+documentados en `Resultado/CRM/Agente-Captacion.md`; la migración requerida está en
+`Resultado/CRM/prospecting.sql`.
+
+La ruta anterior `/api/prospecting/run` se conserva como alias para no romper
+integraciones existentes.
+
+Además de los secretos existentes, requiere `APIFY_TOKEN`, `PROSPECTING_API_KEY`
+y un Actor ID por fuente (`APIFY_GOOGLE_ACTOR_ID`, `APIFY_INSTAGRAM_ACTOR_ID`,
+`APIFY_FACEBOOK_ACTOR_ID`, `APIFY_LINKEDIN_ACTOR_ID`).
