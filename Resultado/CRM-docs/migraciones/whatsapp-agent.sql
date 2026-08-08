@@ -15,7 +15,8 @@ create table if not exists public.whatsapp_conversations (
   -- 'humano' detiene al agente para que una persona tome el chat desde el CRM.
   status text not null default 'activa' check (status in ('activa','humano','opted_out')),
   handoff_ready boolean not null default false,
-  lead_id bigint,
+  -- waitlist.id es uuid: declararlo bigint hace fallar cada guardado.
+  lead_id uuid,
   known_name text,
   business_type text,
   specialty text,
