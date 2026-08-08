@@ -5,6 +5,8 @@
 Espacio de trabajo para diseñar y lanzar **Abdi**, una plataforma self-service con IA que crea webs y landing pages profesionales para pequeños negocios de Latinoamérica. El operador es un solopreneur apoyado en IA. El modelo es setup fee único + suscripción mensual.
 
 > **No prometemos un plazo fijo de entrega.** La fecha se acuerda en la cotización, según el alcance y la información que aporte el cliente. Nunca escribir «48 horas», «SLA 48h» ni ningún plazo en horas o días concretos en material de cliente, landing, propuestas, agentes ni contenido.
+>
+> Al revisarlo, no basta con leer los textos: la promesa se ha colado en `content:` de CSS, en marcas de agua, en nombres de clase como `.sla`, en imágenes de carruseles y en metáforas de cuenta regresiva («el reloj inicia»). Buscar `48`, `sla` y `reloj` en HTML, CSS y JS, no solo en prosa.
 
 ---
 
