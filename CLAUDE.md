@@ -2,7 +2,9 @@
 
 ## Qué es este proyecto
 
-Espacio de trabajo para diseñar y lanzar **Abdi**, una plataforma self-service con IA que crea webs y landing pages profesionales para pequeños negocios de Latinoamérica en 48 horas. El operador es un solopreneur apoyado en IA. El modelo es setup fee único + suscripción mensual.
+Espacio de trabajo para diseñar y lanzar **Abdi**, una plataforma self-service con IA que crea webs y landing pages profesionales para pequeños negocios de Latinoamérica. El operador es un solopreneur apoyado en IA. El modelo es setup fee único + suscripción mensual.
+
+> **No prometemos un plazo fijo de entrega.** La fecha se acuerda en la cotización, según el alcance y la información que aporte el cliente. Nunca escribir «48 horas», «SLA 48h» ni ningún plazo en horas o días concretos en material de cliente, landing, propuestas, agentes ni contenido.
 
 ---
 
@@ -36,9 +38,9 @@ Abdi/
 
 ## Resumen del producto
 
-**Propuesta de valor:** Webs profesionales en 48 horas para pequeños negocios de LATAM. Todo incluido: dominio, hosting, SEO básico, soporte en español por WhatsApp, editor self-service e integraciones locales (Mercado Pago, WhatsApp Business, CFDI).
+**Propuesta de valor:** Webs profesionales con fecha de entrega clara para pequeños negocios de LATAM. Todo incluido: dominio, hosting, SEO básico, soporte en español por WhatsApp, editor self-service e integraciones locales (Mercado Pago, WhatsApp Business, CFDI).
 
-**Diferencial clave:** SLA 48h cumplido (nadie más en LATAM lo garantiza), IA + revisión humana obligatoria (no es automatización pura), soporte en español, integraciones nativas LATAM.
+**Diferencial clave:** fecha de entrega clara y cumplida, IA + revisión humana obligatoria (no es automatización pura), soporte en español, integraciones nativas LATAM.
 
 **Modelo:** Setup fee (USD 499–1.899 según plan) + suscripción mensual (USD 39–149). El setup paga la adquisición; la mensualidad construye MRR.
 
@@ -56,7 +58,7 @@ Abdi/
 - Trigger: competidor con mejor web, recomendación de conocido.
 - Registro: tuteo cálido, directo, sin tecnicismos. "De negocio a negocio."
 - Frase ancla: *"Tú cocinas. Nosotros te ponemos online."*
-- Sí: "listo", "sin rollos", "te entregamos", "en 48h", "por WhatsApp".
+- Sí: "listo", "sin rollos", "te entregamos", "con fecha clara", "por WhatsApp".
 - No: "optimización", "funnel", "CTR", "SaaS", "dashboard".
 
 ### Dr. Andrés Morales — Consultorio (secundario)
@@ -73,7 +75,7 @@ Abdi/
 - Registro: editorial, casi de revista. "Ustedes" o "tú" según confianza establecida.
 - Frase ancla: *"La presencia digital que su firma merece."*
 - Sí: "firma", "socios", "trayectoria", "editorial", "sobriedad", "expertise".
-- **NUNCA con Valeria:** mencionar "48 horas" (suena barato) ni "IA" ni "plantilla". Se vende "calidad editorial + entrega en 2 semanas".
+- **NUNCA con Valeria:** mencionar plazos cortos (suena barato) ni "IA" ni "plantilla". Se vende "calidad editorial".
 
 ---
 
@@ -83,17 +85,17 @@ Abdi/
 **La voz no es:** corporativa rancia, startup gringa traducida, influencer hypey, tech-geek, infantil con emojis.
 
 **Reglas inamovibles:**
-- El cliente es el héroe, nunca la IA. ✅ "Tu restaurante, online en 48 horas." ❌ "Nuestra IA generativa crea tu web."
-- Números concretos, no adjetivos vacíos. "48h" > "rápido". "USD 499" > "accesible".
+- El cliente es el héroe, nunca la IA. ✅ "Tu restaurante, online y encontrable." ❌ "Nuestra IA generativa crea tu web."
+- Números concretos, no adjetivos vacíos. "USD 499" > "accesible". Excepción: el plazo de entrega, que nunca se expresa en horas ni días.
 - Frases cortas. Una idea por frase. Si ocupa más de dos líneas, se parte.
 - Sin jerga tech hacia el cliente: nada de "leverage", "stack", "pipeline", "KPI", "SaaS", "deliverable", "feedback".
 - Sin emojis en voz de marca. En WhatsApp de soporte: uno solo, funcional (✅, 📎, 📅).
-- Mayúsculas tipo oración, nunca tipo título inglés. "Webs listas en 48 horas", no "Webs Listas En 48 Horas".
+- Mayúsculas tipo oración, nunca tipo título inglés. "Webs listas para atraer clientes", no "Webs Listas Para Atraer Clientes".
 - Exclamaciones: un signo, nunca doble o triple. Suspensivos: nunca.
 
 **Vocabulario oficial:**
 - Decimos "web" o "página web", no "sitio web".
-- Decimos "48 horas", no "rápidamente".
+- Decimos "fecha de entrega clara", nunca un plazo en horas ni días.
 - Decimos "mensualidad", no "membresía".
 - Decimos "cliente", no "usuario" ni "user".
 - Decimos "plantilla", no "template".
@@ -135,7 +137,7 @@ Abdi/
 
 | Métrica | Objetivo |
 |---|---|
-| SLA 48h cumplido | > 95% |
+| Entregas dentro de la fecha acordada | > 95% |
 | Churn mensual | < 4% |
 | CAC blended | < USD 140 |
 | LTV / CAC | > 4x |
