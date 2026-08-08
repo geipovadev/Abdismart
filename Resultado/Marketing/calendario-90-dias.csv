@@ -1,0 +1,55 @@
+semana,fase,dia,canal,formato,pilar,titulo_o_gancho,objetivo,cta,utm_content,estado
+1,Preparación,Lunes,Interno,Producción,Base comercial,Completar perfiles enlaces y respuestas rápidas,Preparación,Revisar checklist,setup_perfiles,Pendiente
+1,Preparación,Miércoles,Interno,Producción,Casos reales,Entrevistar y solicitar autorización al caso 1,Prueba,Completar autorización,setup_caso_1,Pendiente
+1,Preparación,Viernes,Interno,Producción,Casos reales,Entrevistar y solicitar autorización al caso 2,Prueba,Completar autorización,setup_caso_2,Pendiente
+1,Preparación,Sábado,Instagram y Facebook,Historias,Construcción pública,Estamos preparando una forma más clara de atender consultas,Expectativa,Seguir la cuenta,stories_preparacion,Pendiente
+2,Confianza orgánica,Lunes,Instagram Facebook TikTok,Reel,Dolores,Tu clínica puede estar cerrada. Tu presencia no,Identificación,Solicitar lugar,p01_manifiesto,Pendiente
+2,Confianza orgánica,Martes,Instagram y Facebook,Historias,Dolores,¿Qué pregunta repite más tu recepción?,Investigación,Responder encuesta,stories_pregunta_repetida,Pendiente
+2,Confianza orgánica,Miércoles,Instagram Facebook TikTok,Reel,Dolores,Tres consultas que una clínica no debería responder manualmente cada día,Identificación,Solicitar lugar,p02_consultas_repetidas,Pendiente
+2,Confianza orgánica,Jueves,Instagram,Historias,Construcción pública,Así organizamos la información aprobada de una clínica,Confianza,Ver el proceso,stories_info_aprobada,Pendiente
+2,Confianza orgánica,Viernes,Instagram y Facebook,Carrusel,Educación,Instagram muestra actividad. Una web organiza la decisión,Autoridad,Solicitar lugar,p03_instagram_vs_web,Pendiente
+2,Confianza orgánica,Sábado,Instagram y Facebook,Historias,Oferta,Qué reciben los siete fundadores,Conversión,Solicitar lugar,stories_fundadores_1,Pendiente
+3,Confianza orgánica,Lunes,Instagram y Facebook,Carrusel,Casos reales,Caso real 1: situación implementación y cambio observado,Prueba,Solicitar lugar,p04_caso_real_1,Pendiente
+3,Confianza orgánica,Martes,Instagram y Facebook,Historias,Casos reales,Un detalle verificable del caso 1,Confianza,Ver el caso,stories_caso_1,Pendiente
+3,Confianza orgánica,Miércoles,Instagram Facebook TikTok,Reel,Demostraciones,Así responde un agente una consulta aprobada fuera de horario,Consideración,Solicitar lugar,p05_demo_agente,Pendiente
+3,Confianza orgánica,Jueves,Instagram,Historias,Construcción pública,Qué revisamos antes de activar un agente,Confianza,Hacer una pregunta,stories_revision_agente,Pendiente
+3,Confianza orgánica,Viernes,Instagram Facebook TikTok,Reel,Construcción pública,El fundador explica el proceso de diagnóstico a implementación,Confianza,Solicitar lugar,p06_proceso_fundador,Pendiente
+3,Confianza orgánica,Sábado,Instagram y Facebook,Carrusel,Casos reales,Caso real 2: situación implementación y cambio observado,Prueba,Solicitar lugar,p07_caso_real_2,Pendiente
+3,Confianza orgánica,Domingo,Instagram y Facebook,Carrusel,Educación,Web agente y automatización: qué resuelve cada pieza,Autoridad,Solicitar lugar,p08_tres_servicios,Pendiente
+4,Captación,Lunes,Instagram y Facebook,Carrusel,Oferta,Siete clínicas fundadoras: para quién es y qué incluye,Conversión,Solicitar lugar,p09_programa_fundador,Pendiente
+4,Captación,Martes,Instagram y Facebook,Historias,Investigación,¿Dónde se pierden más consultas hoy?,Investigación,Responder encuesta,stories_perdida_consultas,Pendiente
+4,Captación,Miércoles,Instagram Facebook TikTok,Reel,Dolores,Qué encuentra un paciente cuando busca tu clínica a las 9 p. m.,Identificación,Solicitar lugar,w04_busqueda_9pm,Pendiente
+4,Captación,Jueves,Instagram,Historias,Construcción pública,Configuración de medición y seguimiento sin mostrar datos privados,Confianza,Conocer el proceso,stories_medicion,Pendiente
+4,Captación,Viernes,Instagram y Facebook,Carrusel,Educación,Checklist de información que una web dental debe aclarar,Autoridad,Solicitar lugar,w04_checklist_web,Pendiente
+5,Captación,Lunes,Instagram Facebook TikTok,Reel,Dolores,Responder tarde también tiene un costo para la clínica,Identificación,Solicitar lugar,w05_responder_tarde,Pendiente
+5,Captación,Martes,Instagram y Facebook,Historias,Investigación,¿Cuántos canales revisa recepción cada día?,Investigación,Responder encuesta,stories_canales,Pendiente
+5,Captación,Miércoles,Instagram y Facebook,Carrusel,Educación,Chatbot genérico vs agente adaptado a la clínica,Consideración,Solicitar lugar,w05_chatbot_vs_agente,Pendiente
+5,Captación,Viernes,Instagram Facebook TikTok,Reel,Demostraciones,De una pregunta repetitiva a una respuesta aprobada,Consideración,Solicitar lugar,w05_demo_respuesta,Pendiente
+6,Captación,Lunes,Instagram Facebook TikTok,Reel,Trabajo manual,Confirmaciones y reprogramaciones que consumen recepción,Identificación,Solicitar lugar,w06_confirmaciones,Pendiente
+6,Captación,Martes,Instagram y Facebook,Historias,Investigación,¿Qué tarea administrativa eliminarías primero?,Investigación,Responder pregunta,stories_tarea_manual,Pendiente
+6,Captación,Miércoles,Instagram y Facebook,Carrusel,Educación,Qué automatizar y qué debe seguir siendo humano,Autoridad,Solicitar lugar,w06_humano_automatizado,Pendiente
+6,Captación,Viernes,Instagram Facebook TikTok,Reel,Casos reales,Caso verificable: una mejora observable en el proceso,Prueba,Solicitar lugar,w06_caso_proceso,Pendiente
+7,Captación,Lunes,Instagram Facebook TikTok,Reel,Dolores,Una consulta perdida no siempre parece una consulta perdida,Identificación,Solicitar lugar,w07_consulta_perdida,Pendiente
+7,Captación,Martes,Instagram y Facebook,Historias,Objeciones,¿Una web reemplaza Instagram?,Educación,Enviar una pregunta,stories_web_instagram,Pendiente
+7,Captación,Miércoles,Instagram y Facebook,Carrusel,Educación,El recorrido digital de un paciente antes de contactar,Autoridad,Solicitar lugar,w07_recorrido_paciente,Pendiente
+7,Captación,Viernes,Instagram Facebook TikTok,Reel,Demostraciones,Así se deriva al equipo una consulta que requiere atención humana,Confianza,Solicitar lugar,w07_derivacion_humana,Pendiente
+8,Captación,Lunes,Instagram Facebook TikTok,Reel,Construcción pública,Qué necesita aprobar una clínica antes de publicar su web,Confianza,Solicitar lugar,w08_aprobacion_web,Pendiente
+8,Captación,Martes,Instagram y Facebook,Historias,Investigación,¿Qué información preguntan antes de reservar?,Investigación,Responder encuesta,stories_antes_reservar,Pendiente
+8,Captación,Miércoles,Instagram y Facebook,Carrusel,Objeciones,No se trata de poner IA en todo,Autoridad,Solicitar lugar,w08_ia_con_criterio,Pendiente
+8,Captación,Viernes,Instagram Facebook TikTok,Reel,Casos reales,Antes y después del flujo sin inventar métricas,Prueba,Solicitar lugar,w08_antes_despues,Pendiente
+9,Optimización y cierre,Lunes,Instagram Facebook TikTok,Reel,Objeciones,No quiero un robot atendiendo a mis pacientes,Consideración,Solicitar lugar,w09_objecion_robot,Pendiente
+9,Optimización y cierre,Martes,Instagram y Facebook,Historias,Objeciones,Caja de preguntas sobre agentes con IA,Investigación,Hacer una pregunta,stories_qa_ia,Pendiente
+9,Optimización y cierre,Miércoles,Instagram y Facebook,Carrusel,Educación,Cinco límites que debe tener un agente para salud,Confianza,Solicitar lugar,w09_limites_agente,Pendiente
+9,Optimización y cierre,Viernes,Instagram Facebook TikTok,Reel,Demostraciones,Una respuesta correcta y una consulta que debe escalarse,Consideración,Solicitar lugar,w09_demo_limites,Pendiente
+10,Optimización y cierre,Lunes,Instagram Facebook TikTok,Reel,Objeciones,No tenemos tiempo para implementar otra herramienta,Identificación,Solicitar lugar,w10_objecion_tiempo,Pendiente
+10,Optimización y cierre,Martes,Instagram y Facebook,Historias,Construcción pública,Así reducimos lo que la clínica tiene que preparar,Confianza,Ver el proceso,stories_implementacion,Pendiente
+10,Optimización y cierre,Miércoles,Instagram y Facebook,Carrusel,Educación,La primera automatización que conviene evaluar,Autoridad,Solicitar lugar,w10_primera_automatizacion,Pendiente
+10,Optimización y cierre,Viernes,Instagram Facebook TikTok,Reel,Casos reales,Qué cambió para el equipo después de organizar las consultas,Prueba,Solicitar lugar,w10_cambio_equipo,Pendiente
+11,Optimización y cierre,Lunes,Instagram Facebook TikTok,Reel,Dolores,Una página bonita no basta si el paciente no sabe qué hacer,Identificación,Solicitar lugar,w11_pagina_convierte,Pendiente
+11,Optimización y cierre,Martes,Instagram y Facebook,Historias,Investigación,¿Cuál CTA funciona mejor para tu clínica?,Investigación,Responder encuesta,stories_cta,Pendiente
+11,Optimización y cierre,Miércoles,Instagram y Facebook,Carrusel,Educación,Siete elementos de confianza sin promesas médicas,Autoridad,Solicitar lugar,w11_confianza,Pendiente
+11,Optimización y cierre,Viernes,Instagram Facebook TikTok,Reel,Demostraciones,Del servicio al botón de contacto en treinta segundos,Consideración,Solicitar lugar,w11_demo_recorrido,Pendiente
+12,Optimización y cierre,Lunes,Instagram Facebook TikTok,Reel,Oferta,Para qué tipo de clínica sí es el programa fundador,Calificación,Solicitar lugar,w12_para_quien,Pendiente
+12,Optimización y cierre,Martes,Instagram y Facebook,Historias,Oferta,Lugares restantes con cantidad real,Conversión,Solicitar lugar,stories_lugares_reales,Pendiente
+12,Optimización y cierre,Miércoles,Instagram y Facebook,Carrusel,Objeciones,Preguntas frecuentes antes de trabajar con Abdismart,Consideración,Solicitar lugar,w12_faq_programa,Pendiente
+12,Optimización y cierre,Viernes,Instagram Facebook TikTok,Reel,Oferta,Qué ocurre después de enviar la solicitud,Conversión,Solicitar lugar,w12_despues_solicitud,Pendiente
