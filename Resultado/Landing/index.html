@@ -4063,6 +4063,26 @@
   const SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
   const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const params = new URLSearchParams(location.search);
+  const attributionKey = 'abdismart_marketing_attribution_v1';
+  const currentAttribution = {
+    source: params.get('utm_source'),
+    medium: params.get('utm_medium'),
+    campaign: params.get('utm_campaign'),
+    content: params.get('utm_content'),
+    term: params.get('utm_term'),
+    fbclid: params.get('fbclid'),
+    landing_path: location.pathname,
+    referrer: document.referrer || null
+  };
+  let storedAttribution = {};
+  try { storedAttribution = JSON.parse(sessionStorage.getItem(attributionKey) || '{}'); } catch (e) {}
+  const marketingAttribution = Object.fromEntries(Object.entries({ ...storedAttribution, ...currentAttribution }).filter(([, value]) => value));
+  try { sessionStorage.setItem(attributionKey, JSON.stringify(marketingAttribution)); } catch (e) {}
+
+  function trackMeta(event, data) {
+    if (typeof window.fbq === 'function') window.fbq('track', event, data || {});
+  }
 
   // Pop-up de dos pasos para Crece con Abdi.
   const founderModal = document.getElementById('founder-modal');
@@ -4086,6 +4106,10 @@
     founderModal.classList.add('is-open');
     founderModal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('founder-modal-open');
+    if (!founderModal.dataset.viewTracked) {
+      founderModal.dataset.viewTracked = 'true';
+      trackMeta('ViewContent', { content_name: 'programa_fundador', content_category: 'odontologia' });
+    }
     if (!manual) {
       try { sessionStorage.setItem(founderSeenKey, '1'); } catch (e) {}
     }
@@ -4176,9 +4200,15 @@
       respuestas: {
         origen: 'programa_fundador',
         principal_reto: desafio,
-        automatizacion_deseada: automatizacion || null
+        automatizacion_deseada: automatizacion || null,
+        marketing: marketingAttribution
       },
-      utm_source: new URLSearchParams(location.search).get('utm_source')
+      origen_registro: 'programa_fundador',
+      pipeline_stage: 'new',
+      production_stage: 'clientes',
+      next_action: 'Contactar en menos de 2 horas hábiles',
+      next_action_at: new Date().toISOString().slice(0, 10),
+      utm_source: marketingAttribution.source || 'programa_fundador'
     });
 
     if (error) {
@@ -4190,15 +4220,15 @@
     }
 
     showFounderStep('success');
+    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio });
   });
 
   // Registro de visita (conversión = waitlist / page_views)
-  const params = new URLSearchParams(location.search);
   db.from('page_views').insert({
     path: location.pathname,
     referrer: document.referrer || null,
-    utm_source: params.get('utm_source'),
-    utm_campaign: params.get('utm_campaign')
+    utm_source: marketingAttribution.source || null,
+    utm_campaign: marketingAttribution.campaign || null
   }).then(() => {});
 
   // WhatsApp: guardar el contacto antes de abrir la conversación.
@@ -4276,7 +4306,13 @@
       negocio: `Consulta · ${servicio}`,
       whatsapp,
       email: null,
-      utm_source: params.get('utm_source') || 'boton_whatsapp'
+      respuestas: { servicio_interes: servicio, marketing: marketingAttribution },
+      origen_registro: 'whatsapp_landing',
+      pipeline_stage: 'new',
+      production_stage: 'clientes',
+      next_action: 'Continuar conversación por WhatsApp',
+      next_action_at: new Date().toISOString().slice(0, 10),
+      utm_source: marketingAttribution.source || 'boton_whatsapp'
     });
 
     if (error) {
@@ -4287,7 +4323,7 @@
       return;
     }
 
-    if (typeof window.fbq === 'function') window.fbq('track', 'Lead', { content_name: servicio });
+    trackMeta('Contact', { content_name: servicio });
     const message = `Hola, soy ${nombre}. Me pueden enviar información sobre ${servicio}.`;
     window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   });
@@ -4322,7 +4358,13 @@
     const { error } = await db.from('waitlist').insert({
       nombre, negocio, whatsapp,
       email: email || null,
-      utm_source: params.get('utm_source')
+      respuestas: { origen: 'programa_fundador', marketing: marketingAttribution },
+      origen_registro: 'programa_fundador',
+      pipeline_stage: 'new',
+      production_stage: 'clientes',
+      next_action: 'Contactar en menos de 2 horas hábiles',
+      next_action_at: new Date().toISOString().slice(0, 10),
+      utm_source: marketingAttribution.source || 'programa_fundador'
     });
 
     if (error) {
@@ -4335,6 +4377,7 @@
 
     wlForm.style.display = 'none';
     wlSuccess.style.display = 'block';
+    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio });
   });
 </script>
 <script src="assets/agent-widget.js?v=17" data-business="abdismart" defer></script>
