@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es-CR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Política de privacidad de Abdismart, operado por Grupo Abdi S.R.L. en Costa Rica. Qué datos recolectamos, para qué los usamos y cómo ejercer sus derechos.">
+
+  <title>Política de privacidad — Abdismart</title>
+
+  <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
+
+  <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
+  <script>
+    (function () {
+      var saved;
+      try { saved = localStorage.getItem('abdi-theme'); } catch (e) {}
+      var theme = saved === 'light' || saved === 'dark'
+        ? saved
+        : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Tokens del sistema Monolito — idénticos a index.html. */
+    :root {
+      --onyx:     #0A0B0D;
+      --graphite: #1C1F27;
+      --lime:     #C6FF3D;
+      --fog:      #A6ABB8;
+      --bone:     #F4F5F7;
+      --lime-dim:    rgba(198,255,61,.07);
+      --lime-border: rgba(198,255,61,.18);
+      --edge:        rgba(255,255,255,.07);
+
+      --accent:     #C6FF3D;
+      --on-accent:  #0A0B0D;
+
+      --surface-0: rgba(255,255,255,.02);
+      --surface-1: rgba(255,255,255,.04);
+      --surface-2: rgba(255,255,255,.06);
+      --nav-bg:     rgba(10,11,13,.88);
+
+      color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+      --onyx:     #F6F7F9;
+      --graphite: #FFFFFF;
+      --fog:      #565C69;
+      --bone:     #0A0B0D;
+      --lime-dim:    rgba(122,168,0,.10);
+      --lime-border: rgba(122,168,0,.30);
+      --edge:        rgba(10,11,13,.11);
+
+      --accent:    #4F7A00;
+
+      --surface-0: rgba(10,11,13,.025);
+      --surface-1: rgba(10,11,13,.045);
+      --surface-2: rgba(10,11,13,.07);
+      --nav-bg:     rgba(246,247,249,.88);
+
+      color-scheme: light;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--onyx);
+      color: var(--bone);
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+    }
+
+    /* ─── TOPBAR ─────────────────────────────────────────────── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 28px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--edge);
+    }
+    .logo { display: block; text-decoration: none; line-height: 0; }
+    .logo img { display: block; height: 26px; width: auto; }
+    .logo .logo-light { display: none; }
+    :root[data-theme="light"] .logo .logo-dark  { display: none; }
+    :root[data-theme="light"] .logo .logo-light { display: block; }
+
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+    .theme-toggle {
+      display: flex; align-items: center; gap: 2px;
+      border: 1px solid var(--edge);
+      border-radius: 100px;
+      padding: 3px;
+    }
+    .theme-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border: none; border-radius: 50%;
+      background: transparent;
+      color: var(--fog);
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+    .theme-btn svg { width: 14px; height: 14px; }
+    .theme-btn:hover { color: var(--bone); }
+    .theme-btn[aria-pressed="true"] { background: var(--surface-2); color: var(--accent); }
+
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 7px;
+      border: 1px solid var(--edge);
+      border-radius: 10px;
+      padding: 9px 16px;
+      font-size: 13px; font-weight: 500;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .btn-back:hover { color: var(--bone); border-color: var(--lime-border); background: var(--surface-1); }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .wrap {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 56px 28px 96px;
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* Índice lateral */
+    .toc {
+      position: sticky;
+      top: 96px;
+      border-left: 1px solid var(--edge);
+      padding-left: 18px;
+    }
+    .toc-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 14px;
+    }
+    .toc ol { list-style: none; counter-reset: toc; }
+    .toc li { counter-increment: toc; }
+    .toc a {
+      display: block;
+      padding: 4px 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--fog);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .toc a::before {
+      content: counter(toc) ". ";
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      opacity: .6;
+    }
+    .toc a:hover { color: var(--accent); }
+
+    /* Cabecera del documento */
+    .doc-head { margin-bottom: 44px; }
+    .label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      display: block;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Archivo', sans-serif;
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .doc-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--fog);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--edge);
+    }
+
+    /* Estado del documento */
+    .aviso {
+      border: 1px solid var(--lime-border);
+      background: var(--lime-dim);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-bottom: 44px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--bone);
+    }
+    /* Solo el primer strong es el título del aviso; los de adentro van en línea. */
+    .aviso > strong:first-child { color: var(--accent); display: block; margin-bottom: 6px; font-size: 13px; }
+
+    /* Secciones */
+    section { margin-bottom: 44px; scroll-margin-top: 96px; }
+    h2 {
+      font-family: 'Archivo', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--edge);
+      display: flex;
+      gap: 12px;
+    }
+    h2 .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--accent);
+      padding-top: 5px;
+      flex-shrink: 0;
+    }
+    h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      margin: 22px 0 8px;
+      color: var(--bone);
+    }
+    p { color: var(--fog); margin-bottom: 14px; font-size: 15px; }
+    p strong, li strong { color: var(--bone); font-weight: 600; }
+
+    ul, ol.lista { margin: 0 0 16px 0; padding-left: 20px; }
+    li { color: var(--fog); margin-bottom: 8px; font-size: 15px; }
+    li::marker { color: var(--accent); }
+
+    a.link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+    a.link:hover { text-decoration-thickness: 2px; }
+
+    /* Ficha de datos */
+    .ficha {
+      border: 1px solid var(--edge);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .ficha div {
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 16px;
+      padding: 12px 18px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--edge);
+    }
+    .ficha div:last-child { border-bottom: none; }
+    .ficha dt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding-top: 3px;
+    }
+    .ficha dd { color: var(--bone); }
+
+    /* Bloque destacado */
+    .destacado {
+      border-left: 2px solid var(--accent);
+      background: var(--lime-dim);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .destacado p:last-child { margin-bottom: 0; }
+
+    footer {
+      border-top: 1px solid var(--edge);
+      padding: 32px 28px 48px;
+      text-align: center;
+    }
+    .footer-copy {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--fog);
+    }
+    .footer-legal { display: block; margin-top: 4px; opacity: .75; }
+
+    @media (max-width: 940px) {
+      .wrap { grid-template-columns: 1fr; gap: 32px; padding-top: 36px; }
+      .toc {
+        position: static;
+        border-left: none;
+        border: 1px solid var(--edge);
+        border-radius: 14px;
+        padding: 18px 20px;
+      }
+      .toc ol { columns: 2; column-gap: 24px; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 14px 18px; }
+      .logo img { height: 22px; }
+      .wrap { padding: 28px 18px 72px; }
+      .toc ol { columns: 1; }
+      .ficha div { grid-template-columns: 1fr; gap: 4px; }
+      .btn-back span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="logo" href="index.html" aria-label="Abdismart — ir al inicio">
+    <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
+    <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+  </a>
+  <div class="topbar-right">
+    <div class="theme-toggle" role="group" aria-label="Modo de color">
+      <button type="button" class="theme-btn" data-theme-set="light" aria-pressed="false" aria-label="Modo claro" title="Modo claro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <button type="button" class="theme-btn" data-theme-set="dark" aria-pressed="true" aria-label="Modo oscuro" title="Modo oscuro">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
+    </div>
+    <a class="btn-back" href="index.html">← <span>Volver</span></a>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <nav class="toc" aria-label="Índice del documento">
+    <div class="toc-title">Contenido</div>
+    <ol>
+      <li><a href="#s1">Responsable de los datos</a></li>
+      <li><a href="#s2">Alcance de esta política</a></li>
+      <li><a href="#s3">Qué datos recolectamos</a></li>
+      <li><a href="#s4">Para qué usamos los datos</a></li>
+      <li><a href="#s5">Consentimiento</a></li>
+      <li><a href="#s6">Cookies y medición</a></li>
+      <li><a href="#s7">Uso de inteligencia artificial</a></li>
+      <li><a href="#s8">Prospección comercial</a></li>
+      <li><a href="#s9">Con quién compartimos</a></li>
+      <li><a href="#s10">Transferencia internacional</a></li>
+      <li><a href="#s11">Cuánto tiempo conservamos</a></li>
+      <li><a href="#s12">Seguridad</a></li>
+      <li><a href="#s13">Sus derechos</a></li>
+      <li><a href="#s14">Cómo ejercerlos</a></li>
+      <li><a href="#s15">Datos de terceros</a></li>
+      <li><a href="#s16">Menores de edad</a></li>
+      <li><a href="#s17">Enlaces a otros sitios</a></li>
+      <li><a href="#s18">Cambios a esta política</a></li>
+      <li><a href="#s19">Reclamos y contacto</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="doc-head">
+      <span class="label">Legal</span>
+      <h1>Política de privacidad.</h1>
+      <div class="doc-meta">
+        <span>Versión 1.0</span>
+        <span>Vigente desde el 7 de agosto de 2026</span>
+        <span>Costa Rica</span>
+      </div>
+    </div>
+
+    <div class="aviso">
+      <strong>Lo esencial en cinco líneas</strong>
+      Recolectamos su nombre, su WhatsApp, su correo y los datos de su negocio para contactarlo y prestarle el servicio. No vendemos datos. Usamos inteligencia artificial para responder en WhatsApp y siempre hay una persona detrás. Puede pedirnos acceso, corrección o eliminación de sus datos cuando quiera, escribiendo a <a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a>. Esta política complementa los <a class="link" href="terminos.html">términos y condiciones</a>.
+    </div>
+
+    <section id="s1">
+      <h2><span class="num">01</span> Responsable de los datos</h2>
+      <p>La base de datos está a cargo de la empresa que opera la marca Abdismart. Ante cualquier consulta sobre el tratamiento de sus datos personales, este es el responsable:</p>
+      <dl class="ficha">
+        <div><dt>Razón social</dt><dd>Grupo Abdi S.R.L.</dd></div>
+        <div><dt>Nombre comercial</dt><dd>Abdismart</dd></div>
+        <div><dt>País de operación</dt><dd>Costa Rica</dd></div>
+        <div><dt>Sitio web</dt><dd><a class="link" href="https://abdismart.com">abdismart.com</a></dd></div>
+        <div><dt>Correo electrónico</dt><dd><a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a></dd></div>
+        <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
+      </dl>
+      <p>El tratamiento de datos personales se rige por la <strong>Ley 8968, Ley de Protección de la Persona frente al Tratamiento de sus Datos Personales</strong>, y su reglamento, el <strong>Decreto Ejecutivo 37554-JP</strong>, bajo la supervisión de la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong>.</p>
+      <p>En adelante, «Abdismart» o «nosotros». La persona cuyos datos tratamos se denomina «el titular» o «usted».</p>
+    </section>
+
+    <section id="s2">
+      <h2><span class="num">02</span> Alcance de esta política</h2>
+      <p>Esta política aplica a los datos que tratamos a través de:</p>
+      <ul>
+        <li>El sitio web <strong>abdismart.com</strong> y sus formularios.</li>
+        <li>Nuestro canal de <strong>WhatsApp</strong>, incluido el agente automático de primer contacto.</li>
+        <li>El <strong>sistema interno de gestión</strong> donde llevamos leads, clientes y proyectos.</li>
+        <li>Los correos y llamadas de venta, soporte y facturación.</li>
+      </ul>
+      <div class="destacado">
+        <p><strong>No aplica a las webs de nuestros clientes.</strong> Cuando construimos una web o un agente para un negocio, ese negocio es el responsable de los datos que recolecte de sus propios clientes o pacientes. Nosotros actuamos como encargados: tratamos esa información solo por instrucción del cliente y para operar el servicio. Cada negocio debe publicar su propia política de privacidad.</p>
+      </div>
+    </section>
+
+    <section id="s3">
+      <h2><span class="num">03</span> Qué datos recolectamos</h2>
+
+      <h3>Datos que usted nos entrega</h3>
+      <ul>
+        <li><strong>Formulario del sitio:</strong> nombre, nombre del negocio, número de WhatsApp y correo electrónico.</li>
+        <li><strong>Brief del proyecto:</strong> ciudad, tipo de negocio, servicios que ofrece, presencia digital actual, urgencia y el detalle que usted escriba.</li>
+        <li><strong>Conversaciones:</strong> el contenido de los mensajes que intercambia con nosotros por WhatsApp o correo, junto con su número y el nombre de su perfil de WhatsApp.</li>
+        <li><strong>Materiales del proyecto:</strong> textos, fotografías, logotipos y accesos a plataformas que usted nos comparta para producir su web.</li>
+        <li><strong>Datos de facturación:</strong> nombre o razón social, identificación tributaria y correo para el comprobante electrónico.</li>
+      </ul>
+      <p>No pedimos ni almacenamos números completos de tarjeta. El cobro lo procesa directamente el medio de pago acordado en la cotización.</p>
+
+      <h3>Datos que se recogen solos</h3>
+      <ul>
+        <li><strong>Navegación:</strong> página visitada, página de procedencia y parámetros de campaña (utm).</li>
+        <li><strong>Datos técnicos:</strong> dirección IP, tipo de dispositivo y navegador, procesados por nuestro proveedor de hosting para servir el sitio y protegerlo de ataques.</li>
+        <li><strong>Cookies y tecnologías similares:</strong> ver la sección 06.</li>
+      </ul>
+
+      <h3>Datos públicos de negocios</h3>
+      <p>Para prospección comercial recolectamos información publicada abiertamente por negocios en directorios y redes sociales: nombre comercial, sitio web, teléfono o correo de contacto público, dirección, categoría y reseñas. Ver la sección 08.</p>
+
+      <h3>Datos sensibles</h3>
+      <p>No solicitamos datos sensibles en el sentido del artículo 9 de la Ley 8968: origen racial o étnico, opiniones políticas, convicciones religiosas, afiliación sindical, vida sexual o datos de salud. Le pedimos <strong>no incluirlos</strong> en los mensajes ni en los formularios. Si nos comparte información de salud de terceros —por ejemplo, un consultorio que envía un expediente por error— la eliminaremos y se lo informaremos.</p>
+    </section>
+
+    <section id="s4">
+      <h2><span class="num">04</span> Para qué usamos los datos</h2>
+      <p>Cada dato tiene una finalidad concreta:</p>
+      <dl class="ficha">
+        <div><dt>Contacto</dt><dd>Responder su consulta, agendar una llamada y enviarle una cotización.</dd></div>
+        <div><dt>Servicio</dt><dd>Diseñar, publicar y mantener su web, agente o automatización.</dd></div>
+        <div><dt>Soporte</dt><dd>Atender solicitudes de cambios y resolver incidencias.</dd></div>
+        <div><dt>Facturación</dt><dd>Emitir el comprobante electrónico y llevar la contabilidad.</dd></div>
+        <div><dt>Medición</dt><dd>Entender qué páginas y campañas funcionan, en forma agregada.</dd></div>
+        <div><dt>Obligación legal</dt><dd>Cumplir requerimientos tributarios y de autoridad competente.</dd></div>
+      </dl>
+      <p>Si en el futuro queremos usar sus datos para una finalidad distinta a las anteriores, se lo informaremos y le pediremos su consentimiento antes de hacerlo.</p>
+      <p>No usamos sus datos para tomar decisiones automatizadas que produzcan efectos jurídicos sobre usted.</p>
+    </section>
+
+    <section id="s5">
+      <h2><span class="num">05</span> Consentimiento</h2>
+      <p>Conforme al <strong>artículo 5 de la Ley 8968</strong>, la recolección se basa en su <strong>consentimiento expreso, libre e informado</strong>. Usted lo otorga cuando envía el formulario, nos escribe por WhatsApp o acepta una cotización, después de haber tenido acceso a esta política.</p>
+      <p>El consentimiento es <strong>revocable en cualquier momento</strong> y sin costo, escribiendo a los canales de la sección 01. La revocación no tiene efecto retroactivo sobre el tratamiento ya realizado ni sobre los datos que debemos conservar por obligación legal.</p>
+      <p>No necesitamos su consentimiento cuando el tratamiento es necesario para ejecutar el contrato que usted firmó con nosotros, para cumplir una obligación legal, o cuando se trata de datos de acceso irrestricto público.</p>
+      <p>Si deja de ser cliente o revoca su consentimiento, dejaremos de enviarle comunicaciones comerciales. Los mensajes operativos indispensables —cobros pendientes, avisos de seguridad, vencimiento del dominio— se mantienen mientras exista una relación contractual activa.</p>
+    </section>
+
+    <section id="s6">
+      <h2><span class="num">06</span> Cookies y medición</h2>
+      <p>Nuestro sitio usa tres tipos de tecnologías de almacenamiento y medición:</p>
+      <ul>
+        <li><strong>Preferencias del sitio.</strong> Guardamos en su navegador el modo de color que eligió, claro u oscuro. No identifica a nadie y no sale de su dispositivo.</li>
+        <li><strong>Métricas propias.</strong> Registramos la página visitada, la página de procedencia y los parámetros de campaña, sin asociarlos a su nombre ni a su correo.</li>
+        <li><strong>Píxel de Meta.</strong> El sitio carga el píxel de Meta Platforms para medir el resultado de nuestros anuncios en Facebook e Instagram. Ese píxel puede instalar cookies de Meta y enviarle información sobre su visita. Meta trata esos datos como responsable independiente, según sus propias políticas.</li>
+      </ul>
+      <p>Puede bloquear o eliminar las cookies desde la configuración de su navegador, y limitar la publicidad personalizada desde la configuración de su cuenta de Facebook o Instagram. Bloquearlas no afecta el funcionamiento del sitio ni su capacidad de contratarnos.</p>
+    </section>
+
+    <section id="s7">
+      <h2><span class="num">07</span> Uso de inteligencia artificial</h2>
+      <p>Nuestro primer contacto por WhatsApp lo atiende un <strong>agente automático</strong>. Se lo decimos de frente: usted no está hablando con una persona en ese momento.</p>
+      <p>Para que ese agente responda, el contenido de la conversación, su nombre de perfil y su número se envían a un <strong>proveedor de modelos de lenguaje</strong> que genera la respuesta. El proveedor procesa esa información por encargo nuestro y bajo compromiso contractual de confidencialidad.</p>
+      <p>La conversación se guarda en nuestro sistema para dar seguimiento al caso y no repetirle preguntas que ya contestó.</p>
+      <div class="destacado">
+        <p><strong>Siempre puede hablar con una persona.</strong> Escriba «humano» o pídalo con sus palabras y la conversación pasa a una persona del equipo. Ninguna propuesta, precio o entrega se aprueba sin revisión humana.</p>
+      </div>
+      <p>Le pedimos no compartir con el agente contraseñas, números de tarjeta, datos de salud ni información confidencial de terceros.</p>
+    </section>
+
+    <section id="s8">
+      <h2><span class="num">08</span> Prospección comercial</h2>
+      <p>Parte de nuestra búsqueda de clientes consiste en identificar negocios cuya presencia digital podríamos mejorar. Para eso recolectamos información que esos negocios <strong>publican abiertamente</strong> en sus perfiles, sitios web y directorios: nombre comercial, categoría, teléfono o correo de contacto público, dirección y reseñas visibles.</p>
+      <p>Se trata de <strong>datos de acceso irrestricto público</strong> y de datos de contacto profesional, no de la vida privada de una persona. No recolectamos perfiles personales, contenido privado ni datos de personas ajenas a la actividad comercial del negocio.</p>
+      <p>Usamos esa información con una sola finalidad: enviar un primer mensaje comercial relevante. Nunca la vendemos ni la compartimos con terceros.</p>
+      <p>Si su negocio recibió un mensaje nuestro y no quiere volver a recibirlos, respóndalo con «no me contacten» o escriba a <a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a>. Lo marcamos como <strong>no contactar</strong> y eliminamos sus datos de la base de prospección. La solicitud se atiende dentro de los cinco días hábiles siguientes.</p>
+    </section>
+
+    <section id="s9">
+      <h2><span class="num">09</span> Con quién compartimos</h2>
+      <p><strong>No vendemos sus datos. No los cedemos con fines comerciales a terceros.</strong></p>
+      <p>Los compartimos únicamente con proveedores tecnológicos que necesitamos para operar el servicio, cada uno con acceso limitado a lo que le corresponde:</p>
+      <dl class="ficha">
+        <div><dt>Hosting y red</dt><dd>Entrega del sitio, dominios y protección contra ataques.</dd></div>
+        <div><dt>Base de datos</dt><dd>Almacenamiento de leads, proyectos y conversaciones.</dd></div>
+        <div><dt>Mensajería</dt><dd>Envío y recepción de mensajes por la API de WhatsApp Business.</dd></div>
+        <div><dt>Modelos de IA</dt><dd>Generación de respuestas del agente y apoyo a la producción.</dd></div>
+        <div><dt>Correo</dt><dd>Notificaciones, comprobantes y comunicaciones del proyecto.</dd></div>
+        <div><dt>Publicidad</dt><dd>Medición de campañas en Facebook e Instagram.</dd></div>
+        <div><dt>Pagos</dt><dd>Procesamiento del medio de pago acordado en la cotización.</dd></div>
+      </dl>
+      <p>Con cada proveedor existe un compromiso contractual de confidencialidad y seguridad. Ninguno está autorizado a usar sus datos para fines propios distintos de prestarnos el servicio.</p>
+      <p>También podemos entregar datos a <strong>autoridad competente</strong> cuando exista una orden fundada o una obligación legal. En ese caso se lo informaremos, salvo que la ley nos lo prohíba.</p>
+      <p>Si en el futuro la empresa se fusiona o transfiere su operación, sus datos podrían pasar al adquirente bajo las mismas condiciones de esta política. Se lo comunicaríamos con antelación y podría oponerse.</p>
+    </section>
+
+    <section id="s10">
+      <h2><span class="num">10</span> Transferencia internacional</h2>
+      <p>Nuestros proveedores de hosting, base de datos, mensajería, correo y modelos de inteligencia artificial operan servidores <strong>fuera de Costa Rica</strong>, principalmente en Estados Unidos y en la Unión Europea.</p>
+      <p>Esto significa que sus datos pueden almacenarse y procesarse en esos países. Al aceptar esta política usted consiente esa transferencia, conforme al <strong>artículo 14 de la Ley 8968</strong> y a su reglamento.</p>
+      <p>Seleccionamos proveedores con estándares de seguridad reconocidos y con compromisos contractuales de confidencialidad equivalentes a los que exige la legislación costarricense.</p>
+    </section>
+
+    <section id="s11">
+      <h2><span class="num">11</span> Cuánto tiempo conservamos</h2>
+      <p>Conservamos cada dato solo mientras cumple su finalidad:</p>
+      <dl class="ficha">
+        <div><dt>Consulta sin contratar</dt><dd>Hasta 24 meses desde el último contacto. Después se elimina.</dd></div>
+        <div><dt>Conversación de WhatsApp</dt><dd>Mientras exista relación comercial y hasta 24 meses después.</dd></div>
+        <div><dt>Cliente activo</dt><dd>Durante toda la relación contractual.</dd></div>
+        <div><dt>Respaldo de la web</dt><dd>30 días naturales después de la cancelación, conforme a la cláusula 12 de los términos.</dd></div>
+        <div><dt>Facturación y contabilidad</dt><dd>5 años, por obligación tributaria.</dd></div>
+        <div><dt>Base de prospección</dt><dd>Hasta 12 meses sin respuesta, o de inmediato si pide no ser contactado.</dd></div>
+      </dl>
+      <p>Cumplido el plazo, los datos se eliminan o se anonimizan de forma que ya no permitan identificar a nadie. Si usted pide la eliminación antes, la atendemos salvo en lo que debamos conservar por obligación legal.</p>
+    </section>
+
+    <section id="s12">
+      <h2><span class="num">12</span> Seguridad</h2>
+      <p>Aplicamos medidas de seguridad razonables y proporcionales al tipo de datos que tratamos:</p>
+      <ul>
+        <li>Todo el tráfico del sitio viaja <strong>cifrado con HTTPS</strong>.</li>
+        <li>El acceso a la base de datos está restringido por <strong>reglas por fila</strong>: el sitio público solo puede insertar, nunca leer.</li>
+        <li>El sistema interno requiere <strong>cuenta y contraseña</strong>, con acceso limitado a las personas que lo necesitan.</li>
+        <li>Los mensajes entrantes de WhatsApp se validan con <strong>firma criptográfica</strong> antes de procesarse.</li>
+        <li>Las llaves de acceso a proveedores se guardan como <strong>secretos cifrados</strong>, nunca en el código del sitio.</li>
+      </ul>
+      <p>Ningún sistema es infalible. Si ocurriera una violación de seguridad que afecte sus datos, se lo notificaremos <strong>dentro de los cinco días hábiles</strong> siguientes a que la detectemos, conforme al artículo 10 de la Ley 8968, indicándole qué pasó y qué hacer.</p>
+    </section>
+
+    <section id="s13">
+      <h2><span class="num">13</span> Sus derechos</h2>
+      <p>La Ley 8968 le reconoce estos derechos sobre sus datos, y ejercerlos es <strong>gratuito</strong>:</p>
+      <ul>
+        <li><strong>Acceso:</strong> saber qué datos suyos tenemos, de dónde salieron y para qué los usamos.</li>
+        <li><strong>Rectificación:</strong> corregir datos inexactos.</li>
+        <li><strong>Actualización:</strong> poner al día datos que cambiaron.</li>
+        <li><strong>Eliminación:</strong> pedir que borremos sus datos cuando ya no sean necesarios o cuando revoque su consentimiento.</li>
+        <li><strong>Revocación del consentimiento:</strong> retirar en cualquier momento el permiso que dio.</li>
+        <li><strong>Oposición:</strong> pedir que dejemos de usar sus datos para comunicaciones comerciales.</li>
+        <li><strong>Portabilidad:</strong> recibir una copia de la información y los archivos de su proyecto en formato de uso común.</li>
+      </ul>
+      <p>Ejercer estos derechos no tiene ningún costo ni consecuencia para el servicio que tenga contratado.</p>
+    </section>
+
+    <section id="s14">
+      <h2><span class="num">14</span> Cómo ejercerlos</h2>
+      <p>Escríbanos por cualquiera de estos canales, indicando qué derecho quiere ejercer:</p>
+      <dl class="ficha">
+        <div><dt>Correo</dt><dd><a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a></dd></div>
+        <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
+      </dl>
+      <p>Para proteger sus datos, verificaremos que la solicitud viene de usted. Basta con que escriba desde el correo o el número que ya tenemos registrado; si no, le pediremos una identificación.</p>
+      <p>Respondemos <strong>dentro de los cinco días hábiles</strong> siguientes a la solicitud, conforme al artículo 7 de la Ley 8968. Si la solicitud procede, aplicamos el cambio o la eliminación en ese mismo plazo y se lo confirmamos por escrito.</p>
+      <p>Si rechazamos una solicitud, le explicaremos por qué y le indicaremos cómo reclamar ante PRODHAB.</p>
+    </section>
+
+    <section id="s15">
+      <h2><span class="num">15</span> Datos de terceros</h2>
+      <p>Si usted nos entrega datos de otras personas —su equipo de trabajo, sus proveedores o su base de clientes— usted declara que cuenta con el derecho o el consentimiento necesario para compartirlos.</p>
+      <p>Sobre esos datos actuamos como <strong>encargados</strong>: los tratamos solo por instrucción suya, para la finalidad acordada, y los devolvemos o eliminamos cuando termina el servicio. No los usamos para fines propios ni los incorporamos a nuestra base comercial.</p>
+      <p>Si su negocio recolecta datos de pacientes o clientes a través de la web que le construimos, usted es el responsable de esa base ante PRODHAB. Debe publicar su propio aviso de privacidad y registrar la base cuando la ley se lo exija. Podemos ayudarle a redactarlo, pero la obligación es suya.</p>
+    </section>
+
+    <section id="s16">
+      <h2><span class="num">16</span> Menores de edad</h2>
+      <p>Nuestros servicios están dirigidos a personas mayores de edad que representan a un negocio. No recolectamos datos de menores de forma consciente.</p>
+      <p>Si detectamos que recibimos datos de una persona menor de edad sin autorización de quien ejerce su representación, los eliminaremos. Si usted es padre, madre o representante y cree que esto ocurrió, escríbanos y lo resolvemos.</p>
+    </section>
+
+    <section id="s17">
+      <h2><span class="num">17</span> Enlaces a otros sitios</h2>
+      <p>Nuestro sitio y nuestros mensajes pueden enlazar a servicios de terceros: WhatsApp, redes sociales, agendas o pasarelas de pago.</p>
+      <p>Cuando usted sale de abdismart.com, la información que entregue en esos sitios se rige por las políticas de privacidad de cada uno. Le recomendamos leerlas. No respondemos por el tratamiento que hagan esos terceros de forma independiente.</p>
+    </section>
+
+    <section id="s18">
+      <h2><span class="num">18</span> Cambios a esta política</h2>
+      <p>Podemos actualizar esta política cuando cambien nuestros servicios, nuestros proveedores o la normativa aplicable. La versión vigente siempre está publicada en esta página, con su número de versión y su fecha.</p>
+      <p>Cuando el cambio afecte de forma sustancial cómo tratamos sus datos, se lo notificaremos con al menos <strong>treinta días naturales</strong> de antelación por correo o WhatsApp. Si no está de acuerdo, puede revocar su consentimiento y pedir la eliminación de sus datos conforme a la sección 13.</p>
+    </section>
+
+    <section id="s19">
+      <h2><span class="num">19</span> Reclamos y contacto</h2>
+      <p>Si tiene una consulta o un reclamo sobre el manejo de sus datos, escríbanos primero. Nos comprometemos a responderle dentro de los <strong>cinco días hábiles</strong> siguientes y a buscar una solución directa.</p>
+      <dl class="ficha">
+        <div><dt>Correo</dt><dd><a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a></dd></div>
+        <div><dt>WhatsApp</dt><dd><a class="link" href="https://wa.me/50689814520" target="_blank" rel="noopener">+506 8981 4520</a></dd></div>
+        <div><dt>Responsable</dt><dd>Grupo Abdi S.R.L.</dd></div>
+      </dl>
+      <p>Si la respuesta no le satisface, puede acudir a la <strong>Agencia de Protección de Datos de los Habitantes (PRODHAB)</strong> del Ministerio de Justicia y Paz, que es el órgano competente en Costa Rica para conocer denuncias sobre protección de datos personales. Ninguna disposición de esta política limita ese derecho.</p>
+      <p>Esta política complementa los <a class="link" href="terminos.html">términos y condiciones</a> de Abdismart. En caso de contradicción entre ambos documentos en materia de datos personales, prevalece esta política.</p>
+    </section>
+  </main>
+</div>
+<footer>
+  <div class="footer-copy">
+    © 2026 Abdismart. Todos los derechos reservados.
+    <span class="footer-legal">Grupo Abdi S.R.L.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var THEME_KEY = 'abdi-theme';
+  var themeBtns = Array.prototype.slice.call(document.querySelectorAll('.theme-btn'));
+  var metaColor = document.getElementById('meta-theme-color');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme));
+    });
+    if (metaColor) metaColor.setAttribute('content', theme === 'light' ? '#F6F7F9' : '#0A0B0D');
+  }
+
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+
+  themeBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      applyTheme(btn.dataset.themeSet);
+      try { localStorage.setItem(THEME_KEY, btn.dataset.themeSet); } catch (e) {}
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
