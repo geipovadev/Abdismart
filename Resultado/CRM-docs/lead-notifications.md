@@ -2,7 +2,7 @@
 
 ## CRM y sonido
 
-1. Ejecuta `lead-notifications.sql` en Supabase.
+1. Ejecuta `migraciones/lead-notifications.sql` en Supabase.
 2. Abre el CRM y pulsa **Activar sonido**. El navegador recordará la preferencia.
 3. Cuando llegue un `INSERT` a `waitlist`, el CRM mostrará una alerta, actualizará los contadores y reproducirá un tono de tres notas.
 4. Si el navegador lo permite, también mostrará una notificación del sistema.

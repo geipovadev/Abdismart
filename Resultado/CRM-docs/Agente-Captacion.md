@@ -128,7 +128,7 @@ contacto y mantenerlas en estado `do_not_contact`.
 
 ## Flujo técnico
 
-1. Aplicar `Resultado/CRM/prospecting.sql` en Supabase.
+1. Aplicar `Resultado/CRM-docs/migraciones/prospecting.sql` en Supabase.
 2. Elegir y probar un Actor por canal en Apify. Guardar su identificador en las variables
    correspondientes; el JSON de `input` se envía sin transformarlo porque cada Actor define
    su propio esquema.

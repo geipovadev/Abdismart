@@ -17,8 +17,13 @@ Abdi/
 │   └── Abdi - Tono de Comunicacion.txt   # Voz de marca, reglas de estilo, tono por persona y canal
 └── Resultado/         # Outputs finales organizados por tipo de entregable
     ├── Landing/       # Landing page y componentes web
-    └── CRM/           # Sistema CRM y flujos de cliente
+    ├── CRM/           # Aplicación del CRM. ESTA CARPETA SE PUBLICA en crm.abdismart.com
+    └── CRM-docs/      # Documentación y migraciones del CRM. No se publica
 ```
+
+> **Nada de documentación ni de migraciones en `Resultado/CRM/`.** Esa carpeta se
+> sirve tal cual en internet: cualquier `.md` o `.sql` que quede ahí es legible sin
+> iniciar sesión. Va todo en `Resultado/CRM-docs/`.
 
 ---
 
@@ -165,5 +170,10 @@ Abdi/
 - Aplicar siempre el sistema "Monolito" y las reglas de tono.
 
 **`Resultado/CRM/`**
+- Solo la aplicación que se publica: `dashboard.html`, `login.html`, `reset-password.html`, `_redirects` y `assets/`.
+- No agregar aquí documentación ni migraciones: la carpeta es pública.
+
+**`Resultado/CRM-docs/`**
 - Flujos de cliente, configuración de herramientas, plantillas de comunicación o documentación del sistema CRM.
+- Las migraciones de Supabase van en `Resultado/CRM-docs/migraciones/`.
 - Las 7 plantillas de WhatsApp/email del documento de tono son punto de partida para este módulo.

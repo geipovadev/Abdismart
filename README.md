@@ -15,10 +15,17 @@ Abdi/
 ├── Contexto/          # NO versionado — solo local (ver nota abajo)
 └── Resultado/
     ├── Landing/       # Landing page pública
-    ├── CRM/           # Journey del cliente y acceso al CRM
+    ├── CRM/           # Solo la aplicación del CRM — esta carpeta se publica
+    ├── CRM-docs/      # Documentación y migraciones del CRM — NO se publica
     ├── Ejemplos/      # Webs de muestra por vertical
     └── Instagram/     # Piezas de contenido
 ```
+
+> **`Resultado/CRM/` se publica tal cual en `crm.abdismart.com`.** Todo lo que se
+> deje ahí queda accesible desde internet, aunque el tablero exija iniciar sesión:
+> los archivos sueltos no pasan por esa puerta. Por eso la documentación y las
+> migraciones viven en `Resultado/CRM-docs/`. No devolver `.md` ni `.sql` a
+> `Resultado/CRM/`.
 
 > **`Contexto/` no está en este repositorio.** Contiene la documentación de
 > negocio —economía unitaria, roadmap y metas de MRR— y el repo es público, así
@@ -75,8 +82,22 @@ npx wrangler deploy        # despliegue manual en Cloudflare
 `Resultado/Landing/_headers` define las cabeceras de seguridad y de caché.
 Cloudflare y Netlify lo leen igual; el servidor local no.
 
-Fuera del sitio publicado queda todo lo que esté afuera de `Resultado/Landing/`
-— incluido `Resultado/CRM/`, que no debe ser público.
+Fuera de la landing queda todo lo que esté afuera de `Resultado/Landing/`.
+
+### El CRM
+
+Se publica aparte, en el sitio `abdi-crm` de Netlify, sobre `crm.abdismart.com`.
+Su carpeta contiene **solo la aplicación**: `dashboard.html`, `login.html`,
+`reset-password.html`, `_redirects` y los logotipos.
+
+```bash
+npx netlify-cli deploy --dir=Resultado/CRM --prod --site=abdi-crm
+```
+
+Conviene conectarlo al repositorio para no depender de ese comando manual: en
+Netlify, sitio `abdi-crm` → Build & deploy → Link to a Git repository, con publish
+directory en `Resultado/CRM` y el comando de build vacío. Como la carpeta ya no
+contiene documentación ni migraciones, conectarlo no expone nada.
 
 ## Base de datos
 
@@ -86,7 +107,7 @@ Supabase. Las migraciones se aplican a mano desde el editor SQL del proyecto:
 |---|---|
 | `Resultado/Landing/supabase-waitlist.sql` | Tablas `waitlist` y `page_views` con RLS |
 | `Resultado/Landing/supabase-respuestas.sql` | Columna `respuestas` para el formulario largo |
-| `Resultado/CRM/agent-conversations.sql` | Historial del Agente Abdi, visible solo para usuarios autenticados |
+| `Resultado/CRM-docs/migraciones/agent-conversations.sql` | Historial del Agente Abdi, visible solo para usuarios autenticados |
 
 La `anon key` que aparece en los HTML es pública por diseño: el acceso está limitado
 por RLS, que solo permite `INSERT` a usuarios anónimos.
@@ -134,7 +155,7 @@ estructurada del diagnóstico y los contactos en Supabase sin exponer secretos a
 negocio está separada en `src/businesses.js`, para poder empaquetar el agente para
 otros clientes posteriormente.
 
-Antes de publicar, aplica `Resultado/CRM/agent-conversations.sql` y configura:
+Antes de publicar, aplica `Resultado/CRM-docs/migraciones/agent-conversations.sql` y configura:
 
 ```bash
 npx wrangler secret put OPENAI_API_KEY
@@ -181,8 +202,8 @@ recibe los mensajes por POST. Valida la firma HMAC de cada evento, responde 200 
 inmediato y procesa en segundo plano, porque Meta reintenta la entrega si el webhook
 tarda. La deduplicación por identificador de mensaje evita respuestas repetidas.
 
-Antes de publicar, aplica `Resultado/CRM/whatsapp-agent.sql` y
-`Resultado/CRM/whatsapp-agent-info.sql`, y configura:
+Antes de publicar, aplica `Resultado/CRM-docs/migraciones/whatsapp-agent.sql` y
+`Resultado/CRM-docs/migraciones/whatsapp-agent-info.sql`, y configura:
 
 ```bash
 npx wrangler secret put WHATSAPP_TOKEN
@@ -192,7 +213,7 @@ npx wrangler secret put WHATSAPP_VERIFY_TOKEN
 ```
 
 El alta en Meta, la ventana de 24 horas, el traspaso a una persona y las bajas están
-documentados en `Resultado/CRM/Agente-WhatsApp.md`.
+documentados en `Resultado/CRM-docs/Agente-WhatsApp.md`.
 
 A diferencia del widget web, este canal sí guarda los últimos 14 turnos en
 `whatsapp_conversations`: Meta solo entrega el mensaje nuevo, así que sin ese
@@ -205,8 +226,8 @@ El endpoint protegido `POST /api/abdi-leads/run` ejecuta Actors configurables de
 Apify para Instagram, Facebook, Google o LinkedIn, normaliza los negocios, los
 califica contra los tres servicios y evita duplicados entre fuentes mediante
 identidades únicas en Supabase. La estrategia, el ICP, el copy y la operación están
-documentados en `Resultado/CRM/Agente-Captacion.md`; la migración requerida está en
-`Resultado/CRM/prospecting.sql`.
+documentados en `Resultado/CRM-docs/Agente-Captacion.md`; la migración requerida está en
+`Resultado/CRM-docs/migraciones/prospecting.sql`.
 
 La ruta anterior `/api/prospecting/run` se conserva como alias para no romper
 integraciones existentes.

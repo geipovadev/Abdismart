@@ -122,8 +122,8 @@ verificación no coincide.
 
 Aplicar en Supabase, en este orden:
 
-1. `Resultado/CRM/whatsapp-agent.sql` — tablas del canal.
-2. `Resultado/CRM/whatsapp-agent-info.sql` — columnas `topic` e `interest` del
+1. `Resultado/CRM-docs/migraciones/whatsapp-agent.sql` — tablas del canal.
+2. `Resultado/CRM-docs/migraciones/whatsapp-agent-info.sql` — columnas `topic` e `interest` del
    perfil informativo.
 
 Y luego:

@@ -992,7 +992,7 @@
       if (!res.error) { finish(); return; }
 
       if (isMissingColumn(res.error)) {
-        fail(new Error('Falta preparar el campo de respuestas del brief en el CRM. Ejecuta Resultado/CRM/brief-responses.sql en Supabase.'));
+        fail(new Error('Falta preparar el campo de respuestas del brief en el CRM. Ejecuta Resultado/CRM-docs/migraciones/brief-responses.sql en Supabase.'));
         return;
       }
 
