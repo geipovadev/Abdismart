@@ -39,3 +39,6 @@ Thumbs.db
 # ─── Configuración local de Claude Code ─────────────────────
 # settings.json sí se versiona; el .local es de cada máquina.
 .claude/settings.local.json
+
+# Caché de graphify: se regenera, no se versiona.
+graphify-out/
