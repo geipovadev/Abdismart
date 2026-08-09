@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createHmac, webcrypto } from 'node:crypto';
-import { buildOutboundMessage, ensureTeamContact, extensionFor, extractInboundMessages, isOptOut, readAudioId, readMessageText, transcribeVoiceNote, verifySignature, verifySupabaseJwt, whatsappVerify, windowRemainingMs } from '../src/whatsapp.js';
+import { buildOutboundMessage, ensureTeamContact, extensionFor, extractInboundMessages, isOptOut, readAudioId, readMessageText, transcribeVoiceNote, verifySignature, pendingDelayMs, verifySupabaseJwt, whatsappVerify, windowRemainingMs } from '../src/whatsapp.js';
 import { formatWhatsapp } from '../src/businesses.js';
 
 // El Worker usa Web Crypto; en Node hay que exponerlo antes de importar nada más.
@@ -242,4 +242,16 @@ test('acepta el token ES256 que firma Supabase con su clave publicada', async ()
     const falso = `${cuerpo}.${Buffer.from(new Uint8Array(mala)).toString('base64url')}`;
     assert.equal(await verifySupabaseJwt({ SUPABASE_URL: 'https://proyecto.supabase.co' }, falso), null);
   } finally { globalThis.fetch = real; }
+});
+
+test('la pausa es un mínimo, no una suma al tiempo del modelo', () => {
+  const inicio = 1_000_000;
+  // El modelo tardó 300 ms: falta esperar el resto.
+  assert.equal(pendingDelayMs(inicio, inicio + 300), 1700);
+  // Tardó 2,5 s: ya se superó el mínimo, no se espera nada más.
+  assert.equal(pendingDelayMs(inicio, inicio + 2500), 0);
+  // Justo en el límite.
+  assert.equal(pendingDelayMs(inicio, inicio + 2000), 0);
+  // Respuesta instantánea: la espera completa.
+  assert.equal(pendingDelayMs(inicio, inicio), 2000);
 });

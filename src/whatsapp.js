@@ -13,6 +13,11 @@ const DEFAULT_API_VERSION = 'v23.0';
 // Límite de un mensaje de texto en el Cloud API.
 const TEXT_BODY_MAX = 4096;
 
+// Contestar al instante delata que del otro lado hay una máquina. Es un mínimo,
+// no una suma: el modelo ya suele tardar uno o dos segundos, y sumarle otros dos
+// haría que el agente pareciera lento en vez de natural. Solo espera lo que falte.
+const MIN_REPLY_MS = 2000;
+
 const FALLBACK_UNSUPPORTED = 'Por ahora puedo leer mensajes de texto y escuchar notas de voz. ¿Me lo cuentas de alguna de las dos formas?';
 // Llegó la nota de voz pero no se pudo transcribir. Distinto de un tipo de mensaje
 // que no atendemos: aquí la persona sí hizo lo correcto y conviene no culparla.
@@ -163,6 +168,15 @@ export function ensureTeamContact(answer, teamWhatsapp) {
  */
 export function buildOutboundMessage(to, answer) {
   return { to, type: 'text', text: { body: cleanText(answer, TEXT_BODY_MAX) || FALLBACK_ERROR, preview_url: false } };
+}
+
+/** Milisegundos que faltan para completar el mínimo, desde que llegó el mensaje. */
+export function pendingDelayMs(startedAt, now = Date.now(), minimum = MIN_REPLY_MS) {
+  return Math.max(0, minimum - (now - startedAt));
+}
+
+function wait(ms) {
+  return ms > 0 ? new Promise(resolve => setTimeout(resolve, ms)) : Promise.resolve();
 }
 
 // --- Envío al Graph API ------------------------------------------------------
@@ -411,6 +425,7 @@ async function syncLead(env, state, waId, profileName) {
 // --- Procesamiento de un mensaje -------------------------------------------
 
 async function handleMessage(env, inbound) {
+  const recibidoEn = Date.now();
   const businessKey = String(env.WHATSAPP_BUSINESS_KEY || '').trim() || 'abdismart';
   const business = getBusiness(businessKey);
   const phoneNumberId = inbound.phoneNumberId || String(env.WHATSAPP_PHONE_NUMBER_ID || '').trim();
@@ -462,6 +477,7 @@ async function handleMessage(env, inbound) {
 
   if (!inbound.text) {
     const fallback = inbound.audioId ? FALLBACK_AUDIO_ILEGIBLE : FALLBACK_UNSUPPORTED;
+    await wait(pendingDelayMs(recibidoEn));
     await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, fallback));
     return;
   }
@@ -469,12 +485,16 @@ async function handleMessage(env, inbound) {
   const history = normalizeHistory(existing?.history);
   const result = await runAgent(env, { business, businessKey, history, message: inbound.text, profile: 'info' });
   if (!result.ok) {
+    await wait(pendingDelayMs(recibidoEn));
     await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, FALLBACK_ERROR));
     return;
   }
 
   const reply = result.reply;
   const answer = reply.wants_human ? ensureTeamContact(reply.answer, formatWhatsapp(business.whatsapp)) : reply.answer;
+  // Con el indicador de «escribiendo» ya activo, esta espera se lee como que
+  // alguien está redactando. Si el modelo tardó más que el mínimo, no espera nada.
+  await wait(pendingDelayMs(recibidoEn));
   const sent = await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, answer));
   // Si el envío falló, no guardamos el turno: así el siguiente mensaje no arrastra
   // una respuesta que la persona nunca vio.

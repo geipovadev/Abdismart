@@ -157,6 +157,18 @@ Opcionales: `WHATSAPP_API_VERSION` (por defecto `v23.0`) y `WHATSAPP_BUSINESS_KE
 Si el envío a Meta falla, el turno no se guarda. Así el siguiente mensaje no arrastra
 una respuesta que la persona nunca vio.
 
+## El ritmo de la respuesta
+
+Contestar al instante delata que del otro lado hay una máquina. El agente espera un
+**mínimo de dos segundos** desde que llegó el mensaje, con el indicador de
+«escribiendo» ya activo.
+
+Es un mínimo, no una suma. El modelo suele tardar entre uno y tres segundos; si ya
+superó los dos, no se añade nada. Sumar dos segundos fijos haría que una respuesta
+de tres pasara a cinco, y el agente parecería lento en vez de natural.
+
+Se ajusta con `MIN_REPLY_MS` en `src/whatsapp.js`.
+
 ## Ventana de 24 horas
 
 Responder a quien escribe es gratis y sin límite dentro de las 24 horas siguientes a
