@@ -20,7 +20,9 @@ test('prohíbe interrogar y obliga a responder lo que preguntan', () => {
 
 test('el esquema recoge tema, interés y traspaso, no la ficha de diagnóstico', () => {
   const fields = Object.keys(INFO_SCHEMA.properties);
-  assert.deepEqual(fields.sort(), ['answer', 'interest', 'known_name', 'quick_replies', 'topic', 'wants_human'].sort());
+  // Sin quick_replies: el agente de WhatsApp no ofrece botones para elegir.
+  assert.deepEqual(fields.sort(), ['answer', 'interest', 'known_name', 'topic', 'wants_human'].sort());
+  assert.ok(!fields.includes('quick_replies'));
   assert.ok(!fields.includes('problem_detected'));
   assert.ok(!fields.includes('recommended_service'));
   assert.deepEqual(INFO_SCHEMA.required.sort(), fields.sort());

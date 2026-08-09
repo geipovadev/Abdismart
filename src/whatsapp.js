@@ -10,11 +10,8 @@ import { cleanText, MAX_HISTORY, normalizeHistory, runAgent } from './agent.js';
 const GRAPH_HOST = 'https://graph.facebook.com';
 const DEFAULT_API_VERSION = 'v23.0';
 
-// Límites del Cloud API. Los botones interactivos son más estrictos que el texto.
-const BUTTON_TITLE_MAX = 20;
-const INTERACTIVE_BODY_MAX = 1024;
+// Límite de un mensaje de texto en el Cloud API.
 const TEXT_BODY_MAX = 4096;
-const MAX_BUTTONS = 3;
 
 const FALLBACK_UNSUPPORTED = 'Por ahora puedo leer mensajes de texto y escuchar notas de voz. ¿Me lo cuentas de alguna de las dos formas?';
 // Llegó la nota de voz pero no se pudo transcribir. Distinto de un tipo de mensaje
@@ -160,27 +157,15 @@ export function ensureTeamContact(answer, teamWhatsapp) {
 }
 
 /**
- * Los botones solo caben si el cuerpo entra en 1024 caracteres y cada título en 20.
- * Cuando no caben, se degrada a texto plano en vez de perder la respuesta.
+ * Mensaje de salida. Siempre texto plano: el agente informativo no ofrece opciones
+ * para elegir, porque la persona pregunta lo que quiera y una lista de botones
+ * acota la conversación en lugar de ayudarla.
  */
-export function buildOutboundMessage(to, answer, quickReplies = []) {
-  const body = cleanText(answer, TEXT_BODY_MAX) || FALLBACK_ERROR;
-  const seen = new Set();
-  const buttons = [];
-  for (const reply of quickReplies) {
-    const title = cleanText(reply, BUTTON_TITLE_MAX);
-    const key = title.toLowerCase();
-    if (!title || seen.has(key)) continue;
-    seen.add(key);
-    buttons.push({ type: 'reply', reply: { id: `qr_${buttons.length}`, title } });
-    if (buttons.length === MAX_BUTTONS) break;
-  }
-
-  if (buttons.length && body.length <= INTERACTIVE_BODY_MAX) {
-    return { to, type: 'interactive', interactive: { type: 'button', body: { text: body }, action: { buttons } } };
-  }
-  return { to, type: 'text', text: { body, preview_url: false } };
+export function buildOutboundMessage(to, answer) {
+  return { to, type: 'text', text: { body: cleanText(answer, TEXT_BODY_MAX) || FALLBACK_ERROR, preview_url: false } };
 }
+
+// --- Envío al Graph API ------------------------------------------------------
 
 /**
  * Un salto de línea pegado por error dentro del token no da un 401: hace que
@@ -490,7 +475,7 @@ async function handleMessage(env, inbound) {
 
   const reply = result.reply;
   const answer = reply.wants_human ? ensureTeamContact(reply.answer, formatWhatsapp(business.whatsapp)) : reply.answer;
-  const sent = await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, answer, reply.quick_replies));
+  const sent = await sendToWhatsApp(env, phoneNumberId, buildOutboundMessage(inbound.waId, answer));
   // Si el envío falló, no guardamos el turno: así el siguiente mensaje no arrastra
   // una respuesta que la persona nunca vio.
   if (!sent) return;

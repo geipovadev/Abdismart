@@ -145,55 +145,20 @@ test('detecta bajas explícitas sin confundirlas con conversación normal', () =
   assert.equal(isOptOut(''), false);
 });
 
-test('convierte las respuestas rápidas en botones dentro de los límites de Meta', () => {
-  const message = buildOutboundMessage('50688887777', '¿En qué tipo de negocio trabajas?', ['Consultorio', 'Laboratorio', 'Odontología', 'Otro']);
-  assert.equal(message.type, 'interactive');
-  const buttons = message.interactive.action.buttons;
-  assert.equal(buttons.length, 3);
-  assert.ok(buttons.every(button => button.reply.title.length <= 20));
-  assert.deepEqual(buttons.map(button => button.reply.title), ['Consultorio', 'Laboratorio', 'Odontología']);
-});
-
-test('recorta títulos largos y descarta botones duplicados o vacíos', () => {
-  const message = buildOutboundMessage('506', 'Elige una opción', ['Sí, quiero que revisen mi caso', '  ', 'sí, QUIERO QUE REVISEN MI CASO extra']);
-  const buttons = message.interactive.action.buttons;
-  assert.equal(buttons.length, 1);
-  assert.equal(buttons[0].reply.title, 'Sí, quiero que revis');
-  assert.equal(buttons[0].reply.title.length, 20);
-});
-
-test('formatea el WhatsApp del equipo de forma legible', () => {
-  assert.equal(formatWhatsapp('50689814520'), '+506 8981 4520');
-  assert.equal(formatWhatsapp('+506 8981 4520'), '+506 8981 4520');
-  assert.equal(formatWhatsapp(''), '');
-});
-
-test('añade el número del equipo cuando el agente lo omite al derivar', () => {
-  const salida = ensureTeamContact('Eso no lo tengo confirmado.', '+506 8981 4520');
-  assert.ok(salida.includes('+506 8981 4520'));
-  assert.ok(salida.startsWith('Eso no lo tengo confirmado.'));
-});
-
-test('no duplica el número si el agente ya lo escribió', () => {
-  const original = 'Escríbenos al +506 8981 4520 y te ayudamos.';
-  assert.equal(ensureTeamContact(original, '+506 8981 4520'), original);
-  // También lo reconoce escrito con otro formato.
-  const otroFormato = 'Escríbenos al 506 8981 4520.';
-  assert.equal(ensureTeamContact(otroFormato, '+506 8981 4520'), otroFormato);
-});
-
-test('degrada a texto plano cuando no hay botones', () => {
-  const message = buildOutboundMessage('506', 'Cuéntame más sobre tu consultorio.', []);
+test('el mensaje de salida siempre es texto plano, sin botones', () => {
+  // El agente informativo no ofrece opciones para elegir: la persona pregunta
+  // libremente y una lista de botones acotaría la conversación.
+  const message = buildOutboundMessage('50688887777', '¿En qué te puedo ayudar?');
   assert.equal(message.type, 'text');
-  assert.equal(message.text.body, 'Cuéntame más sobre tu consultorio.');
+  assert.equal(message.text.body, '¿En qué te puedo ayudar?');
   assert.equal(message.text.preview_url, false);
+  assert.ok(!('interactive' in message));
 });
 
-test('degrada a texto plano cuando el cuerpo excede el límite interactivo', () => {
-  const message = buildOutboundMessage('506', 'a'.repeat(1100), ['Sí', 'No']);
-  assert.equal(message.type, 'text');
-  assert.equal(message.text.body.length, 1100);
+test('un cuerpo vacío cae en el mensaje de respaldo', () => {
+  assert.match(buildOutboundMessage('506', '').text.body, /Se me complicó responder/);
 });
+
 
 // --- Respuesta manual desde el CRM ---
 

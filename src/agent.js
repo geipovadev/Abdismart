@@ -64,32 +64,17 @@ export async function saveLearningCandidate(env, row) {
   } catch (error) { console.error('Learning candidate error', error); }
 }
 
-// Diferencias reales entre canales. El resto del prompt es idéntico para que la
-// voz de Abdi no cambie según por dónde llegue la persona.
-const CHANNEL_RULES = {
-  web: {
-    turnLimit: `- El diagnóstico tiene un límite de ${MAX_USER_TURNS} respuestas del visitante. Si ya tienes contexto suficiente, deja de explorar y pasa a recomendación y contacto.`,
-    contactStep: '7. Después de la recomendación, ofrece contacto con el equipo. Activa capture_contact únicamente si la persona quiere avanzar, pide precio o contacto, o ya recibió una recomendación suficientemente fundamentada.',
-    quickReplyRule: 'quick_replies debe contener hasta 3 respuestas breves y útiles para avanzar la pregunta actual. Cuando preguntes el tipo de negocio, usa únicamente: «Consultorio», «Laboratorio» y «Odontología». Cuando ofrezcas contacto, usa opciones como «Sí, quiero que revisen mi caso», «Quiero hablar con el equipo» y «Aún tengo una duda».',
-    channelBlock: ''
-  },
-  whatsapp: {
-    turnLimit: '- No hay un límite fijo de turnos, pero no alargues el diagnóstico. En cuanto tengas contexto suficiente, recomienda y ofrece el paso siguiente.',
-    contactStep: '7. Después de la recomendación, ofrece que una persona del equipo continúe la conversación por este mismo chat. Activa capture_contact únicamente si la persona quiere avanzar, pide precio, pide hablar con alguien o ya recibió una recomendación suficientemente fundamentada.',
-    quickReplyRule: 'quick_replies debe contener hasta 3 respuestas breves de máximo 20 caracteres, porque se muestran como botones. Cuando preguntes el tipo de negocio, usa únicamente: «Consultorio», «Laboratorio» y «Odontología». Cuando ofrezcas continuar con el equipo, usa opciones como «Sí, quiero avanzar», «Hablar con alguien» y «Tengo otra duda».',
-    channelBlock: `
-CANAL WHATSAPP
-- Estás escribiendo por WhatsApp. La persona ya te contactó desde su número, así que nunca pidas su número, su WhatsApp ni su correo.
-- Sí pregunta su nombre si aún no lo sabes: el nombre del perfil puede no ser el real.
-- Escribe en texto plano y conversacional. Sin negritas, sin títulos, sin listas con guiones ni numeradas, sin enlaces salvo que sean imprescindibles.
-- Máximo 4 frases por mensaje. Es un chat, no un correo.
-- Si la persona pide hablar con una persona real, confírmalo con naturalidad y activa capture_contact.
-`
-  }
+// El prompt de descubrimiento solo lo usa el widget de la web. El de WhatsApp es
+// otro agente, con su propio prompt en buildInfoInstructions.
+const WEB_RULES = {
+  turnLimit: `- El diagnóstico tiene un límite de ${MAX_USER_TURNS} respuestas del visitante. Si ya tienes contexto suficiente, deja de explorar y pasa a recomendación y contacto.`,
+  contactStep: '7. Después de la recomendación, ofrece contacto con el equipo. Activa capture_contact únicamente si la persona quiere avanzar, pide precio o contacto, o ya recibió una recomendación suficientemente fundamentada.',
+  quickReplyRule: 'quick_replies debe contener hasta 3 respuestas breves y útiles para avanzar la pregunta actual. Cuando preguntes el tipo de negocio, usa únicamente: «Consultorio», «Laboratorio» y «Odontología». Cuando ofrezcas contacto, usa opciones como «Sí, quiero que revisen mi caso», «Quiero hablar con el equipo» y «Aún tengo una duda».',
+  channelBlock: ''
 };
 
-export function buildInstructions({ business, knowledgeText, channel = 'web' }) {
-  const rules = CHANNEL_RULES[channel] || CHANNEL_RULES.web;
+export function buildInstructions({ business, knowledgeText }) {
+  const rules = WEB_RULES;
   return `Eres Abdi, asesor de descubrimiento de ${business.name}. Tu misión es comprender el problema real del negocio antes de recomendar un servicio.
 
 TONO
@@ -160,10 +145,9 @@ export const INFO_SCHEMA = {
     },
     known_name: { type: 'string' },
     interest: { type: 'string' },
-    wants_human: { type: 'boolean' },
-    quick_replies: { type: 'array', maxItems: 3, items: { type: 'string' } }
+    wants_human: { type: 'boolean' }
   },
-  required: ['answer', 'topic', 'known_name', 'interest', 'wants_human', 'quick_replies']
+  required: ['answer', 'topic', 'known_name', 'interest', 'wants_human']
 };
 
 export function buildInfoInstructions({ business, knowledgeText }) {
@@ -191,7 +175,6 @@ CÓMO RESPONDER
 1. Responde primero lo que preguntaron, de forma directa y concreta.
 2. Cuando expliques un servicio, di qué hace y cuál es el resultado para el negocio. No enumeres los tres servicios si preguntaron por uno.
 3. Si la pregunta es amplia, da una respuesta breve y ofrece profundizar en lo que le interese.
-4. Usa quick_replies para facilitar el siguiente paso: hasta 3 opciones de máximo 20 caracteres.
 
 REGLA MÁS IMPORTANTE: NUNCA INVENTES
 - Si la información aprobada no cubre lo que preguntan, no completes con lógica, ni con suposiciones razonables, ni con lo que sabes de otras empresas parecidas.
@@ -236,7 +219,7 @@ const PROFILES = {
     schema: REPLY_SCHEMA,
     schemaName: 'abdi_reply',
     maxOutputTokens: 300,
-    instructions: ({ business, knowledgeText }) => buildInstructions({ business, knowledgeText, channel: 'web' }),
+    instructions: buildInstructions,
     normalize: reply => ({
       answer: cleanText(reply.answer, 900),
       intent: reply.intent || 'general',
@@ -262,8 +245,7 @@ const PROFILES = {
       topic: reply.topic || 'que_es',
       known_name: cleanText(reply.known_name, 80),
       interest: cleanText(reply.interest, 180),
-      wants_human: Boolean(reply.wants_human),
-      quick_replies: Array.isArray(reply.quick_replies) ? reply.quick_replies.slice(0, 3).map(x => cleanText(x, 60)) : []
+      wants_human: Boolean(reply.wants_human)
     })
   }
 };
