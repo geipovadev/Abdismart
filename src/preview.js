@@ -143,10 +143,15 @@ function extractOutputText(response) {
   return '';
 }
 
-async function actorHash(request, env, sessionId) {
+// Solo entra la IP. Mientras el id de sesión formaba parte del hash, el tope
+// diario se reiniciaba con abrir una pestaña nueva —sessionStorage empieza
+// vacío— y un script que mandara un id distinto en cada llamada no se topaba
+// nunca, porque ese id lo elige el cliente. La sal evita que el hash sirva
+// para rastrear a nadie.
+async function actorHash(request, env) {
   const ip = clean(request.headers.get('cf-connecting-ip'), 80) || 'local';
   const secret = env.PREVIEW_HASH_SALT || env.SUPABASE_SERVICE_ROLE_KEY || 'abdi-preview';
-  const bytes = new TextEncoder().encode(`${ip}|${sessionId}|${secret}`);
+  const bytes = new TextEncoder().encode(`${ip}|preview|${secret}`);
   const digest = await crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest)).map(byte => byte.toString(16).padStart(2, '0')).join('');
 }
@@ -223,7 +228,7 @@ export async function previewGenerate(request, env, ctx) {
   if (!isValidInput(input)) return json({ error: 'Completa el negocio, especialidad, ciudad, tres servicios y el objetivo.' }, 400);
 
   const previewId = crypto.randomUUID();
-  const hash = await actorHash(request, env, input.session_id);
+  const hash = await actorHash(request, env);
   if (await rateLimitExceeded(env, hash)) return json({ error: 'Ya alcanzaste el límite de vistas previas de hoy.' }, 429);
 
   let result = null;
