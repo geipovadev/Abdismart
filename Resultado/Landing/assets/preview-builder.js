@@ -4,6 +4,12 @@
   const STORAGE_KEY = 'abdi_preview_once_v1';
   const DRAFT_KEY = 'abdi_preview_brief_draft_v1';
   const SESSION_KEY = 'abdi_preview_session_v1';
+
+  // La landing la sirve Netlify y el Worker vive en su propio dominio, así
+  // que la llamada es cruzada y va con URL absoluta. Con ruta relativa el
+  // POST daba 404 y el catch de abajo mostraba la plantilla de respaldo: el
+  // visitante veía una vista previa genérica creyendo que era la suya.
+  const WORKER = 'https://abdismart.geiner-porras-mb.workers.dev';
   const goals = {
     whatsapp: ['WhatsApp', 'Recibir consultas directas'],
     cita: ['Citas', 'Facilitar solicitudes de cita'],
@@ -226,7 +232,7 @@
       }
       else if (location.protocol === 'file:') payload = { preview_id: id(), status: 'fallback', content: fallbackContent(draft()) };
       else {
-        const response = await fetch('/api/preview', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(draft()) });
+        const response = await fetch(`${WORKER}/api/preview`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(draft()) });
         payload = await response.json();
         if (!response.ok) throw new Error(payload.error || 'No pudimos generar la vista previa.');
       }
@@ -312,7 +318,7 @@
     button.disabled = true; button.textContent = 'Guardando…';
     try {
       if (location.protocol !== 'file:') {
-        const response = await fetch('/api/preview/lead', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nombre: name, whatsapp, email, preview_id: state.preview_id, action: state.leadAction, draft: draft() }) });
+        const response = await fetch(`${WORKER}/api/preview/lead`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ nombre: name, whatsapp, email, preview_id: state.preview_id, action: state.leadAction, draft: draft() }) });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.error || 'No pudimos guardar la propuesta.');
       }
@@ -333,6 +339,6 @@
 
   function sendEvent(event, metadata) {
     if (location.protocol === 'file:') return;
-    fetch('/api/preview/event', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ event, preview_id: state.preview_id || null, session_id: sessionId, metadata: metadata || {} }), keepalive: true }).catch(() => {});
+    fetch(`${WORKER}/api/preview/event`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ event, preview_id: state.preview_id || null, session_id: sessionId, metadata: metadata || {} }), keepalive: true }).catch(() => {});
   }
 })();

@@ -1,6 +1,7 @@
 import { getBusiness } from './businesses.js';
 import { prospectingRun } from './prospecting.js';
 import { previewEvent, previewGenerate, previewLead } from './preview.js';
+import { diagnosticAnalyze } from './diagnostico.js';
 import { whatsappReply, whatsappVerify, whatsappWebhook } from './whatsapp.js';
 import { cleanText, MAX_USER_TURNS, normalizeHistory, runAgent } from './agent.js';
 
@@ -86,7 +87,8 @@ async function lead(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (request.method === 'OPTIONS' && (url.pathname.startsWith('/api/agent/') || url.pathname.startsWith('/api/preview') || url.pathname === '/api/whatsapp/reply')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type, authorization' } });
+    if (request.method === 'OPTIONS' && (url.pathname.startsWith('/api/agent/') || url.pathname.startsWith('/api/preview') || url.pathname === '/api/diagnostico' || url.pathname === '/api/whatsapp/reply')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type, authorization' } });
+    if (request.method === 'POST' && url.pathname === '/api/diagnostico') return diagnosticAnalyze(request, env, ctx);
     if (request.method === 'POST' && url.pathname === '/api/preview') return previewGenerate(request, env, ctx);
     if (request.method === 'POST' && url.pathname === '/api/preview/event') return previewEvent(request, env);
     if (request.method === 'POST' && url.pathname === '/api/preview/lead') return previewLead(request, env);
