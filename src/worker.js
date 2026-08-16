@@ -3,6 +3,7 @@ import { prospectingRun } from './prospecting.js';
 import { previewEvent, previewGenerate, previewLead } from './preview.js';
 import { diagnosticAnalyze } from './diagnostico.js';
 import { whatsappReply, whatsappVerify, whatsappWebhook } from './whatsapp.js';
+import { instagramVerify, instagramWebhook } from './instagram.js';
 import { cleanText, MAX_USER_TURNS, normalizeHistory, runAgent } from './agent.js';
 
 function json(data, status = 200) {
@@ -96,6 +97,11 @@ export default {
     if (url.pathname === '/api/whatsapp/webhook') {
       if (request.method === 'GET') return whatsappVerify(request, env);
       if (request.method === 'POST') return whatsappWebhook(request, env, ctx);
+      return new Response('Method Not Allowed', { status: 405 });
+    }
+    if (url.pathname === '/api/instagram/webhook') {
+      if (request.method === 'GET') return instagramVerify(request, env);
+      if (request.method === 'POST') return instagramWebhook(request, env, ctx);
       return new Response('Method Not Allowed', { status: 405 });
     }
     if (request.method === 'POST' && url.pathname === '/api/agent/chat') return chat(request, env, ctx);

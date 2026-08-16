@@ -14,8 +14,11 @@ No crear más conjuntos mientras el presupuesto sea inferior a USD 300 mensuales
 
 ## Audiencia
 
-- País: Costa Rica.
-- Prioridad: San José y Heredia.
+- País: se define en el administrador de anuncios. El servicio ya no se limita a
+  Costa Rica, pero el presupuesto sí: con menos de USD 300 mensuales, repartir la
+  inversión entre varios países deja a todos sin frecuencia suficiente para
+  aprender. Ampliar de un país a la vez y solo cuando el anterior rinda.
+- Prioridad inicial: San José y Heredia, por cercanía operativa.
 - Edad inicial: 25–60.
 - Idioma: español.
 - Creativo dirigido a propietarios, administradores y profesionales de clínicas dentales.
@@ -46,7 +49,7 @@ Validar en Events Manager:
 
 **Texto principal:**
 
-> Tus pacientes buscan horarios, servicios y disponibilidad mientras el equipo está atendiendo. Abdismart organiza tu presencia digital y reduce las preguntas repetitivas. Estamos seleccionando siete negocios de salud en Costa Rica.
+> Tus pacientes buscan horarios, servicios y disponibilidad mientras el equipo está atendiendo. Abdismart organiza tu presencia digital y reduce las preguntas repetitivas. Estamos seleccionando siete negocios de salud.
 
 **Título:** Menos consultas perdidas.  
 **CTA:** Más información.
@@ -74,7 +77,7 @@ Validar en Events Manager:
 **Carrusel:** tarifa protegida, agente adaptado y primera automatización.  
 **Texto principal:**
 
-> Trabajaremos directamente con siete negocios de salud de Costa Rica. Solicitar un lugar no implica pago. Primero revisamos si Abdismart encaja con tu operación.
+> Trabajaremos directamente con siete negocios de salud. Solicitar un lugar no implica pago. Primero revisamos si Abdismart encaja con tu operación.
 
 **Título:** Solicita un lugar fundador.
 

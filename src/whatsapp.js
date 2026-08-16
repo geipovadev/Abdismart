@@ -262,7 +262,8 @@ export async function transcribeVoiceNote(env, audioId) {
     // WhatsApp manda ogg/opus; la extension le indica el formato a OpenAI.
     form.append('file', audio, `nota-de-voz.${extensionFor(mimeType)}`);
     form.append('model', env.OPENAI_TRANSCRIBE_MODEL || 'whisper-1');
-    // Fijar el idioma mejora bastante la precision con acento costarricense.
+    // Fijar el idioma mejora bastante la precision con cualquier acento del
+    // español, que es justo lo que llega al atender negocios de varios paises.
     form.append('language', 'es');
 
     const response = await fetch(TRANSCRIBE_URL, {

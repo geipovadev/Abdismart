@@ -30,7 +30,7 @@ Usar el mismo usuario, logo, datos y enlace en Instagram, Facebook y TikTok.
 - Ubicación: Costa Rica
 - Biografía:
 
-> Webs, agentes con IA y automatizaciones para negocios de salud en Costa Rica.  
+> Webs, agentes con IA y automatizaciones para negocios de salud.  
 > Menos consultas perdidas. Más tiempo para atender.  
 > Solicita uno de los 7 lugares ↓
 

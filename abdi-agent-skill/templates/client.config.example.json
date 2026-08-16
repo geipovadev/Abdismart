@@ -1,24 +1,43 @@
 {
   "business_key": "clinica-demo",
-  "name": "Clínica Demo",
-  "whatsapp": "50688888888",
-  "scope": ["consultorios", "laboratorios", "odontologia"],
+  "identity": {
+    "business_name": "Clínica Demo",
+    "assistant_name": "Asistente de Clínica Demo",
+    "business_description": "Clínica odontológica para pacientes particulares.",
+    "audience": ["pacientes actuales", "personas interesadas en una cita"],
+    "language": "es"
+  },
+  "scope": {
+    "serves": ["consultas sobre servicios", "requisitos", "horarios", "solicitudes de cita"],
+    "does_not_serve": ["diagnósticos médicos", "urgencias", "prescripción de medicamentos"]
+  },
+  "contacts": {
+    "whatsapp": "50688888888",
+    "human_handoff": "El equipo responde por este mismo canal en horario laboral."
+  },
+  "channels": {
+    "web": { "enabled": true },
+    "whatsapp": { "enabled": false },
+    "instagram": { "enabled": false }
+  },
   "services": [
     {
-      "key": "landing",
-      "name": "Landing page",
-      "description": "Presenta servicios y convierte visitas en solicitudes."
-    },
-    {
-      "key": "agentes",
-      "name": "Agentes con IA",
-      "description": "Responden consultas, califican necesidades y ayudan a agendar."
-    },
-    {
-      "key": "automatizaciones",
-      "name": "Automatizaciones",
-      "description": "Reducen confirmaciones, recordatorios y seguimientos manuales."
+      "key": "limpieza-dental",
+      "name": "Limpieza dental",
+      "description": "Limpieza profesional realizada en la clínica.",
+      "outcome": "Ayuda a mantener una higiene oral adecuada.",
+      "includes": ["valoración inicial", "limpieza profesional"],
+      "excludes": ["tratamientos adicionales no confirmados"],
+      "price": "Se confirma después de conocer el caso.",
+      "active": true
     }
   ],
-  "tone": "cálido, profesional y directo"
+  "approved_information": [
+    {
+      "title": "Horario de atención",
+      "content": "La clínica atiende de lunes a viernes de 8:00 a 17:00.",
+      "source": "Confirmado por la administradora el 2026-08-14",
+      "status": "approved"
+    }
+  ]
 }

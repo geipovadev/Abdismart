@@ -34,6 +34,21 @@ test('prioriza landing cuando un consultorio activo no tiene web', () => {
   assert.ok(createOutreachCopy(lead, qualification).first_message.includes('Dental Vida'));
 });
 
+test('califica igual a un negocio de salud fuera de Costa Rica', () => {
+  const lead = normalizeProspect({
+    name: 'Clínica Dental Sonrisa',
+    address: 'Ciudad de México, México',
+    bio: 'Citas para pacientes por WhatsApp',
+    followersCount: 900,
+    url: 'https://instagram.com/dentalsonrisa'
+  }, 'instagram');
+  const qualification = qualifyProspect(lead);
+  assert.equal(qualification.qualified, true);
+  assert.equal(qualification.recommended_service, 'landing');
+  // El país dejó de puntuar: ninguna señal puede hablar de ubicación.
+  assert.ok(!qualification.signals.some((s) => /ubicaci|costa rica/i.test(s)));
+});
+
 test('descarta un negocio sin señales del ICP', () => {
   const lead = normalizeProspect({ name: 'Tienda Genérica', city: 'Miami', url: 'https://facebook.com/tienda' }, 'facebook');
   assert.equal(qualifyProspect(lead).qualified, false);

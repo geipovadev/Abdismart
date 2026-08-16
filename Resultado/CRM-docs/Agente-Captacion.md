@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Crear una lista priorizada de negocios de salud en Costa Rica desde Instagram,
+Crear una lista priorizada de negocios de salud desde Instagram,
 Facebook, Google Maps y LinkedIn. El agente investiga, normaliza, evita duplicados,
 recomienda el servicio con mejor encaje y prepara un primer mensaje. El envío queda
 en revisión humana: captar no significa enviar mensajes masivos.
@@ -35,7 +35,7 @@ señal y servicio antes de abrir otro vertical.
 
 ### Landing pages
 
-- Consultorio, clínica, odontología o laboratorio independiente en Costa Rica.
+- Consultorio, clínica, odontología o laboratorio independiente, en cualquier país.
 - Tiene Instagram/Facebook o ficha de Google activa, pero no tiene web propia.
 - La información está dispersa y el contacto depende de mensajes directos.
 - Señal de compra: apertura, nueva sede, campañas activas o publicaciones frecuentes.
@@ -83,18 +83,27 @@ los perfiles de las otras redes.
 - LinkedIn: empresa ya descubierta + cargos `propietario`, `fundador`, `administrador`,
   `gerente de clínica`.
 
-Empezar con un solo vertical y provincia durante dos semanas. Recomendación: odontología
-en San José y Heredia, porque encaja con los tres servicios y permite comparar resultados.
+Las búsquedas de arriba son un punto de partida, no un límite: el agente ya no
+descarta a nadie por país. Son las plazas donde es más fácil verificar un resultado
+al principio.
+
+Empezar con un solo vertical y una sola plaza durante dos semanas. Recomendación:
+odontología en San José y Heredia, porque encaja con los tres servicios y permite
+comparar resultados. Al abrir otra plaza, cambiar una variable a la vez.
 
 ## Scoring
 
 El Worker calcula tres puntajes y conserva el mayor. Las señales principales son:
 
 - vertical salud;
-- ubicación en Costa Rica;
 - ausencia de sitio web (landing);
 - audiencia o reseñas (agente);
 - lenguaje de citas/pacientes/agenda (automatización).
+
+La ubicación dejó de puntuar: Abdismart atiende negocios de salud en cualquier país,
+así que premiar una provincia concreta sesgaba la lista sin motivo comercial. Al
+quitar ese bonus de 15 puntos, el umbral para calificar bajó de 45 a 30 — la escala
+se acortó y el umbral la acompaña. Un lead exige lo mismo que antes, no más.
 
 Solo entran por defecto prospectos con 45 puntos o más. Antes de contactar, una persona
 debe verificar el sitio, la actividad reciente y que el mensaje mencione una observación real.

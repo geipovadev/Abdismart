@@ -79,18 +79,21 @@ export function normalizeProspect(raw, source) {
 export function qualifyProspect(prospect) {
   const context = prospect.name + ' ' + prospect.category + ' ' + prospect.description;
   const isHealth = includesAny(context, HEALTH_TERMS);
-  const isCostaRica = includesAny(prospect.address + ' ' + prospect.description, ['costa rica', 'san jos', 'heredia', 'alajuela', 'cartago', 'guanacaste', 'limón', 'limon', 'puntarenas']);
   const appointmentBusiness = includesAny(context, ['cita', 'appointment', 'reserva', 'consulta', 'paciente', 'agenda']);
   const hasWebsite = Boolean(prospect.domain);
   const hasAudience = prospect.followers >= 500 || prospect.reviews >= 20;
   const scores = {
-    landing: (isHealth ? 25 : 0) + (isCostaRica ? 15 : 0) + (!hasWebsite ? 35 : 0) + (prospect.source !== 'google' ? 10 : 0) + (hasAudience ? 10 : 0),
-    agentes: (isHealth ? 25 : 0) + (isCostaRica ? 15 : 0) + (hasAudience ? 25 : 5) + (appointmentBusiness ? 20 : 0) + (prospect.phone ? 5 : 0),
-    automatizaciones: (isHealth ? 30 : 0) + (isCostaRica ? 15 : 0) + (appointmentBusiness ? 30 : 0) + (prospect.reviews >= 40 ? 10 : 0) + (prospect.phone ? 5 : 0)
+    landing: (isHealth ? 25 : 0) + (!hasWebsite ? 35 : 0) + (prospect.source !== 'google' ? 10 : 0) + (hasAudience ? 10 : 0),
+    agentes: (isHealth ? 25 : 0) + (hasAudience ? 25 : 5) + (appointmentBusiness ? 20 : 0) + (prospect.phone ? 5 : 0),
+    automatizaciones: (isHealth ? 30 : 0) + (appointmentBusiness ? 30 : 0) + (prospect.reviews >= 40 ? 10 : 0) + (prospect.phone ? 5 : 0)
   };
   const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0];
-  const signals = [isHealth && 'negocio de salud', isCostaRica && 'ubicación en Costa Rica', !hasWebsite && 'sin sitio web visible', hasAudience && 'demanda digital comprobable', appointmentBusiness && 'operación basada en citas'].filter(Boolean);
-  return { score: winner[1], recommended_service: winner[0], service_scores: scores, signals, qualified: isHealth && winner[1] >= 45 };
+  const signals = [isHealth && 'negocio de salud', !hasWebsite && 'sin sitio web visible', hasAudience && 'demanda digital comprobable', appointmentBusiness && 'operación basada en citas'].filter(Boolean);
+  // Umbral 30, no 45: al quitar el bonus geográfico todos los puntajes bajaron
+  // 15 puntos de golpe. Mantenerlo en 45 no habría sido un criterio más
+  // estricto a propósito, sino el mismo criterio aplicado a una escala más
+  // corta, y habría descalificado leads que hoy sí se contactan.
+  return { score: winner[1], recommended_service: winner[0], service_scores: scores, signals, qualified: isHealth && winner[1] >= 30 };
 }
 
 export function createOutreachCopy(prospect, qualification) {

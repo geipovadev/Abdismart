@@ -18,9 +18,12 @@ Contexto/
 # El agente de captación guarda negocios reales con nombre, teléfono y
 # calificación, recolectados de Google Maps. No se versionan: son datos
 # de personas que no son clientes nuestros.
-# La plantilla de correo sí se versiona; los CSV con los negocios, no.
+# Los CSV llevan nombre y teléfono de negocios reales; nada de eso se versiona.
+# La plantilla de correo y los reportes de ronda —que son agregados, sin
+# teléfonos— sí se versionan.
 Resultado/agente/leads/
 Resultado/agente/correos/*.csv
+Resultado/agente/memoria/*.csv
 
 # ─── Proyectos que no son parte de Abdi ─────────────────────
 # open-carrusel tiene su propio repo (Hainrixz/open-carrusel).
@@ -37,6 +40,15 @@ node_modules/
 .next/
 dist/
 build/
+
+# ─── Artefactos de trabajo ──────────────────────────────────
+# tmp/ son renders intermedios (PNG por página, logs, .pyc) de armar PDF.
+# output/ es el kit del agente ya empaquetado: la fuente está en
+# abdi-agent-skill/, así que esto se regenera y no se versiona.
+tmp/
+output/
+__pycache__/
+*.pyc
 
 # ─── Sistema operativo y editores ───────────────────────────
 .DS_Store

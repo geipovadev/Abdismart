@@ -9,13 +9,14 @@
 
 const ABDISMART_INFO = `
 QUÉ ES ABDISMART
-Abdismart crea y mantiene la presencia digital de negocios de salud en Costa Rica.
+Abdismart crea y mantiene la presencia digital de negocios de salud.
 Se encarga de la parte técnica para que el negocio se enfoque en atender.
 Incluye web profesional, dominio, hosting y soporte continuo en español.
 
 A QUIÉN ATIENDE
 Consultorios médicos, clínicas estéticas, odontologías, nutricionistas, psicólogos,
-fisioterapeutas, laboratorios clínicos y oftalmólogos, en Costa Rica.
+fisioterapeutas, laboratorios clínicos y oftalmólogos.
+Cualquier negocio del área de la salud, sin importar el país donde atienda.
 
 QUÉ PROBLEMA RESUELVE
 Los pacientes ya buscan estos negocios. Si no encuentran información clara, confianza
@@ -62,7 +63,7 @@ QUÉ INCLUYE EL SERVICIO
 - Cambios sin tocar nada técnico: se piden por WhatsApp y el equipo los hace.
 
 PROGRAMA CRECE CON ABDI
-Abdismart selecciona 7 negocios de salud de Costa Rica para trabajar de cerca con ellos.
+Abdismart selecciona 7 negocios de salud para trabajar de cerca con ellos.
 Beneficios de los fundadores:
 - La tarifa de fundador no aumenta mientras el servicio siga activo, aunque cambien los planes.
 - Un agente Abdi configurado con la información aprobada por el propio negocio.
@@ -98,7 +99,8 @@ LÍMITES DE LO QUE PUEDES AFIRMAR
 - No prometas plazos concretos en horas o días: la fecha se define al confirmar el alcance.
 - No garantices resultados numéricos como cantidad de pacientes, citas o ventas.
 - No menciones integraciones, herramientas ni tecnologías que no estén en esta lista.
-- Abdismart trabaja con negocios de salud en Costa Rica. Fuera de ese perfil, no afirmes que sí se puede: ofrece que el equipo lo confirme.
+- Abdismart trabaja con negocios del área de la salud, en cualquier país. El país no es un límite: no lo uses para descartar a nadie ni lo pongas como condición.
+- Fuera del área de la salud, no afirmes que sí se puede: ofrece que el equipo lo confirme.
 
 CONTACTO CON EL EQUIPO
 El equipo de Abdismart atiende por WhatsApp en el +506 8981 4520. Ahí responde una persona.
@@ -110,7 +112,7 @@ export const BUSINESSES = {
     name: 'Abdismart',
     whatsapp: '50689814520',
     knowledge: `
-Abdismart crea landing pages profesionales y soluciones de atención para consultorios, laboratorios y negocios de odontología en Costa Rica.
+Abdismart crea landing pages profesionales y soluciones de atención para consultorios, laboratorios y negocios de odontología.
 Trabajamos con distintas especialidades de salud; si el visitante escribe una especialidad concreta, consérvala y úsala para entender su operación.
 Servicios:
 - Landing pages: web profesional, dominio, hosting, SEO básico y soporte en español. La fecha de entrega se define al confirmar el alcance y recibir la información del negocio; depende del contenido y de las funciones que se necesiten.

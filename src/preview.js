@@ -186,7 +186,7 @@ async function logGeneration(env, row) {
 }
 
 async function callOpenAI(env, input) {
-  const instructions = `Eres el redactor web de Abdi para negocios de salud en Costa Rica. Crea el contenido breve de una vista previa, no una web publicada.
+  const instructions = `Eres el redactor web de Abdi para negocios de salud. Crea el contenido breve de una vista previa, no una web publicada.
 
 REGLAS OBLIGATORIAS
 - Escribe en español claro, cálido y profesional.

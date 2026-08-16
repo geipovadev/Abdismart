@@ -6,4 +6,10 @@ WHATSAPP_TOKEN=reemplazar
 WHATSAPP_PHONE_NUMBER_ID=reemplazar
 WHATSAPP_APP_SECRET=reemplazar
 WHATSAPP_VERIFY_TOKEN=cadena-larga-inventada-por-ti
+INSTAGRAM_ACCESS_TOKEN=reemplazar
+INSTAGRAM_USER_ID=reemplazar
+INSTAGRAM_VERIFY_TOKEN=cadena-larga-inventada-por-ti
+# Opcional si Instagram y WhatsApp usan apps distintas; en la misma app se
+# reutiliza WHATSAPP_APP_SECRET.
+META_APP_SECRET=reemplazar
 SUPABASE_JWT_SECRET=reemplazar

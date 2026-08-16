@@ -1,6 +1,6 @@
 # Abdi Agent
 
-Abdi es un agente de descubrimiento para sitios web. Conversa con visitantes, entiende qué proceso les quita tiempo, recomienda una solución y envía al CRM una ficha breve antes de abrir WhatsApp.
+Abdi es una arquitectura reutilizable para agentes de negocios. Se instala por cliente y separa la identidad, los servicios y la información aprobada de la lógica conversacional y de los conectores web, WhatsApp e Instagram.
 
 Este repositorio es un producto reutilizable: contiene la skill para Codex, el contrato de configuración, el esquema de datos, plantillas de Worker/widget y la guía para educarlo con información aprobada de cada cliente.
 
@@ -10,11 +10,11 @@ Este repositorio es un producto reutilizable: contiene la skill para Codex, el c
 - Una cuenta de OpenAI con una API key.
 - Supabase para `waitlist` y conocimiento aprobado.
 - Cloudflare Workers/Pages (o un backend compatible con `POST /api/agent/chat` y `POST /api/agent/lead`).
-- Una landing donde insertar dos assets JavaScript/CSS.
+- Una landing para el canal web y/o una aplicación de Meta para WhatsApp e Instagram.
 
 ## Instalación rápida
 
-1. Copia `templates/client.config.example.json` a `client.config.json` y completa los datos del cliente.
+1. Copia `templates/client.config.example.json` a `client.config.json` y completa identidad, alcance, contacto, canales, servicios e información aprobada.
 2. Valida la configuración:
 
    ```bash
@@ -22,8 +22,8 @@ Este repositorio es un producto reutilizable: contiene la skill para Codex, el c
    ```
 
 3. Ejecuta `templates/supabase.sql` en el proyecto Supabase del cliente.
-4. Copia `templates/worker.js` al Worker o adapta sus dos handlers al backend existente.
-5. Copia `templates/agent-widget.js` y `templates/agent-widget.css` a los assets públicos.
+4. Copia `templates/worker.js` al Worker o adapta sus handlers al backend existente.
+5. Para el canal web, copia `templates/agent-widget.js` y `templates/agent-widget.css` a los assets públicos.
 6. Inserta el widget al final del HTML:
 
    ```html
@@ -40,23 +40,54 @@ Este repositorio es un producto reutilizable: contiene la skill para Codex, el c
    SUPABASE_SERVICE_ROLE_KEY=...
    ```
 
-8. Publica el Worker y prueba el flujo completo desde móvil y escritorio.
+8. Publica el Worker y prueba cada canal habilitado desde una cuenta externa.
+
+Guías completas:
+
+- `references/installation.md`: instalación y secretos.
+- `references/configuration.md`: contrato técnico y canales.
+- `references/personalization.md`: entrevista, servicios, conocimiento y pruebas.
 
 ## Configuración por cliente
 
-`client.config.json` define el aislamiento de cada instalación:
+`client.config.json` define el aislamiento de cada instalación. Su estructura completa y validada está en `templates/client.config.example.json`:
 
 ```json
 {
   "business_key": "clinica-demo",
-  "name": "Clínica Demo",
-  "whatsapp": "50688888888",
-  "scope": ["consultorios", "laboratorios", "odontologia"],
+  "identity": {
+    "business_name": "Clínica Demo",
+    "assistant_name": "Asistente de Clínica Demo",
+    "business_description": "Clínica odontológica para pacientes particulares.",
+    "audience": ["pacientes actuales", "personas interesadas en una cita"],
+    "language": "es"
+  },
+  "scope": {
+    "serves": ["servicios", "horarios", "solicitudes de cita"],
+    "does_not_serve": ["diagnósticos médicos", "urgencias"]
+  },
+  "contacts": {
+    "whatsapp": "50688888888",
+    "human_handoff": "El equipo responde por este mismo canal."
+  },
+  "channels": {
+    "web": { "enabled": true },
+    "whatsapp": { "enabled": false },
+    "instagram": { "enabled": false }
+  },
   "services": [
-    { "key": "agentes", "name": "Agentes con IA", "description": "Responden consultas y ayudan a agendar." },
-    { "key": "automatizaciones", "name": "Automatizaciones", "description": "Reducen tareas repetitivas y seguimientos." }
+    {
+      "key": "consulta-inicial",
+      "name": "Consulta inicial",
+      "description": "Primera valoración realizada por el equipo.",
+      "outcome": "Permite definir el siguiente paso.",
+      "includes": ["entrevista inicial"],
+      "excludes": ["tratamientos no confirmados"],
+      "price": "Se confirma según el caso.",
+      "active": true
+    }
   ],
-  "tone": "cálido, profesional y directo"
+  "approved_information": []
 }
 ```
 

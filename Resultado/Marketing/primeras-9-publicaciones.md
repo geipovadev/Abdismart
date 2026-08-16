@@ -131,7 +131,7 @@ No publicar hasta completar la autorización.
 
 **Guion:**
 
-> Estamos seleccionando siete negocios de salud en Costa Rica para trabajar directamente con nosotros. Organizaremos su presencia digital, configuraremos su agente Abdi y revisaremos una tarea que podamos automatizar. No es una compra automática. Primero revisamos si Abdismart encaja con el negocio. Puedes solicitar tu lugar en el enlace del perfil.
+> Estamos seleccionando siete negocios de salud para trabajar directamente con nosotros. Organizaremos su presencia digital, configuraremos su agente Abdi y revisaremos una tarea que podamos automatizar. No es una compra automática. Primero revisamos si Abdismart encaja con el negocio. Puedes solicitar tu lugar en el enlace del perfil.
 
 **Caption:**
 

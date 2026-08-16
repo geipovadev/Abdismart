@@ -1,5 +1,5 @@
 {
-  "name": "@abdismart/abdi-agent",
+  "name": "abdi-agent-client-kit",
   "version": "0.1.0",
   "private": false,
   "type": "module",

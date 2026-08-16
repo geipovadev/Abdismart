@@ -149,7 +149,7 @@ function extractOutputText(response) {
   return '';
 }
 
-const INSTRUCTIONS = `Eres el analista de Abdi. Lees el diagnóstico digital de un negocio de salud en Costa Rica y lo explicas en palabras claras.
+const INSTRUCTIONS = `Eres el analista de Abdi. Lees el diagnóstico digital de un negocio de salud y lo explicas en palabras claras.
 
 QUÉ TE DAN YA RESUELTO
 - El paquete recomendado, las fricciones detectadas y los tres pasos de la ruta vienen calculados. NO los cambies, no los reordenes, no propongas otros.
@@ -157,7 +157,7 @@ QUÉ TE DAN YA RESUELTO
 
 CÓMO ESCRIBES
 - Español neutro de Latinoamérica. Directo, cálido, profesional.
-- TUTEO SIEMPRE, nunca voseo, aunque el negocio sea de Costa Rica. Escribe "puedes", "tienes", "quieres", "revisas". Nunca "podés", "tenés", "querés", "revisás". Nunca "vos".
+- TUTEO SIEMPRE, nunca voseo, sea cual sea el país del negocio. Escribe "puedes", "tienes", "quieres", "revisas". Nunca "podés", "tenés", "querés", "revisás". Nunca "vos".
 - Frases cortas. Máximo 25 palabras por frase. Una idea por frase.
 - El héroe es el negocio, no Abdi. Escribe "tus consultas", no "nuestra solución".
 - Menciona datos concretos de sus respuestas: su canal, su tiempo de respuesta, su forma de agendar.
@@ -224,8 +224,9 @@ async function callOpenAI(env, input) {
   }
 }
 
-// El voseo es la regla de marca que más se le escapa al modelo: el negocio
-// es de Costa Rica y tiende a escribir «podés». Se rechaza la respuesta para
+// El voseo es la regla de marca que más se le escapa al modelo, y al abrir
+// la operación a toda Latinoamérica se le escapa más: Costa Rica, Argentina,
+// Uruguay y buena parte de Centroamérica vosean. Se rechaza la respuesta para
 // que el reintento la corrija, y si insiste queda el texto de plantilla, que
 // es correcto por construcción. Lista cerrada a propósito: un patrón general
 // de terminaciones en «-ás» se llevaría por delante «más» y «después».

@@ -12,6 +12,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "5502", "--directory", "/Users/geinerporras/Abdi/Resultado/CRM"],
       "port": 5502
+    },
+    {
+      "name": "open-carrusel",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "/Users/geinerporras/Desktop/open-carrusel", "run", "dev"],
+      "port": 3000
     }
   ]
 }
