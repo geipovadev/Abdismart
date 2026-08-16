@@ -8,10 +8,19 @@
 *.key
 
 # ─── Documentación de negocio ───────────────────────────────
-# El repo es público. Contexto/ tiene la economía unitaria (LTV, CAC,
-# break-even), el roadmap y las metas de MRR: no debe subirse.
+# Contexto/ tiene la economía unitaria (LTV, CAC, break-even), el roadmap
+# y las metas de MRR. El repositorio es privado, pero esto se queda fuera
+# igual: si algún día se hace público, es lo primero que se filtra.
 # Vive solo en local. Se eliminó del historial el 28/07/2026.
 Contexto/
+
+# ─── Datos personales de terceros ───────────────────────────
+# El agente de captación guarda negocios reales con nombre, teléfono y
+# calificación, recolectados de Google Maps. No se versionan: son datos
+# de personas que no son clientes nuestros.
+# La plantilla de correo sí se versiona; los CSV con los negocios, no.
+Resultado/agente/leads/
+Resultado/agente/correos/*.csv
 
 # ─── Proyectos que no son parte de Abdi ─────────────────────
 # open-carrusel tiene su propio repo (Hainrixz/open-carrusel).
