@@ -252,6 +252,12 @@
       border: 1px solid var(--lime-border);
       color: var(--lime);
     }
+    .msg.info {
+      display: block;
+      background: var(--graphite);
+      border: 1px solid var(--edge);
+      color: var(--fog);
+    }
 
     .divider { height: 1px; background: var(--edge); margin: 28px 0; }
 
@@ -497,6 +503,19 @@
       showMsg('recover', 'success', 'Enlace enviado. Revisa tu correo — puede tardar unos minutos.');
     }
   });
+
+  // El tablero cierra la sesión sola y vuelve aquí con el motivo. Sin este
+  // aviso, la persona solo ve que «se salió» y piensa que algo falló.
+  const MOTIVOS = {
+    inactividad: 'Cerramos tu sesión por inactividad. Vuelve a entrar para continuar.',
+    expirada: 'Tu sesión alcanzó el máximo de duración. Vuelve a entrar para continuar.',
+  };
+  const motivo = new URLSearchParams(window.location.search).get('motivo');
+  if (MOTIVOS[motivo]) {
+    showMsg('login', 'info', MOTIVOS[motivo]);
+    // Se limpia de la barra de direcciones: recargar no debe repetir el aviso.
+    window.history.replaceState({}, '', window.location.pathname);
+  }
 
   // Si ya hay sesión activa, ir directo al dashboard
   db.auth.getSession().then(({ data }) => {

@@ -6,16 +6,15 @@ import { metaConversion } from './capi.js';
 import { whatsappReply, whatsappVerify, whatsappWebhook } from './whatsapp.js';
 import { instagramVerify, instagramWebhook } from './instagram.js';
 import { cleanText, MAX_USER_TURNS, normalizeHistory, runAgent } from './agent.js';
+import { conCors, respuestaPreflight } from './cors.js';
+import { superaTope } from './ratelimit.js';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       'content-type': 'application/json; charset=utf-8',
-      'cache-control': 'no-store',
-      'access-control-allow-origin': '*',
-      'access-control-allow-methods': 'POST, OPTIONS',
-      'access-control-allow-headers': 'content-type'
+      'cache-control': 'no-store'
     }
   });
 }
@@ -86,33 +85,81 @@ async function lead(request, env) {
   return json({ ok: true, whatsapp_url: `https://wa.me/${business.whatsapp}?text=${encodeURIComponent(`Hola, soy ${nombre}. Conversé con Abdi en la web y quiero más información.`)}` });
 }
 
+const TOPE_SUPERADO = { error: 'Demasiadas solicitudes seguidas. Espera un momento y vuelve a intentar.' };
+
+// Resuelve las rutas de la API. Devuelve null cuando la ruta no es de la API,
+// para que la petición siga su camino hacia los archivos estáticos.
+async function enrutarApi(request, env, ctx) {
+  const url = new URL(request.url);
+  if (!url.pathname.startsWith('/api/')) return null;
+
+  if (request.method === 'OPTIONS') return respuestaPreflight(request);
+
+  if (request.method === 'POST' && url.pathname === '/api/diagnostico/sesion') {
+    if (await superaTope(env.RL_SESION, request)) return json(TOPE_SUPERADO, 429);
+    return diagnosticSession(request, env);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/diagnostico') {
+    if (await superaTope(env.RL_IA, request)) return json(TOPE_SUPERADO, 429);
+    return diagnosticAnalyze(request, env, ctx);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/meta/conversion') {
+    if (await superaTope(env.RL_EVENTO, request)) return json(TOPE_SUPERADO, 429);
+    return metaConversion(request, env, ctx);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/preview') {
+    if (await superaTope(env.RL_IA, request)) return json(TOPE_SUPERADO, 429);
+    return previewGenerate(request, env, ctx);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/preview/event') {
+    if (await superaTope(env.RL_EVENTO, request)) return json(TOPE_SUPERADO, 429);
+    return previewEvent(request, env);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/preview/lead') {
+    if (await superaTope(env.RL_LEAD, request)) return json(TOPE_SUPERADO, 429);
+    return previewLead(request, env);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/whatsapp/reply') {
+    if (await superaTope(env.RL_EVENTO, request)) return json(TOPE_SUPERADO, 429);
+    return whatsappReply(request, env);
+  }
+
+  // Los webhooks de Meta no llevan tope: ya vienen firmados con HMAC y Meta
+  // reenvía en ráfaga cuando algo falla. Un 429 aquí se traduce en mensajes
+  // de personas que se pierden.
+  if (url.pathname === '/api/whatsapp/webhook') {
+    if (request.method === 'GET') return whatsappVerify(request, env);
+    if (request.method === 'POST') return whatsappWebhook(request, env, ctx);
+    return new Response('Method Not Allowed', { status: 405 });
+  }
+  if (url.pathname === '/api/instagram/webhook') {
+    if (request.method === 'GET') return instagramVerify(request, env);
+    if (request.method === 'POST') return instagramWebhook(request, env, ctx);
+    return new Response('Method Not Allowed', { status: 405 });
+  }
+
+  if (request.method === 'POST' && url.pathname === '/api/agent/chat') {
+    if (await superaTope(env.RL_CHAT, request)) return json(TOPE_SUPERADO, 429);
+    return chat(request, env, ctx);
+  }
+  if (request.method === 'POST' && url.pathname === '/api/agent/lead') {
+    if (await superaTope(env.RL_LEAD, request)) return json(TOPE_SUPERADO, 429);
+    return lead(request, env);
+  }
+  if (request.method === 'POST' && ['/api/abdi-leads/run', '/api/prospecting/run'].includes(url.pathname)) {
+    const result = await prospectingRun(request, env);
+    return json(result.body, result.status);
+  }
+
+  return null;
+}
+
 export default {
   async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-    if (request.method === 'OPTIONS' && (url.pathname.startsWith('/api/agent/') || url.pathname.startsWith('/api/preview') || url.pathname === '/api/diagnostico' || url.pathname === '/api/diagnostico/sesion' || url.pathname === '/api/meta/conversion' || url.pathname === '/api/whatsapp/reply')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type, authorization' } });
-    if (request.method === 'POST' && url.pathname === '/api/diagnostico/sesion') return diagnosticSession(request, env);
-    if (request.method === 'POST' && url.pathname === '/api/diagnostico') return diagnosticAnalyze(request, env, ctx);
-    if (request.method === 'POST' && url.pathname === '/api/meta/conversion') return metaConversion(request, env, ctx);
-    if (request.method === 'POST' && url.pathname === '/api/preview') return previewGenerate(request, env, ctx);
-    if (request.method === 'POST' && url.pathname === '/api/preview/event') return previewEvent(request, env);
-    if (request.method === 'POST' && url.pathname === '/api/preview/lead') return previewLead(request, env);
-    if (request.method === 'POST' && url.pathname === '/api/whatsapp/reply') return whatsappReply(request, env);
-    if (url.pathname === '/api/whatsapp/webhook') {
-      if (request.method === 'GET') return whatsappVerify(request, env);
-      if (request.method === 'POST') return whatsappWebhook(request, env, ctx);
-      return new Response('Method Not Allowed', { status: 405 });
-    }
-    if (url.pathname === '/api/instagram/webhook') {
-      if (request.method === 'GET') return instagramVerify(request, env);
-      if (request.method === 'POST') return instagramWebhook(request, env, ctx);
-      return new Response('Method Not Allowed', { status: 405 });
-    }
-    if (request.method === 'POST' && url.pathname === '/api/agent/chat') return chat(request, env, ctx);
-    if (request.method === 'POST' && url.pathname === '/api/agent/lead') return lead(request, env);
-    if (request.method === 'POST' && ['/api/abdi-leads/run', '/api/prospecting/run'].includes(url.pathname)) {
-      const result = await prospectingRun(request, env);
-      return json(result.body, result.status);
-    }
+    const respuesta = await enrutarApi(request, env, ctx);
+    // El CORS se aplica aquí y solo aquí. Los módulos ya no deciden a quién le
+    // abren: si mañana se agrega un endpoint, hereda la lista sin hacer nada.
+    if (respuesta) return conCors(respuesta, request);
     return env.ASSETS.fetch(request);
   }
 };

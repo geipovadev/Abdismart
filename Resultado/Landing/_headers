@@ -1,5 +1,25 @@
-# Cabeceras de seguridad. Cloudflare Pages lee este archivo desde la raíz
-# del sitio publicado. No aplica al servidor local de desarrollo.
+# Cabeceras de seguridad. Netlify y Cloudflare Pages leen este archivo desde la
+# raíz del sitio publicado. No aplica al servidor local de desarrollo.
+#
+# Los comentarios van fuera de los bloques a propósito: una línea indentada
+# dentro de un bloque se lee como si fuera una cabecera más.
+
+# ─── Content-Security-Policy ────────────────────────────────────────────────
+# Lo que de verdad cierra puertas son las cuatro primeras directivas:
+#   base-uri 'self'      un <base> inyectado no puede reescribir las rutas
+#   form-action 'self'   un formulario no puede mandar los datos a otro dominio
+#   object-src 'none'    sin plugins
+#   frame-ancestors      clickjacking
+#
+# script-src lleva 'unsafe-inline' y 'unsafe-eval' porque la landing tiene su
+# JS en línea y porque Google Tag Manager los necesita para sus plantillas.
+# Con eso la directiva ya no frena un XSS dentro de la propia página; lo que sí
+# frena es cargar un script desde un dominio que no esté en la lista. Quitarlos
+# exige sacar todo el JS a archivos aparte: es la mejora siguiente, no algo que
+# se pueda activar sin tocar el HTML.
+#
+# Al agregar una herramienta nueva (chat, mapa, vídeo) hay que sumar su dominio
+# aquí, o dejará de cargar sin ningún mensaje visible en la página.
 
 /*
   X-Content-Type-Options: nosniff
@@ -7,6 +27,7 @@
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.fontshare.com https://api.fontshare.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com; connect-src 'self' https://abdismart.geiner-porras-mb.workers.dev https://zmlslhftqjljhvetmbya.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://connect.facebook.net https://www.facebook.com; frame-src https://www.googletagmanager.com; upgrade-insecure-requests
 
 # El logotipo no cambia entre despliegues: se puede cachear con agresividad.
 /assets/*

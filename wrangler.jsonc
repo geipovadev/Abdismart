@@ -16,6 +16,30 @@
     "META_PIXEL_ID": "2728168144250754"
   },
 
+  // Topes de ráfaga por IP, contados en el borde de Cloudflare.
+  // Cada limitador necesita su propio namespace_id; los números son etiquetas
+  // internas, no hace falta crearlos en el panel.
+  // El período solo admite 10 o 60 segundos.
+  //
+  // Va en la clave "ratelimits" de primer nivel. Declararlo bajo
+  // "unsafe.bindings" también despliega sin error y el panel lista los
+  // bindings, pero `env.RL_*.limit` queda sin definir y el tope nunca actúa:
+  // el fallo es silencioso, así que se comprueba con una ráfaga real.
+  "ratelimits": [
+    // El diagnóstico web se cierra a las 8 respuestas. 20 por minuto deja
+    // margen de sobra a una persona escribiendo rápido y corta un script.
+    { "name": "RL_CHAT", "namespace_id": "1001", "simple": { "limit": 20, "period": 60 } },
+    // Enviar el contacto es algo que se hace una vez, no cinco por minuto.
+    { "name": "RL_LEAD", "namespace_id": "1002", "simple": { "limit": 5, "period": 60 } },
+    // El diagnóstico guarda su avance paso a paso: necesita más margen.
+    { "name": "RL_SESION", "namespace_id": "1003", "simple": { "limit": 40, "period": 60 } },
+    // Eventos hacia Meta y del constructor de vistas previas.
+    { "name": "RL_EVENTO", "namespace_id": "1004", "simple": { "limit": 40, "period": 60 } },
+    // Los dos endpoints que llaman a OpenAI para generar texto largo. Son
+    // los caros: aquí el tope es el más estricto.
+    { "name": "RL_IA", "namespace_id": "1005", "simple": { "limit": 10, "period": 60 } }
+  ],
+
   "assets": {
     // Raíz del sitio publicado. Todo lo que quede fuera de esta carpeta
     // no se publica — incluido Resultado/CRM, que no debe ser público.

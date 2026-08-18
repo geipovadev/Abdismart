@@ -171,6 +171,28 @@ contiene documentación ni migraciones, conectarlo no expone nada.
 | `GET/POST /api/instagram/webhook` | Canal de Instagram | `instagram.js` |
 | `POST /api/abdi-leads/run` | Captación con Apify (alias: `/api/prospecting/run`) | `prospecting.js` |
 
+### Quién puede llamar a la API
+
+`src/cors.js` tiene la lista de orígenes permitidos y se aplica en un solo punto,
+al final de `worker.js`. Los módulos ya no deciden a quién le abren: un endpoint
+nuevo hereda la lista sin hacer nada. **Al estrenar un dominio hay que agregarlo
+ahí**, o el navegador bloqueará las llamadas sin decir por qué.
+
+Las vistas previas de Netlify y `localhost` están contempladas.
+
+### Topes por IP
+
+Dos capas que responden a preguntas distintas y conviven:
+
+| Capa | Dónde | Qué controla |
+|---|---|---|
+| Ráfaga | bindings `RL_*` de `wrangler.jsonc`, vía `src/ratelimit.js` | Golpes por minuto desde una IP |
+| Día | `preview.js` y `diagnostico.js`, contra Supabase | Gasto acumulado del día |
+
+Los webhooks de Meta quedan fuera a propósito: vienen firmados con HMAC y Meta
+reenvía en ráfaga cuando algo falla; un 429 ahí son mensajes de personas que se
+pierden. Sin los bindings —`wrangler dev` local— no se bloquea a nadie.
+
 Pruebas:
 
 ```bash

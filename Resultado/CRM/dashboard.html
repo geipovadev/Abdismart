@@ -111,6 +111,60 @@
   var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
   var WORKER='https://abdismart.geiner-porras-mb.workers.dev';
   var db=window.supabase.createClient(URL,KEY);var inviteDb=window.supabase.createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});var OWNER_EMAIL='geiner.porras.mb@gmail.com';var USER_NAMES={'geiner.porras.mb@gmail.com':'geiner.abdi'};var state={leads:[],prospects:[],conversations:[],convFilter:'todas',convSearch:'',convSelected:null,learning:[],clients:[],documents:[],activity:[],team:[],diagnostics:[],diagFilter:'con_contacto',diagSearch:'',diagSelected:null,errors:{},filter:'todos',leadSection:'todos',search:'',selected:null,isOwner:false};
+  // ─── Caducidad de sesión ──────────────────────────────────────────────
+  // supabase-js renueva el token solo mientras el refresh token siga vivo, y
+  // lo guarda en localStorage. Sin esto, un tablero abierto en una máquina
+  // compartida seguía dentro semanas después: el JWT caducaba cada hora y se
+  // renovaba solo, así que la sesión no terminaba nunca.
+  //
+  // Dos topes, porque responden a riesgos distintos:
+  //   inactividad — la persona se levantó y dejó el CRM abierto
+  //   absoluto    — el token se quedó en un equipo al que ya no debería servir
+  // La marca vive en localStorage para que cuente igual con varias pestañas.
+  var INACTIVIDAD_MS=30*60*1000, MAXIMO_MS=12*60*60*1000;
+  var LLAVE_ACTIVIDAD='crm-ultima-actividad', LLAVE_INICIO='crm-inicio-sesion';
+  var relojSesion=null;
+
+  function leerMarca(llave){try{return Number(localStorage.getItem(llave))||0}catch(e){return 0}}
+  function escribirMarca(llave,valor){try{localStorage.setItem(llave,String(valor))}catch(e){}}
+
+  function marcarActividad(){escribirMarca(LLAVE_ACTIVIDAD,Date.now())}
+
+  function motivoCaducidad(){
+    var ahora=Date.now();
+    var ultima=leerMarca(LLAVE_ACTIVIDAD), inicio=leerMarca(LLAVE_INICIO);
+    // Sin marca previa no se expulsa a nadie: es la primera carga tras entrar.
+    if(ultima&&ahora-ultima>INACTIVIDAD_MS)return 'inactividad';
+    if(inicio&&ahora-inicio>MAXIMO_MS)return 'expirada';
+    return '';
+  }
+
+  async function cerrarSesion(motivo){
+    if(relojSesion){clearInterval(relojSesion);relojSesion=null}
+    try{localStorage.removeItem(LLAVE_ACTIVIDAD);localStorage.removeItem(LLAVE_INICIO)}catch(e){}
+    try{await db.auth.signOut()}catch(e){}
+    location.href='login.html?motivo='+encodeURIComponent(motivo);
+  }
+
+  function vigilarSesion(){
+    if(!leerMarca(LLAVE_INICIO))escribirMarca(LLAVE_INICIO,Date.now());
+    marcarActividad();
+    ['click','keydown','pointerdown','scroll'].forEach(function(evento){
+      document.addEventListener(evento,marcarActividad,{passive:true});
+    });
+    // Volver a la pestaña cuenta como actividad, pero solo después de
+    // comprobar el tope: si estuvo oculta dos horas, toca salir.
+    document.addEventListener('visibilitychange',function(){
+      if(document.visibilityState!=='visible')return;
+      var motivo=motivoCaducidad();
+      if(motivo)cerrarSesion(motivo);else marcarActividad();
+    });
+    relojSesion=setInterval(function(){
+      var motivo=motivoCaducidad();
+      if(motivo)cerrarSesion(motivo);
+    },30000);
+  }
+
   var $=function(id){return document.getElementById(id)};var soundEnabled=false,audioContext=null,leadChannel=null;try{soundEnabled=localStorage.getItem('crm-lead-sound')==='on'}catch(e){}function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
   function date(v){if(!v)return '—';var d=new Date(v);return isNaN(d)?'—':d.toLocaleDateString('es-CR',{day:'2-digit',month:'short',year:'numeric'})}
   function ago(v){var n=Date.now()-new Date(v).getTime(),h=Math.floor(n/36e5);if(h<1)return 'Hace minutos';if(h<24)return 'Hace '+h+'h';var d=Math.floor(h/24);return d===1?'Ayer':'Hace '+d+' días'}
@@ -121,7 +175,7 @@
   function moduleUnavailable(name){return '<div class="notice module-note"><b>'+esc(name)+' aún no está conectado.</b> La estructura está contemplada, pero Supabase no devolvió datos para este módulo.</div>'}
   function go(view){document.querySelectorAll('.view').forEach(function(v){v.classList.toggle('on',v.id==='view-'+view)});document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.toggle('on',b.dataset.view===view)});$('crumb').textContent='Operación / '+view.charAt(0).toUpperCase()+view.slice(1);$('side').classList.remove('open');window.location.hash=view}
   document.addEventListener('click',function(e){var viewBtn=e.target.closest('[data-view]');if(viewBtn){go(viewBtn.dataset.view);return}var goBtn=e.target.closest('[data-go]');if(goBtn)go(goBtn.dataset.go)});$('mobile-menu').onclick=function(){$('side').classList.toggle('open')};$('notification-toggle').onclick=function(){soundEnabled=!soundEnabled;try{localStorage.setItem('crm-lead-sound',soundEnabled?'on':'off')}catch(e){}if(soundEnabled){audioContext=audioContext||new (window.AudioContext||window.webkitAudioContext)();if(audioContext.state==='suspended')audioContext.resume();playLeadSound();if(window.Notification&&Notification.permission==='default')Notification.requestPermission()}this.classList.toggle('on',soundEnabled);this.setAttribute('aria-pressed',String(soundEnabled));this.textContent=soundEnabled?'🔔 Sonido activo':'🔔 Activar sonido'};$('notification-toggle').classList.toggle('on',soundEnabled);$('notification-toggle').setAttribute('aria-pressed',String(soundEnabled));$('notification-toggle').textContent=soundEnabled?'🔔 Sonido activo':'🔔 Activar sonido';
-  db.auth.getSession().then(function(r){if(!r.data.session){location.href='login.html';return}var email=String(r.data.session.user.email||'').toLowerCase();state.isOwner=email===OWNER_EMAIL;$('user-mail').textContent=USER_NAMES[email]||email.split('@')[0]||'usuario';if(!state.isOwner)$('nav-users').style.display='none';load()});$('btn-logout').onclick=async function(){await db.auth.signOut();location.href='login.html'};
+  db.auth.getSession().then(function(r){if(!r.data.session){location.href='login.html';return}var caducada=motivoCaducidad();if(caducada){cerrarSesion(caducada);return}vigilarSesion();var email=String(r.data.session.user.email||'').toLowerCase();state.isOwner=email===OWNER_EMAIL;$('user-mail').textContent=USER_NAMES[email]||email.split('@')[0]||'usuario';if(!state.isOwner)$('nav-users').style.display='none';load()});$('btn-logout').onclick=async function(){if(relojSesion)clearInterval(relojSesion);try{localStorage.removeItem(LLAVE_ACTIVIDAD);localStorage.removeItem(LLAVE_INICIO)}catch(e){}await db.auth.signOut();location.href='login.html'};
   async function query(name,table,order){var q=db.from(table).select('*');if(order)q=q.order(order,{ascending:false});var r=await q;if(r.error){state.errors[name]=r.error.message;return []}return r.data||[]}
   // Cada canal que puede crear una solicitud. La clave es `origen_registro`; el
   // `utm_source` queda como respaldo para las filas antiguas que no lo traían.
