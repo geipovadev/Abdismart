@@ -734,19 +734,6 @@
       margin-bottom: 10px;
     }
     .pkg p { font-size: 15.5px; color: var(--fog); line-height: 1.6; }
-    .pkg a.pkg-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color .2s;
-    }
-    .pkg a.pkg-link:hover { border-bottom-color: var(--accent); }
 
     .bridge {
       margin: 34px auto 0;
@@ -974,7 +961,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="pkg-kicker">Punto de partida recomendado</div>
         <h2 id="pkg-label"></h2>
         <p id="pkg-rationale"></p>
-        <a class="pkg-link" id="pkg-link" href="servicios.html">Ver en qué consiste →</a>
       </article>
 
       <p class="bridge" id="bridge-text"></p>
@@ -2170,7 +2156,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     document.getElementById('pkg-label').textContent = r.package.label;
     document.getElementById('pkg-rationale').textContent = r.package.rationale;
-    document.getElementById('pkg-link').href = r.package.href;
 
     var explorando = state.answers.urgency === 'explorando';
 
