@@ -47,6 +47,9 @@
     .team-layout{display:grid;grid-template-columns:minmax(280px,.7fr) minmax(0,1.3fr);gap:14px;align-items:start}.form-grid{display:grid;gap:13px}.field{display:grid;gap:6px}.field label{font:9px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--fog)}.field input,.field select{width:100%;background:#101217;border:1px solid var(--edge);border-radius:9px;padding:10px 12px;color:var(--bone);outline:none}.field input:focus,.field select:focus{border-color:var(--lime-edge)}.form-help{font-size:11px;color:#747b88}.form-message{display:none;border-radius:9px;padding:10px 12px;font-size:12px}.form-message.show{display:block}.form-message.success{color:var(--lime);border:1px solid var(--lime-edge);background:var(--lime-wash)}.form-message.error{color:#ffc1c1;border:1px solid rgba(255,107,107,.3);background:rgba(255,107,107,.07)}.submit{border:0;background:var(--lime);color:var(--onyx);font-weight:600;border-radius:9px;padding:11px 14px;cursor:pointer}.submit:disabled{opacity:.55;cursor:wait}.role{display:inline-flex;border:1px solid var(--edge);border-radius:99px;padding:4px 8px;font:9px 'JetBrains Mono',monospace;color:var(--blue)}
     @media(max-width:1050px){.metrics{grid-template-columns:repeat(2,1fr)}.grid-2,.team-layout{grid-template-columns:1fr}.split{grid-template-columns:1fr}.lead-list{max-height:320px}.sla{grid-template-columns:1fr}}
     @media(max-width:760px){.app{display:block}.side{position:fixed;inset:0 auto 0 0;width:min(82vw,290px);transform:translateX(-105%);transition:.22s;box-shadow:20px 0 60px rgba(0,0,0,.45)}.side.open{transform:none}.mobile-menu{display:block}.top{height:60px;padding:0 17px}.content{padding:23px 16px 55px}.page-head{align-items:flex-start}.stamp{display:none}.metrics{grid-template-columns:repeat(2,1fr)}.metric{padding:14px}.metric-value{font-size:25px}.qa{grid-template-columns:1fr}.qa-item.full{grid-column:auto}.detail-head{display:block}.actions{margin-top:13px}.sla-track{grid-template-columns:repeat(5,1fr)}}
+    /* Diagnóstico: marcador por área, fugas con su evidencia y módulos.
+       El semáforo viaja por una variable local, igual que en la landing. */
+    .dx{display:grid;gap:10px}.dx-area{display:grid;grid-template-columns:1fr auto;gap:5px 10px;align-items:baseline}.dx-name{font-size:13px}.dx-score{font:11px 'JetBrains Mono',monospace;color:var(--lvl);font-variant-numeric:tabular-nums}.dx-bar{grid-column:1/-1;height:4px;border-radius:3px;background:var(--edge);overflow:hidden}.dx-bar i{display:block;height:100%;background:var(--lvl)}.dx-head{display:flex;align-items:center;gap:13px;flex-wrap:wrap}.dx-big{font:600 27px 'Clash Display',sans-serif;color:var(--lvl);font-variant-numeric:tabular-nums;line-height:1}.dx-mark{font:9px 'JetBrains Mono',monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--lvl);border:1px solid currentColor;border-radius:99px;padding:3px 9px}.lvl-verde{--lvl:var(--lime)}.lvl-amarillo{--lvl:var(--amber)}.lvl-rojo{--lvl:var(--red)}.dx-ev{margin-top:7px}.dx-why{color:var(--fog);font-size:12.5px;margin-top:3px}
   </style>
 </head>
 <body>
@@ -326,12 +329,39 @@
     }
   }
 
+  // Un diagnóstico guardado antes del motor v2 no trae áreas, fugas ni
+  // planes. Se lee lo que haya y lo que falte queda vacío: la ficha se
+  // dibuja igual, con menos bloques, en vez de romperse.
+  function diagPartes(r,ia){
+    var arr=function(v){return Array.isArray(v)?v:[]};
+    var planes=r.plans||{};
+    var leaks=arr(r.leaks);
+    var notas=arr(ia.leak_notes);
+    var modulos=arr(r.modules);
+    var razones=arr(ia.module_reasons);
+    return {
+      marcador: typeof r.overall_score==='number'?r.overall_score:null,
+      nivel: r.overall_level||'',
+      areas: arr(r.areas),
+      // Las fricciones de un diagnóstico viejo son texto suelto: se
+      // envuelven para que el mismo bloque las pinte sin evidencia.
+      fugas: leaks.length
+        ? leaks.map(function(l,i){return {title:l.title,evidence:l.evidence,impact:l.impact,nota:notas[i]}})
+        : arr(r.frictions).map(function(t){return {title:t,evidence:[],impact:'',nota:''}}),
+      modulos: modulos.map(function(m,i){return {name:m.name,razon:razones[i]||m.reason}}),
+      arranque: arr(planes.arranque).length?arr(planes.arranque):arr(r.roadmap),
+      estable: arr(planes.estable)
+    };
+  }
+
+  function nivelClase(nivel){return 'lvl-'+(nivel==='verde'||nivel==='amarillo'||nivel==='rojo'?nivel:'amarillo')}
+  function num(v){return Math.max(0,Math.min(100,Math.round(Number(v)||0)))}
+
   function renderDiagnosticDetail(x){
     if(!x){$('diag-detail').innerHTML=moduleEmpty('Elige un diagnóstico','Aquí verás sus respuestas, su ruta y el botón para descargar el PDF.');return}
     var r=x.result||{},ia=x.ai_analysis||{},wa=digits(x.lead_whatsapp||'');
     var qa=Array.isArray(r.qa)?r.qa:[];
-    var ruta=Array.isArray(r.roadmap)?r.roadmap:[];
-    var fricciones=Array.isArray(r.frictions)?r.frictions:[];
+    var d=diagPartes(r,ia);
 
     var cabecera='<div class="detail-head"><div><h2>'+esc(diagName(x))+'</h2>'
       +'<div class="detail-sub">Diagnóstico del '+date(x.created_at)+' · '+esc(diagPackage(x))+'</div></div>'
@@ -355,21 +385,49 @@
         }).join('')+'</div>';
     }
 
-    if(fricciones.length){
-      bloques+='<div class="card-kicker" style="margin:18px 0 10px">Fricciones detectadas</div>'
-        +'<div class="qa">'+fricciones.map(function(t,i){
-          return '<div class="qa-item full"><div class="qa-q">0'+(i+1)+'</div><div class="qa-a">'+esc(t)+'</div></div>'
+    if(d.areas.length){
+      bloques+='<div class="card-kicker" style="margin:18px 0 10px">Cómo está cada parte</div>'
+        +'<div class="qa"><div class="qa-item full">'
+        +(d.marcador===null?'':'<div class="dx-head '+nivelClase(d.nivel)+'" style="margin-bottom:14px">'
+          +'<span class="dx-big">'+d.marcador+'</span><span class="qa-q" style="margin:0">de 100</span>'
+          +'<span class="dx-mark">'+esc(d.nivel||'')+'</span></div>')
+        +'<div class="dx">'+d.areas.map(function(a){
+          return '<div class="dx-area '+nivelClase(a.level)+'"><span class="dx-name">'+esc(a.name||'')+'</span>'
+            +'<span class="dx-score">'+num(a.score)+'</span>'
+            +'<span class="dx-bar"><i style="width:'+num(a.score)+'%"></i></span></div>'
+        }).join('')+'</div></div></div>';
+    }
+
+    if(d.fugas.length){
+      bloques+='<div class="card-kicker" style="margin:18px 0 10px">Dónde se están perdiendo consultas</div>'
+        +'<div class="qa">'+d.fugas.map(function(f,i){
+          var ev=(f.evidence||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>'}).join('');
+          return '<div class="qa-item full"><div class="qa-q">0'+(i+1)+' · impacto '+esc(f.impact||'')+'</div>'
+            +'<div class="qa-a">'+esc(f.title||'')+'</div>'
+            +(f.nota?'<div class="dx-why">'+esc(f.nota)+'</div>':'')
+            +(ev?'<div class="dx-ev">'+ev+'</div>':'')+'</div>'
         }).join('')+'</div>';
     }
 
-    if(ruta.length){
-      bloques+='<div class="card-kicker" style="margin:18px 0 10px">Ruta recomendada</div>'
-        +'<div class="qa">'+ruta.map(function(s,i){
-          var nota=(ia.step_notes||[])[i];
-          return '<div class="qa-item full"><div class="qa-q">Paso '+(i+1)+' · '+esc(s.title||'')+'</div>'
-            +'<div class="qa-a">'+esc(s.desc||'')+(nota?'<br><em>'+esc(nota)+'</em>':'')+'</div></div>'
+    if(d.modulos.length){
+      bloques+='<div class="card-kicker" style="margin:18px 0 10px">Qué ofrecerle</div>'
+        +'<div class="qa">'+d.modulos.map(function(m){
+          return '<div class="qa-item"><div class="qa-q">Módulo</div><div class="qa-a">'+esc(m.name||'')+'</div>'
+            +(m.razon?'<div class="dx-why">'+esc(m.razon)+'</div>':'')+'</div>'
         }).join('')+'</div>';
     }
+
+    [['Por dónde empezar',d.arranque,ia.step_notes||[]],['Y después',d.estable,[]]].forEach(function(par){
+      if(!par[1].length)return;
+      bloques+='<div class="card-kicker" style="margin:18px 0 10px">'+par[0]+'</div>'
+        +'<div class="qa">'+par[1].map(function(s,i){
+          var nota=par[2][i];
+          return '<div class="qa-item full"><div class="qa-q">Paso '+(i+1)+' · '+esc(s.title||'')+'</div>'
+            +'<div class="qa-a">'+esc(s.how||s.desc||'')+'</div>'
+            +(s.why?'<div class="dx-why">'+esc(s.why)+'</div>':'')
+            +(nota?'<div class="dx-why"><em>'+esc(nota)+'</em></div>':'')+'</div>'
+        }).join('')+'</div>';
+    });
 
     if(qa.length){
       bloques+='<div class="card-kicker" style="margin:18px 0 10px">Respuestas del cuestionario</div>'
@@ -378,7 +436,9 @@
         }).join('')+'</div>';
     }
 
-    var contacto=[['WhatsApp',x.lead_whatsapp],['Email',x.lead_email],['Urgencia',URGENCIA[x.urgency_level]||''],['Fue a agendar',x.cal_clicked_at?date(x.cal_clicked_at):'No']];
+    var contacto=[['WhatsApp',x.lead_whatsapp],['Email',x.lead_email],['Urgencia',URGENCIA[x.urgency_level]||''],
+      ['Fue a agendar',x.cal_clicked_at?date(x.cal_clicked_at):'No'],
+      ['Escribió por WhatsApp',x.whatsapp_clicked_at?date(x.whatsapp_clicked_at):'No']];
     bloques+='<div class="card-kicker" style="margin:18px 0 10px">Contacto</div>'
       +'<div class="qa">'+contacto.map(function(c){
         return '<div class="qa-item"><div class="qa-q">'+c[0]+'</div><div class="qa-a">'+(c[1]?esc(c[1]):'—')+'</div></div>'
@@ -415,18 +475,36 @@
   function pdfDiagnostico(x){
     var r=x.result||{},ia=x.ai_analysis||{};
     var qa=Array.isArray(r.qa)?r.qa:[];
-    var ruta=Array.isArray(r.roadmap)?r.roadmap:[];
-    var fricciones=Array.isArray(r.frictions)?r.frictions:[];
+    var d=diagPartes(r,ia);
     var resumen=Array.isArray(r.summary)?r.summary:[];
     var fecha=new Date(x.created_at).toLocaleDateString('es-CR',{day:'2-digit',month:'long',year:'numeric'});
 
     function seccion(titulo,cuerpo){return cuerpo?'<section><h2>'+titulo+'</h2>'+cuerpo+'</section>':''}
     function lista(items){return items.length?'<ul>'+items.map(function(t){return '<li>'+esc(t)+'</li>'}).join('')+'</ul>':''}
 
-    var pasos=ruta.map(function(s,i){
-      var nota=(ia.step_notes||[])[i];
-      return '<div class="paso"><div class="paso-n">'+(i+1)+'</div><div><h3>'+esc(s.title||'')+'</h3>'
-        +'<p>'+esc(s.desc||'')+'</p>'+(nota?'<p class="nota">'+esc(nota)+'</p>':'')+'</div></div>';
+    function pasosHtml(lista,notas){
+      return lista.map(function(s,i){
+        var nota=(notas||[])[i];
+        return '<div class="paso"><div class="paso-n">'+(i+1)+'</div><div><h3>'+esc(s.title||'')+'</h3>'
+          +'<p>'+esc(s.how||s.desc||'')+'</p>'
+          +(s.why?'<p class="porque">'+esc(s.why)+'</p>':'')
+          +(nota?'<p class="nota">'+esc(nota)+'</p>':'')+'</div></div>';
+      }).join('');
+    }
+
+    var areas=d.areas.map(function(a){
+      return '<div class="area"><div class="area-top"><span>'+esc(a.name||'')+'</span><b>'+num(a.score)+'</b></div>'
+        +'<div class="area-bar"><i class="n-'+esc(a.level||'amarillo')+'" style="width:'+num(a.score)+'%"></i></div></div>';
+    }).join('');
+
+    var fugas=d.fugas.map(function(f,i){
+      var ev=(f.evidence||[]).map(function(t){return '<span class="chip">'+esc(t)+'</span>'}).join('');
+      return '<div class="fuga"><h3>'+(i+1)+'. '+esc(f.title||'')+(f.impact?' <em>impacto '+esc(f.impact)+'</em>':'')+'</h3>'
+        +(f.nota?'<p>'+esc(f.nota)+'</p>':'')+(ev?'<div class="chips">'+ev+'</div>':'')+'</div>';
+    }).join('');
+
+    var modulos=d.modulos.map(function(m){
+      return '<li><b>'+esc(m.name||'')+'</b>'+(m.razon?' — '+esc(m.razon):'')+'</li>';
     }).join('');
 
     var preguntas=qa.map(function(p){
@@ -460,6 +538,22 @@
       +'.paso h3{font-size:11.5pt;margin-bottom:2px}'
       +'.paso p{color:#3C424E}'
       +'.nota{border-left:2px solid #A8CC55;padding-left:9px;margin-top:5px;color:#14161A}'
+      +'.porque{color:#5A6070;font-size:10pt;margin-top:3px}'
+      +'.marcador{display:flex;align-items:baseline;gap:9px;margin-bottom:13px}'
+      +'.marcador b{font-size:25pt;line-height:1}'
+      +'.marcador span{color:#5A6070;font-size:9pt;text-transform:uppercase;letter-spacing:.08em}'
+      +'.area{margin-bottom:9px;break-inside:avoid}'
+      +'.area-top{display:flex;justify-content:space-between;font-size:10pt}'
+      +'.area-top b{font-variant-numeric:tabular-nums}'
+      +'.area-bar{height:4px;background:#E6E8EC;border-radius:2px;overflow:hidden;margin-top:3px}'
+      +'.area-bar i{display:block;height:100%}'
+      +'.n-verde{background:#5C8A00}.n-amarillo{background:#B07800}.n-rojo{background:#C0392B}'
+      +'.fuga{margin-bottom:13px;break-inside:avoid}'
+      +'.fuga h3{font-size:11.5pt;margin-bottom:3px}'
+      +'.fuga h3 em{font-style:normal;font-size:8.5pt;color:#5A6070;text-transform:uppercase;letter-spacing:.07em}'
+      +'.fuga p{color:#3C424E}'
+      +'.chips{margin-top:5px}'
+      +'.chip{display:inline-block;border:1px solid #DDE0E6;border-radius:99px;padding:2px 8px;margin:2px 3px 0 0;font-size:8.5pt;color:#5A6070}'
       +'table{width:100%;border-collapse:collapse;font-size:10pt}'
       +'td{border-bottom:1px solid #E6E8EC;padding:7px 0;vertical-align:top}'
       +'.pregunta{width:58%;padding-right:14px;color:#3C424E}'
@@ -470,10 +564,14 @@
       +'<h1>'+esc(diagName(x))+'</h1>'
       +'<div class="sub">'+esc([x.lead_whatsapp,x.lead_email].filter(Boolean).join(' · ')||'Sin datos de contacto')+'</div>'
       +seccion('Análisis',(ia.analysis||[]).map(function(t){return '<p style="margin-bottom:7px">'+esc(t)+'</p>'}).join(''))
-      +seccion('Dónde está hoy',lista(resumen))
-      +seccion('Lo que le está frenando',lista(fricciones))
-      +seccion('Ruta recomendada',pasos)
-      +seccion('Punto de partida','<div class="destacado"><h3>'+esc(diagPackage(x))+'</h3><p>'+esc((r.package&&r.package.rationale)||'')+'</p></div>')
+      +seccion('Cómo está cada parte',
+        (d.marcador===null?'':'<div class="marcador"><b>'+d.marcador+'</b><span>de 100 · '+esc(d.nivel||'')+'</span></div>')
+        +lista(resumen)+areas)
+      +seccion('Dónde se están perdiendo consultas',fugas)
+      +seccion('Por dónde empezar',pasosHtml(d.arranque,ia.step_notes))
+      +seccion('Y después, lo que lo sostiene',pasosHtml(d.estable,[]))
+      +seccion('Punto de partida','<div class="destacado"><h3>'+esc(diagPackage(x))+'</h3><p>'+esc((r.package&&r.package.rationale)||'')+'</p>'
+        +(modulos?'<ul style="margin-top:9px">'+modulos+'</ul>':'')+'</div>')
       +seccion('Respuestas del cuestionario',preguntas?'<table><tbody>'+preguntas+'</tbody></table>':'')
       +'<footer>Documento interno de trabajo. No contiene consejos médicos: evalúa procesos digitales de atención y agenda. '
       +'La recomendación se basa en lo que el negocio respondió el '+esc(fecha)+'.</footer>'

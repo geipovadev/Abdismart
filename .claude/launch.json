@@ -3,20 +3,41 @@
   "configurations": [
     {
       "name": "landing",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "5501", "--directory", "/Users/geinerporras/Abdi/Resultado/Landing"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "/Users/geinerporras/Documents/Abdi/Resultado/Landing",
+        "-p",
+        "5501",
+        "-c-1",
+        "--silent"
+      ],
       "port": 5501
     },
     {
       "name": "crm",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "5502", "--directory", "/Users/geinerporras/Abdi/Resultado/CRM"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "-y",
+        "http-server",
+        "/Users/geinerporras/Documents/Abdi/Resultado/CRM",
+        "-p",
+        "5502",
+        "-c-1",
+        "--silent"
+      ],
       "port": 5502
     },
     {
       "name": "open-carrusel",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "/Users/geinerporras/Desktop/open-carrusel", "run", "dev"],
+      "runtimeArgs": [
+        "--prefix",
+        "/Users/geinerporras/Desktop/open-carrusel",
+        "run",
+        "dev"
+      ],
       "port": 3000
     }
   ]

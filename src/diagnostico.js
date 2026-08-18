@@ -19,13 +19,25 @@ export const DIAGNOSTIC_SCHEMA = {
       type: 'array', minItems: 2, maxItems: 2,
       items: { type: 'string' }
     },
+    // Una nota por fuga, en el mismo orden en que llegaron. Explica qué
+    // cuesta esa fuga en ESTE negocio; el título ya lo dice en general.
+    leak_notes: {
+      type: 'array', minItems: 1, maxItems: 3,
+      items: { type: 'string' }
+    },
     step_notes: {
       type: 'array', minItems: 3, maxItems: 3,
       items: { type: 'string' }
     },
+    // Una razón por módulo recomendado, en orden. Cuántos hay lo decide el
+    // motor de reglas, así que aquí el largo es libre y se valida al pintar.
+    module_reasons: {
+      type: 'array',
+      items: { type: 'string' }
+    },
     bridge: { type: 'string' }
   },
-  required: ['analysis', 'step_notes', 'bridge']
+  required: ['analysis', 'leak_notes', 'step_notes', 'module_reasons', 'bridge']
 };
 
 function json(data, status = 200) {
@@ -70,8 +82,41 @@ function normalizeInput(body) {
     summary: cleanList(body.summary, 3, 200),
     frictions: cleanList(body.frictions, 3, 200),
     steps: cleanList(body.steps, 3, 120),
+    modules: cleanList(body.modules, 6, 80),
+    focus: clean(body.focus, 200),
+    overall_score: normalizeScore(body.overall_score),
+    areas: normalizeAreas(body.areas),
+    leaks: normalizeLeaks(body.leaks),
     answers: normalizeAnswers(body.answers)
   };
+}
+
+const NIVELES = new Set(['verde', 'amarillo', 'rojo']);
+
+function normalizeScore(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 && n <= 100 ? Math.round(n) : null;
+}
+
+// Los números los calcula el navegador con reglas. Aquí solo se comprueba
+// que tengan la forma prometida: el modelo los lee para redactar, y una
+// puntuación fuera de rango le haría escribir cualquier cosa.
+function normalizeAreas(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 6).map(item => ({
+    name: clean(item?.name, 60),
+    score: normalizeScore(item?.score),
+    level: NIVELES.has(item?.level) ? item.level : null
+  })).filter(area => area.name && area.score !== null && area.level);
+}
+
+function normalizeLeaks(value) {
+  if (!Array.isArray(value)) return [];
+  return value.slice(0, 3).map(item => ({
+    title: clean(item?.title, 200),
+    evidence: cleanList(item?.evidence, 3, 80),
+    impact: item?.impact === 'alto' ? 'alto' : 'medio'
+  })).filter(leak => leak.title);
 }
 
 // Las respuestas llegan ya traducidas a etiquetas legibles. Aquí solo se
@@ -91,7 +136,7 @@ function normalizeAnswers(value) {
 function isValidInput(input) {
   if (!UUID_RE.test(input.session_id)) return false;
   if (!PACKAGES.has(input.package_key)) return false;
-  if (input.steps.length !== 3) return false;
+  if (input.steps.length < 2 || input.steps.length > 3) return false;
   return Boolean(input.package_label);
 }
 
@@ -152,7 +197,8 @@ function extractOutputText(response) {
 const INSTRUCTIONS = `Eres el analista de Abdi. Lees el diagnóstico digital de un negocio de salud y lo explicas en palabras claras.
 
 QUÉ TE DAN YA RESUELTO
-- El paquete recomendado, las fricciones detectadas y los tres pasos de la ruta vienen calculados. NO los cambies, no los reordenes, no propongas otros.
+- El marcador general, la puntuación de cada área, las fugas detectadas, los pasos y los módulos vienen CALCULADOS por reglas.
+- NO los cambies, no los reordenes, no propongas otros, no discutas un número.
 - Tu trabajo es explicar por qué eso tiene sentido PARA ESTE NEGOCIO, usando sus propias respuestas.
 
 CÓMO ESCRIBES
@@ -160,28 +206,46 @@ CÓMO ESCRIBES
 - TUTEO SIEMPRE, nunca voseo, sea cual sea el país del negocio. Escribe "puedes", "tienes", "quieres", "revisas". Nunca "podés", "tenés", "querés", "revisás". Nunca "vos".
 - Frases cortas. Máximo 25 palabras por frase. Una idea por frase.
 - El héroe es el negocio, no Abdi. Escribe "tus consultas", no "nuestra solución".
-- Menciona datos concretos de sus respuestas: su canal, su tiempo de respuesta, su forma de agendar.
+- Menciona datos concretos de sus respuestas: su canal, su tiempo de respuesta, su forma de agendar, quién responde hoy.
+- Si te dan un "enfoque", que el tono lo respete: quien trabaja solo quiere menos carga, quien tiene varias sedes quiere que todas respondan igual.
 
 PROHIBIDO
 - Diagnósticos médicos, consejos clínicos o cualquier referencia a tratamientos y pacientes concretos.
-- Prometer pacientes, ingresos, porcentajes de mejora o plazos de entrega en horas o días.
+- Prometer pacientes, ingresos, porcentajes de mejora, cifras de recuperación o plazos de entrega. Nada de "en 7 días", "en un mes", "en X semanas".
 - Inventar datos del negocio: usa solo lo que está en las respuestas. Si algo no te lo dieron, no lo supongas.
 - Mencionar precios, IA, modelos, plantillas, prompts o cómo se generó este texto.
-- Jerga técnica: nada de SaaS, funnel, KPI, pipeline, leads, conversión, optimización, dashboard.
+- Jerga técnica: nada de SaaS, funnel, KPI, SLA, pipeline, leads, conversión, optimización, dashboard.
 - Emojis, signos de exclamación dobles y puntos suspensivos.
 
 FORMATO
 - analysis: exactamente 2 frases sueltas. La primera dice qué está pasando hoy y por qué cuesta consultas. La segunda dice qué cambia al ordenarlo. Máximo 22 palabras cada una.
-- step_notes: exactamente 3. Una frase por cada paso de la ruta, en el mismo orden. Máximo 22 palabras cada una.
+- leak_notes: exactamente "cuantas_leak_notes" elementos, una por fuga, en el MISMO orden. Máximo 22 palabras cada una.
+- step_notes: exactamente 3, una por paso, en el MISMO orden. Máximo 22 palabras cada una.
+- module_reasons: exactamente "cuantas_module_reasons" elementos, uno por módulo, en el MISMO orden. Máximo 20 palabras cada una.
+- Cuenta los elementos antes de responder. Si la cantidad no coincide, tu texto se descarta entero.
 - bridge: una frase que invite a la llamada de 30 minutos. Máximo 22 palabras. Sin prometer resultados.
+
+LAS NOTAS DE CADA FUGA
+El título de la fuga ya va impreso, y debajo va la evidencia con sus propias respuestas.
+- NO repitas el título ni la evidencia: se leen justo al lado.
+- Di qué le cuesta ESO a este negocio, en concreto y sin cifras.
+- Mal: "No hay seguimiento, y eso es un problema."
+- Bien: "Cada persona que preguntó por ortodoncia y no agendó se queda como única oportunidad perdida."
 
 LAS NOTAS DE CADA PASO
 El título del paso ya va impreso justo encima de tu nota. Repetirlo se lee como un eco.
 - NO empieces la nota con el título del paso ni con una variante suya.
 - NO uses las fórmulas "X significa...", "X consiste en...", "X permite...", "X evita...".
 - Empieza directo por lo que cambia en este negocio, y nombra algo suyo: su canal, sus sedes, quién responde hoy.
+- No repitas los sustantivos del título en tu primera frase. Si el paso se llama "Poner al día horarios, sedes y servicios", tu nota NO empieza por "Tus horarios, sedes y servicios".
 - Mal: "Ordenar la atención de consultas significa organizar cómo se responden los mensajes."
-- Bien: "Cada mensaje de WhatsApp deja de depender de que una sola persona esté libre."`;
+- Mal: "Poner al día horarios, sedes y servicios deja tus horarios y servicios actualizados."
+- Bien: "Cada mensaje de WhatsApp deja de depender de que una sola persona esté libre."
+- Bien: "Quien te busca en Google encuentra hoy datos viejos, y ese es el primer punto donde te descartan."
+
+LAS RAZONES DE CADA MÓDULO
+- Una frase por módulo, en su orden, diciendo qué resuelve para este negocio.
+- No repitas el nombre del módulo: ya va impreso encima.`;
 
 async function callOpenAI(env, input) {
   const controller = new AbortController();
@@ -199,13 +263,19 @@ async function callOpenAI(env, input) {
         input: `Diagnóstico ya calculado:\n${JSON.stringify({
           tipo_de_negocio: input.business_type,
           respuestas: input.answers,
+          enfoque: input.focus,
+          marcador_general: input.overall_score,
+          areas: input.areas,
           estado_actual: input.summary,
-          fricciones: input.frictions,
-          ruta: input.steps,
+          fugas: input.leaks,
+          cuantas_leak_notes: input.leaks.length,
+          pasos: input.steps,
+          modulos: input.modules,
+          cuantas_module_reasons: input.modules.length,
           paquete_recomendado: input.package_label
         })}`,
         text: { format: { type: 'json_schema', name: 'abdi_diagnostico', strict: true, schema: DIAGNOSTIC_SCHEMA } },
-        max_output_tokens: 1200,
+        max_output_tokens: 2400,
         store: false
       })
     });
@@ -216,7 +286,7 @@ async function callOpenAI(env, input) {
     }
 
     const raw = await response.json();
-    const content = validateContent(JSON.parse(extractOutputText(raw)));
+    const content = validateContent(JSON.parse(extractOutputText(raw)), input);
     if (!content) throw new Error('La respuesta no cumplió el esquema del diagnóstico.');
     return { content, usage: raw.usage || {} };
   } finally {
@@ -246,19 +316,36 @@ const MAX_PALABRAS = 30;   // el objetivo son 22; por encima de esto ya se desma
 
 function palabras(texto) { return texto.split(/\s+/).filter(Boolean).length; }
 
-function validateContent(value) {
+// Abdi no publica plazos de producción, y el modelo tiende a rellenar con
+// ellos porque suenan a compromiso. La landing tampoco publica precios. Las
+// dos cosas se rechazan aquí para que el reintento las corrija.
+const PLAZO_RE = /\b\d+\s*(d[ií]as?|horas?|semanas?|meses?)\b/i;
+const PRECIO_RE = /(\$|usd|₡|colones|d[óo]lares|precio|tarifa|mensualidad)/i;
+
+function validateContent(value, input) {
   if (!value || typeof value !== 'object') return null;
   const analysis = cleanList(value.analysis, 2, 320);
   const stepNotes = cleanList(value.step_notes, 3, 240);
   const bridge = primeraFrase(clean(value.bridge, 240));
   if (analysis.length !== 2 || stepNotes.length !== 3 || !bridge) return null;
 
-  const piezas = analysis.concat(stepNotes, [bridge]);
+  // Estas dos se piden alineadas con lo que calculó el navegador: cada nota
+  // se pinta al lado de su fuga y cada razón al lado de su módulo. Si el
+  // modelo devuelve otra cantidad, la correspondencia deja de ser cierta y
+  // se descartan enteras: la plantilla de cada pieza es correcta igual.
+  const leakNotes = cleanList(value.leak_notes, 3, 240);
+  const moduleReasons = cleanList(value.module_reasons, 6, 200);
+  const leaks = leakNotes.length === input.leaks.length ? leakNotes : [];
+  const modules = moduleReasons.length === input.modules.length ? moduleReasons : [];
+
+  const piezas = analysis.concat(stepNotes, leaks, modules, [bridge]);
 
   if (VOSEO_RE.test(piezas.join(' '))) throw new Error('La respuesta usó voseo.');
+  if (PLAZO_RE.test(piezas.join(' '))) throw new Error('La respuesta prometió un plazo.');
+  if (PRECIO_RE.test(piezas.join(' '))) throw new Error('La respuesta habló de dinero.');
   if (piezas.some(t => palabras(t) > MAX_PALABRAS)) throw new Error('La respuesta trae frases demasiado largas.');
 
-  return { analysis, step_notes: stepNotes, bridge };
+  return { analysis, leak_notes: leaks, step_notes: stepNotes, module_reasons: modules, bridge };
 }
 
 export async function diagnosticAnalyze(request, env, ctx) {

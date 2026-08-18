@@ -77,6 +77,15 @@
       --grid-line:      rgba(198,255,61,.028);
       --shadow-md: 0 8px 24px rgba(0,0,0,.4);
 
+      /* Semáforo del diagnóstico. Verde es el acento de marca; los otros
+         dos se eligieron para leerse sobre fondo oscuro sin gritar. */
+      --ok:   #C6FF3D;
+      --warn: #F5C542;
+      --bad:  #FF6B5A;
+      --ok-dim:   rgba(198,255,61,.13);
+      --warn-dim: rgba(245,197,66,.14);
+      --bad-dim:  rgba(255,107,90,.14);
+
       color-scheme: dark;
     }
 
@@ -98,6 +107,13 @@
       --placeholder: rgba(86,92,105,.6);
       --grid-line:      rgba(10,11,13,.045);
       --shadow-md: 0 8px 24px rgba(10,11,13,.10);
+
+      --ok:   #4F7A00;
+      --warn: #9A6B00;
+      --bad:  #C0392B;
+      --ok-dim:   rgba(79,122,0,.11);
+      --warn-dim: rgba(154,107,0,.12);
+      --bad-dim:  rgba(192,57,43,.10);
 
       color-scheme: light;
     }
@@ -735,6 +751,82 @@
     }
     .pkg p { font-size: 15.5px; color: var(--fog); line-height: 1.6; }
 
+    /* ── Marcador general ───────────────────────────────────── */
+    .score-card { background: var(--surface-1); }
+    .score-head { display: flex; gap: 20px; align-items: center; }
+
+    .score-ring {
+      flex: 0 0 auto; width: 96px; height: 96px; border-radius: 50%;
+      display: grid; place-content: center; text-align: center;
+      border: 2px solid var(--lvl, var(--fog));
+      background: var(--lvl-dim, transparent);
+    }
+    .score-num {
+      display: block; font-size: 34px; font-weight: 600; line-height: 1;
+      color: var(--lvl, var(--bone)); font-variant-numeric: tabular-nums;
+    }
+    .score-of { display: block; font-size: 11px; color: var(--fog); margin-top: 3px; }
+
+    .score-say h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+    .score-say p  { font-size: 14.5px; color: var(--fog); line-height: 1.55; }
+    .score-focus {
+      margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--edge);
+      font-size: 14.5px; color: var(--fog); line-height: 1.55;
+    }
+
+    /* ── Rejilla de áreas ───────────────────────────────────── */
+    .areas { display: grid; gap: 12px; margin-top: 18px; }
+    @media (min-width: 620px) { .areas { grid-template-columns: 1fr 1fr; } }
+
+    .area {
+      padding: 14px 15px; border-radius: 12px;
+      border: 1px solid var(--edge); background: var(--surface-0);
+    }
+    .area-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 9px; }
+    .area-name { font-size: 14px; font-weight: 500; flex: 1; }
+    .area-score {
+      font-size: 15px; font-weight: 600; color: var(--lvl);
+      font-variant-numeric: tabular-nums;
+    }
+    .bar { height: 5px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: 3px; background: var(--lvl); }
+    .area-say { font-size: 13px; color: var(--fog); line-height: 1.5; margin-top: 10px; }
+
+    /* ── Evidencia bajo cada fuga ───────────────────────────── */
+    .fr-body { flex: 1; }
+    .fr-note { font-size: 14px; color: var(--fog); line-height: 1.55; margin-top: 7px; }
+    .ev { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+    .ev span {
+      font-size: 11.5px; color: var(--fog); line-height: 1.35;
+      padding: 3px 9px; border-radius: 20px;
+      border: 1px solid var(--edge); background: var(--surface-0);
+    }
+    .fr-impact {
+      font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--lvl); font-weight: 600; margin-left: 8px; white-space: nowrap;
+    }
+
+    /* ── El porqué de cada paso del plan ────────────────────── */
+    .road-why { font-size: 13.5px; color: var(--fog); line-height: 1.5; margin-top: 6px; opacity: .82; }
+    .road-next .road-num { background: var(--surface-2); color: var(--fog); border-color: var(--edge); }
+
+    /* ── Módulos incluidos ──────────────────────────────────── */
+    .mods { list-style: none; display: grid; gap: 11px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--edge); }
+    .mods li { display: flex; gap: 11px; align-items: flex-start; }
+    .mods .tick {
+      flex: 0 0 auto; width: 17px; height: 17px; margin-top: 3px; border-radius: 50%;
+      background: var(--accent); color: var(--on-accent);
+      display: grid; place-content: center; font-size: 10px; font-weight: 700;
+    }
+    .mods strong { display: block; font-size: 14.5px; font-weight: 500; color: var(--bone); }
+    .mods p { font-size: 13.5px; color: var(--fog); line-height: 1.5; margin-top: 2px; }
+
+    :root[data-theme="light"] .mods .tick { color: #fff; }
+
+    @media (max-width: 520px) {
+      .score-head { flex-direction: column; align-items: flex-start; gap: 16px; }
+    }
+
     .bridge {
       margin: 34px auto 0;
       max-width: 600px;
@@ -936,6 +1028,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h1 class="h-display">Tu ruta recomendada</h1>
       <p class="result-lede" id="result-lede">Esto es lo que vemos con lo que nos contaste. Ordenado por lo que más te está costando.</p>
 
+      <!-- El número sale del motor de reglas del navegador, nunca del modelo:
+           las mismas respuestas tienen que dar siempre el mismo marcador. -->
+      <article class="res-card score-card">
+        <div class="score-head">
+          <div class="score-ring" id="score-ring">
+            <span class="score-num" id="score-num">—</span>
+            <span class="score-of">de 100</span>
+          </div>
+          <div class="score-say">
+            <h2 id="score-title">Tu operación digital</h2>
+            <p id="score-note"></p>
+          </div>
+        </div>
+        <p class="score-focus" id="score-focus" hidden></p>
+      </article>
+
       <!-- Solo aparece cuando el análisis llegó. Si falla, no queda hueco. -->
       <article class="res-card analysis-card" id="res-analysis-card" hidden>
         <h2>Lo que vemos en tu caso</h2>
@@ -943,29 +1051,37 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </article>
 
       <article class="res-card">
-        <h2>Dónde estás hoy</h2>
+        <h2>Cómo está cada parte</h2>
         <ul class="res-list" id="res-summary"></ul>
+        <div class="areas" id="res-areas"></div>
       </article>
 
       <article class="res-card" id="res-frictions-card">
-        <h2>Lo que te está frenando</h2>
+        <h2>Dónde se están perdiendo consultas</h2>
         <ul class="fr-list" id="res-frictions"></ul>
       </article>
 
       <article class="res-card">
-        <h2>Tu ruta, en orden</h2>
-        <div class="road" id="res-roadmap"></div>
+        <h2>Por dónde empezar</h2>
+        <div class="road" id="res-arranque"></div>
+      </article>
+
+      <article class="res-card">
+        <h2>Y después, lo que lo sostiene</h2>
+        <div class="road road-next" id="res-estable"></div>
       </article>
 
       <article class="pkg">
         <div class="pkg-kicker">Punto de partida recomendado</div>
         <h2 id="pkg-label"></h2>
         <p id="pkg-rationale"></p>
+        <ul class="mods" id="res-modules"></ul>
       </article>
 
       <p class="bridge" id="bridge-text"></p>
       <div class="cta-row">
         <a class="btn-primary" id="cta-cal" href="#" target="_blank" rel="noopener">Agendar llamada de 30 min</a>
+        <a class="btn-ghost" id="cta-wa" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
       </div>
 
       <p class="disclaimer">
@@ -1319,76 +1435,417 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return out;
   }
 
-  /* ── Biblioteca de fricciones ─────────────────────────────── */
-  var FRICTIONS = [
-    { when: 'high_urgency',          w: 3, t: 'Las consultas se responden tarde o de forma despareja.' },
-    { when: 'followup_gap',          w: 3, t: 'Quien pregunta y no agenda se queda sin seguimiento.' },
-    { when: 'cancellation_priority', w: 3, t: 'Sin confirmaciones ni recordatorios, la agenda queda con huecos.' },
-    { when: 'web_gap',               w: 3, t: 'Tu web no está pensada para que la gente agende.' },
-    { when: 'whatsapp_risk',         w: 2, t: 'Todo el WhatsApp depende de una sola persona.' },
-    { when: 'after_hours_gap',       w: 2, t: 'Fuera de horario nadie responde ni agenda.' },
-    { when: 'info_gap',              w: 2, t: 'La información pública está incompleta: horarios, sedes o servicios.' }
-  ];
+  /* ═══════════════════════════════════════════════════════════
+     ÁREAS · score 0–100 y semáforo
+     El motor de categorías de arriba elige el paquete. Esta capa
+     responde otra pregunta: qué tan bien está cada parte de la
+     operación, con un número que la persona pueda mirar. Las dos
+     leen las mismas respuestas, así que no se contradicen.
 
-  function buildFrictions(f) {
-    return FRICTIONS
-      .filter(function (fr) { return f[fr.when]; })
-      .sort(function (x, y) { return y.w - x.w; })
-      .slice(0, 3)
-      .map(function (fr) { return fr.t; });
+     Todo es determinista a propósito: dos negocios que responden
+     igual ven exactamente lo mismo. La IA redacta encima de estos
+     números, nunca los calcula ni los cambia.
+  ═══════════════════════════════════════════════════════════ */
+
+  var VERDE = 70, AMARILLO = 45;   // 70+ verde · 45–69 amarillo · menos, rojo
+
+  function nivel(score) {
+    if (score >= VERDE) return 'verde';
+    if (score >= AMARILLO) return 'amarillo';
+    return 'rojo';
   }
 
-  /* ── Plantillas de la ruta 1–2–3 ──────────────────────────── */
-  var MEDIR = {
-    title: 'Medir y ajustar',
-    desc: 'Tiempos de respuesta y consultas perdidas a la vista, para corregir con datos y no por corazonada.'
-  };
+  var PISO = 8;   // por debajo el número deja de informar y solo asusta
 
-  var ROADMAP = {
-    atencion: [
-      { title: 'Ordenar la atención de consultas',
-        desc: 'Respuestas aprobadas por ti y un camino claro para agendar, sin que nadie se quede esperando.' },
-      { title: 'Clasificar y derivar',
-        desc: 'Cada consulta llega a quien corresponde, con el contexto de lo que ya se habló.' },
-      MEDIR
-    ],
-    automatizacion: [
-      { title: 'Seguimiento a quien no agenda',
-        desc: 'Mensajes claros, con responsable y momento definido, para que nadie se pierda en el camino.' },
-      { title: 'Confirmaciones y recordatorios',
-        desc: 'Menos ausencias y menos huecos en la agenda, sin que tengas que perseguir a nadie.' },
-      MEDIR
-    ],
-    presencia: [
-      { title: 'Una web con una sola acción',
-        desc: 'Que lleve a agendar o a escribirte, sin distracciones ni caminos que no van a ningún lado.' },
-      { title: 'Información pública al día',
-        desc: 'Servicios, sedes, requisitos y horarios aprobados por ti y actualizados donde la gente los busca.' },
-      MEDIR
-    ],
-    medicion: [
-      { title: 'Medir lo que ya funciona',
-        desc: 'Saber de dónde viene cada consulta y cuántas terminan en cita. Hoy eso no se ve.' },
-      { title: 'Cerrar las fugas pequeñas',
-        desc: 'Revisar los puntos donde alguien se queda sin respuesta o sin recordatorio.' },
-      { title: 'Crecer sobre lo que ya está',
-        desc: 'Ampliar lo que sí trae consultas, en vez de rehacer lo que ya te funciona.' }
-    ]
-  };
+  function clamp(n) { return Math.max(PISO, Math.min(100, Math.round(n))); }
 
-  function buildRoadmap(pkg, s, f) {
-    if (pkg.key === 'medicion_optimizacion') return ROADMAP.medicion.slice();
+  var BASE_VELOCIDAD     = { lt_5: 95, '5_15': 80, '15_60': 45, gt_60: 18, depende: 40 };
+  var BASE_SEGUIMIENTO   = { sistema_crm: 90, plantillas: 65, manual: 33, sin_seguimiento: 10 };
+  var BASE_CANCELACIONES = { poco: 85, medio: 60, mucho: 28, principal: 12 };
+  var BASE_WEB           = { si_convierte: 90, no_convierte: 50, desactualizada: 30, no_tengo: 15, no_se: 55 };
+  // «No sabría decir» puntúa por encima de «al día pero no trae consultas»
+  // a propósito: lo segundo es un problema confirmado, lo primero es falta
+  // de visibilidad. Aun así nunca llega a verde: no se puede dar por buena
+  // una web que nadie ha mirado.
+  var AJUSTE_INFO        = { si: 8, parcial: -8, no: -20 };
+  var AJUSTE_QUIEN       = { equipo: 6, una_persona: -8, no_definido: -12 };
 
-    if (pkg.key === 'integracion_completa') {
-      var base = pkg.primary === 'automatizacion'
-        ? (s.atencion >= s.presencia ? 'atencion' : 'presencia')
-        : pkg.primary;
-      // El segundo paso ataca el motivo real por el que pesa automatización.
-      var segundo = f.followup_gap ? ROADMAP.automatizacion[0] : ROADMAP.automatizacion[1];
-      return [ROADMAP[base][0], segundo, MEDIR];
+  // Cada scorer devuelve null si la pregunta que lo alimenta quedó sin
+  // responder. Un área sin dato no se pinta: es preferible una rejilla de
+  // cinco a un número inventado.
+  function scoreVelocidad(a) {
+    var base = BASE_VELOCIDAD[a.response_time];
+    if (base === undefined) return null;
+    return clamp(base + (AJUSTE_QUIEN[a.responder_model] || 0));
+  }
+
+  function scoreFueraHorario(a) {
+    if (!a.off_hours_response) return null;
+    if (a.off_hours_response === 'si') return 90;
+    // Por llamada nadie espera respuesta un viernes a las 11 de la noche.
+    // Por escrito sí: el mensaje queda ahí, y quien no recibe respuesta
+    // escribe al siguiente de la lista.
+    return a.lead_source_channel === 'llamadas' ? 40 : 22;
+  }
+
+  function scoreAgenda(a) {
+    var vias = toArray(a.booking_method);
+    if (!vias.length) return null;
+    var score = 45;
+    if (has('agenda_online', vias)) score += 35; else score -= 8;
+    if (has('recepcion', vias))     score += 4;
+    if (has('depende', vias))       score -= 15;
+    if (vias.length >= 3)           score -= 10;   // cada vía extra es un lugar donde se pierde una cita
+    return clamp(score);
+  }
+
+  function scoreSeguimiento(a) {
+    var base = BASE_SEGUIMIENTO[a.follow_up];
+    return base === undefined ? null : base;
+  }
+
+  function scoreCancelaciones(a) {
+    var base = BASE_CANCELACIONES[a.cancellations_impact];
+    if (base === undefined) return null;
+    // Con agenda en línea al menos hay dónde apoyar recordatorios.
+    return clamp(base + (has('agenda_online', toArray(a.booking_method)) ? 8 : 0));
+  }
+
+  function scoreConfianza(a) {
+    var base = BASE_WEB[a.website_status];
+    if (base === undefined) return null;
+    return clamp(base + (AJUSTE_INFO[a.public_info_clarity] || 0));
+  }
+
+  var AREAS = [
+    { key: 'velocidad',     name: 'Velocidad de respuesta',          score: scoreVelocidad },
+    { key: 'fuera_horario', name: 'Cobertura fuera de horario',      score: scoreFueraHorario },
+    { key: 'agenda',        name: 'Facilidad para agendar',          score: scoreAgenda },
+    { key: 'seguimiento',   name: 'Seguimiento a quien no agenda',   score: scoreSeguimiento },
+    { key: 'cancelaciones', name: 'Cancelaciones y espacios vacíos', score: scoreCancelaciones },
+    { key: 'confianza',     name: 'Presencia e información pública', score: scoreConfianza }
+  ];
+
+  // Qué significa el número, en la voz de la marca. En verde no se felicita
+  // y ya: se dice qué lo sostiene, porque el riesgo también informa.
+  var SIGNIFICADO = {
+    velocidad: {
+      verde:    'Respondes rápido. Esa ventaja se sostiene mientras el volumen no suba.',
+      amarillo: 'Hay respuesta, pero no siempre a tiempo. Ahí se enfrían consultas.',
+      rojo:     'Quien escribe espera demasiado. Buena parte no vuelve a preguntar.'
+    },
+    fuera_horario: {
+      verde:    'Fuera de horario tu negocio sigue disponible. Es donde muchos pierden.',
+      amarillo: 'Fuera de horario la respuesta llega tarde y con suerte.',
+      rojo:     'De noche y en fin de semana los mensajes se acumulan sin respuesta.'
+    },
+    agenda: {
+      verde:    'Agendar es un paso corto. Eso reduce el abandono a la mitad del camino.',
+      amarillo: 'Agendar funciona, pero pasa por más manos de las necesarias.',
+      rojo:     'Cada cita necesita una conversación de ida y vuelta para cerrarse.'
+    },
+    seguimiento: {
+      verde:    'Quien pregunta y no agenda queda registrado y recibe respuesta después.',
+      amarillo: 'El seguimiento existe, pero depende de que alguien encuentre el rato.',
+      rojo:     'Quien pregunta y no agenda desaparece. Nadie vuelve a escribirle.'
+    },
+    cancelaciones: {
+      verde:    'Las ausencias no te están costando la agenda.',
+      amarillo: 'Las cancelaciones dejan huecos que casi nunca se vuelven a llenar.',
+      rojo:     'Los espacios vacíos son hoy tu mayor costo, y llegan sin aviso.'
+    },
+    confianza: {
+      verde:    'Quien te busca encuentra información al día y sabe qué hacer después.',
+      amarillo: 'La información está, pero incompleta o repartida en varios lugares.',
+      rojo:     'Quien te busca no encuentra lo que necesita para decidir escribirte.'
     }
+  };
 
-    return ROADMAP[pkg.primary].slice();
+  // Qué área toca cada objetivo marcado en la pregunta 11. Sirve para dos
+  // cosas: pesar el promedio general y subir esas fugas en el orden.
+  var META_AREAS = {
+    menos_consultas_perdidas: ['velocidad', 'seguimiento'],
+    responder_mas_rapido:     ['velocidad', 'fuera_horario'],
+    menos_carga_admin:        ['agenda', 'seguimiento'],
+    menos_espacios_vacios:    ['cancelaciones', 'agenda'],
+    mejorar_reputacion:       ['confianza']
+  };
+
+  function areasDeSusMetas(a) {
+    var out = {};
+    toArray(a.primary_goal).forEach(function (g) {
+      (META_AREAS[g] || []).forEach(function (k) { out[k] = true; });
+    });
+    return out;
+  }
+
+  function buildAreas(a) {
+    var suyas = areasDeSusMetas(a);
+    var out = [];
+    AREAS.forEach(function (def) {
+      var score = def.score(a);
+      if (score === null) return;
+      var lvl = nivel(score);
+      out.push({
+        key: def.key,
+        name: def.name,
+        score: score,
+        level: lvl,
+        what_it_means: SIGNIFICADO[def.key][lvl],
+        es_meta: Boolean(suyas[def.key])
+      });
+    });
+    return out;
+  }
+
+  // El promedio pesa más las áreas que la persona marcó como objetivo: el
+  // número general tiene que moverse con lo que a ella le importa, no con
+  // lo que a nosotros nos parece grave.
+  function overallScore(areas) {
+    if (!areas.length) return null;
+    var suma = 0, pesos = 0;
+    areas.forEach(function (ar) {
+      var peso = ar.es_meta ? 1.6 : 1;
+      suma += ar.score * peso;
+      pesos += peso;
+    });
+    return clamp(suma / pesos);
+  }
+
+  // El semáforo general no puede ir por delante de la peor parte. Un
+  // consultorio con todo resuelto salvo las cancelaciones promedia 77 y
+  // saldría en verde, justo encima de la única cosa que vino a resolver.
+  // Con un área en rojo el general nunca pasa de amarillo.
+  function overallLevel(areas, score) {
+    if (score === null) return null;
+    var propio = nivel(score);
+    if (propio === 'verde' && areas.some(function (ar) { return ar.level === 'rojo'; })) {
+      return 'amarillo';
+    }
+    return propio;
+  }
+
+  /* ── Las fugas: el problema, con su evidencia ─────────────── */
+
+  // Cada fuga se sostiene con las palabras que la persona eligió, no con una
+  // interpretación nuestra. Si no reconoce su propia respuesta en la
+  // evidencia, todo el diagnóstico se lee como adivinanza.
+  function evidencia(key, a) {
+    var e = [];
+    function di(rotulo, id) {
+      var t = labelOf(id, a[id]);
+      if (t) e.push(rotulo + ': ' + t);
+    }
+    if (key === 'velocidad') {
+      di('Tiempo de respuesta', 'response_time');
+      di('Quién responde', 'responder_model');
+    }
+    if (key === 'fuera_horario') {
+      e.push(a.off_hours_response === 'no'
+        ? 'Fuera de horario: nadie responde ni agenda'
+        : 'Fuera de horario: sí responden');
+      di('Canal principal', 'lead_source_channel');
+    }
+    if (key === 'agenda') {
+      di('Se agenda', 'booking_method');
+    }
+    if (key === 'seguimiento') {
+      di('Quien no agenda', 'follow_up');
+    }
+    if (key === 'cancelaciones') {
+      di('Cancelaciones', 'cancellations_impact');
+      di('Se agenda', 'booking_method');
+    }
+    if (key === 'confianza') {
+      di('Web', 'website_status');
+      di('Información pública', 'public_info_clarity');
+    }
+    return e.slice(0, 3);
+  }
+
+  var FUGA_TITULO = {
+    velocidad:     'Las consultas se responden tarde o de forma despareja.',
+    fuera_horario: 'Fuera de horario nadie responde ni agenda.',
+    agenda:        'Agendar depende de que alguien esté libre para contestar.',
+    seguimiento:   'Quien pregunta y no agenda se queda sin seguimiento.',
+    cancelaciones: 'Sin confirmaciones ni recordatorios, la agenda queda con huecos.',
+    confianza:     'Tu información pública no está llevando a la gente a agendar.'
+  };
+
+  function buildLeaks(areas, a) {
+    return areas
+      .filter(function (ar) { return ar.level !== 'verde'; })
+      .map(function (ar) {
+        return {
+          key: ar.key,
+          title: FUGA_TITULO[ar.key],
+          score: ar.score,
+          evidence: evidencia(ar.key, a),
+          impact: (ar.level === 'rojo' || ar.es_meta) ? 'alto' : 'medio',
+          // Lo que peor está pesa más, y lo que la persona vino a resolver
+          // sube por encima de lo que nosotros creemos que urge.
+          prioridad: prioridadArea(ar)
+        };
+      })
+      .sort(function (x, y) { return y.prioridad - x.prioridad; })
+      .slice(0, 3);
+  }
+
+  /* ── La oferta: qué módulos se activan y por qué ──────────── */
+
+  // Solo existen los módulos que Abdi vende de verdad, y cada uno se
+  // enciende por una condición explícita sobre las áreas. Sin condición
+  // cumplida el módulo no aparece: esto es un diagnóstico, no un menú de
+  // servicios con casillas vacías.
+  var MODULES = [
+    { key: 'atencion',      name: 'Atención de consultas con agente',
+      areas: ['velocidad', 'fuera_horario'], href: 'servicio-agentes-ia.html' },
+    { key: 'agenda',        name: 'Agenda sin fricción',
+      areas: ['agenda'],                     href: 'servicio-agentes-ia.html' },
+    { key: 'seguimiento',   name: 'Seguimiento a quien no agenda',
+      areas: ['seguimiento'],                href: 'servicio-automatizaciones.html' },
+    { key: 'recordatorios', name: 'Confirmaciones y recordatorios',
+      areas: ['cancelaciones'],              href: 'servicio-automatizaciones.html' },
+    { key: 'web',           name: 'Web e información pública al día',
+      areas: ['confianza'],                  href: 'servicio-landing-pages.html' },
+    // Siempre entra: sin medir, el resto se corrige por corazonada.
+    { key: 'medicion',      name: 'Medición de consultas y citas',
+      areas: [], siempre: true,              href: 'servicios.html' }
+  ];
+
+  var MODULO_RAZON = {
+    atencion:      'Para que ninguna consulta dependa de que haya alguien libre en ese momento.',
+    agenda:        'Para que agendar sea un paso y no una conversación de ida y vuelta.',
+    seguimiento:   'Para que quien pregunta y no agenda reciba una segunda oportunidad.',
+    recordatorios: 'Para llegar antes de la ausencia y ofrecer el espacio que queda libre.',
+    web:           'Para que quien te busca encuentre lo que necesita y sepa qué hacer después.',
+    medicion:      'Para saber cuántas consultas llegan y cuántas terminan en cita.'
+  };
+
+  // La misma medida que ordena las fugas. Tiene que serlo: si las fugas
+  // dicen que lo primero es responder y el plan arranca por la web, el
+  // diagnóstico se contradice a sí mismo en la misma pantalla.
+  function prioridadArea(ar) {
+    return (100 - ar.score) + (ar.es_meta ? 30 : 0);
+  }
+
+  function buildModules(areas) {
+    var porKey = {};
+    areas.forEach(function (ar) { porKey[ar.key] = ar; });
+
+    var out = [];
+    MODULES.forEach(function (m) {
+      var disparan = m.areas.filter(function (k) {
+        return porKey[k] && porKey[k].level !== 'verde';
+      });
+      if (!m.siempre && !disparan.length) return;
+      out.push({
+        key: m.key,
+        name: m.name,
+        href: m.href,
+        reason: MODULO_RAZON[m.key],
+        // Manda el área más urgente de las que lo justifican. Medición no
+        // la justifica ninguna, así que se va al final con prioridad cero.
+        prioridad: disparan.length
+          ? Math.max.apply(null, disparan.map(function (k) { return prioridadArea(porKey[k]); }))
+          : 0
+      });
+    });
+    return out.sort(function (x, y) { return y.prioridad - x.prioridad; });
+  }
+
+  /* ── Los dos planes ───────────────────────────────────────── */
+  // Sin conteo de días: la fecha se acuerda en la cotización, y una lista
+  // titulada «7 días» se lee como promesa de entrega aunque hable de otra
+  // cosa. «Arranque» es lo que se nota primero; «estable» es el sistema.
+  var ACCIONES = {
+    atencion: {
+      arranque: { title: 'Reunir los mensajes en un solo lugar',
+                  why:   'Hoy cada canal se revisa aparte y algunos mensajes se leen tarde.',
+                  how:   'Se conectan WhatsApp, Instagram y la web a una sola bandeja, con respuestas aprobadas por ti.' },
+      estable:  { title: 'Respuestas aprobadas y derivación clara',
+                  why:   'Responder rápido sirve poco si la respuesta no resuelve la duda.',
+                  how:   'Se define qué contesta el agente, qué pasa a una persona y con qué contexto llega.' }
+    },
+    agenda: {
+      arranque: { title: 'Un solo camino para agendar',
+                  why:   'Con varias vías abiertas, cada cita se cierra distinto y algunas se caen.',
+                  how:   'Se elige la vía principal y las demás llevan a ella, sin perder a quien prefiere escribir.' },
+      estable:  { title: 'Agenda conectada a la conversación',
+                  why:   'Confirmar y reprogramar por mensaje consume el día de recepción.',
+                  how:   'Quien escribe ve horarios reales y reserva ahí mismo, sin esperar respuesta.' }
+    },
+    seguimiento: {
+      arranque: { title: 'Registrar a quien pregunta y no agenda',
+                  why:   'Lo que no queda anotado no se retoma. Hoy esas consultas se pierden solas.',
+                  how:   'Cada consulta queda con su estado y su responsable, visible para el equipo.' },
+      estable:  { title: 'Segundo contacto con momento definido',
+                  why:   'Mucha gente pregunta, lo piensa y nunca vuelve porque nadie volvió a ella.',
+                  how:   'Se define un mensaje de seguimiento, aprobado por ti, con un momento fijo para salir.' }
+    },
+    recordatorios: {
+      arranque: { title: 'Confirmar la cita antes del día',
+                  why:   'La mayoría de las ausencias se avisan solas si alguien pregunta a tiempo.',
+                  how:   'Sale un recordatorio con opción de confirmar o mover, sin llamadas de recepción.' },
+      estable:  { title: 'Ofrecer el espacio que queda libre',
+                  why:   'Un hueco avisado a tiempo se puede llenar. Sin aviso, se pierde entero.',
+                  how:   'Cuando alguien cancela, el espacio se ofrece a quien estaba esperando.' }
+    },
+    web: {
+      arranque: { title: 'Poner al día horarios, sedes y servicios',
+                  why:   'Quien no encuentra un dato básico no escribe: busca a otro que sí lo publique.',
+                  how:   'Se revisa lo que ve la gente en tu web, en Google y en redes, y se deja igual en los tres.' },
+      estable:  { title: 'Una web con una sola acción',
+                  why:   'Una web que informa pero no invita a agendar deja el trabajo a medias.',
+                  how:   'Se ordena la página alrededor de un solo paso: agendar o escribirte.' }
+    },
+    medicion: {
+      arranque: { title: 'Ver de dónde viene cada consulta',
+                  why:   'Sin eso, cualquier mejora se juzga por sensación y no por lo que pasó.',
+                  how:   'Se marca el origen de cada consulta y se cuenta cuántas terminan en cita.' },
+      estable:  { title: 'Revisar y corregir con datos',
+                  why:   'Lo que se mide se ajusta. Lo que no, se repite igual el mes siguiente.',
+                  how:   'Tiempos de respuesta y consultas perdidas quedan a la vista para corregir el punto flojo.' }
+    }
+  };
+
+  function buildPlans(modules) {
+    var arranques = [], estables = [];
+    modules.forEach(function (m) {
+      var acc = ACCIONES[m.key];
+      if (!acc) return;
+      arranques.push(acc.arranque);
+      estables.push(acc.estable);
+    });
+
+    // Orden natural: primero lo que se nota, después lo que lo sostiene, y
+    // al final los módulos que no cupieron arriba. Con la operación sana
+    // quedan pocos módulos y el arranque se completa con su fase siguiente,
+    // en vez de rellenarse con una acción que no venía a cuento.
+    var pool = arranques.slice(0, 3)
+      .concat(estables.slice(0, 3))
+      .concat(arranques.slice(3))
+      .concat(estables.slice(3));
+
+    return { arranque: pool.slice(0, 3), estable: pool.slice(3, 7) };
+  }
+
+  /* ── Enfoque según quién lee ──────────────────────────────── */
+  // Orienta el énfasis del texto. No cambia números ni módulos.
+  function buildFocus(a) {
+    if (a.ops_size === 'multi_sede') {
+      return 'Con varias sedes, lo que más rinde es que todas respondan igual y que puedas ver cómo va cada una.';
+    }
+    if (a.ops_size === 'solo' || a.business_type === 'independiente') {
+      return 'Trabajas por tu cuenta, así que lo que más pesa es quitarte trabajo de encima, no sumar herramientas.';
+    }
+    if (a.lead_source_channel === 'mezclado') {
+      return 'Tus consultas llegan repartidas, así que el primer arreglo es tenerlas todas en un mismo lugar.';
+    }
+    if (a.ops_size === 'equipo_pequeno') {
+      return 'Con un equipo pequeño, lo que más rinde es que cada mensaje tenga un responsable claro.';
+    }
+    return '';
   }
 
   /* ── Por qué ese punto de partida ─────────────────────────── */
@@ -1427,12 +1884,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     var s = scoreCategories(a, f);
     var pkg = pickPackage(a, s);
 
+    var areas = buildAreas(a);
+    var leaks = buildLeaks(areas, a);
+    var modules = buildModules(areas);
+    // Sin ninguna pregunta de área respondida no hay número que mostrar.
+    // Es un caso de borde —las preguntas son obligatorias—, pero el
+    // resultado se pinta igual y no debe caer aquí.
+    var overall = overallScore(areas);
+    var plans = buildPlans(modules);
+
     return {
       features: f,
       scores: s,
+      areas: areas,
+      overall_score: overall,
+      overall_level: overallLevel(areas, overall),
+      leaks: leaks,
+      // Lo que ya consumían el CRM y el Worker: ahora sale de las fugas,
+      // que es la misma información con evidencia detrás.
+      frictions: leaks.map(function (l) { return l.title; }),
+      modules: modules,
+      plans: plans,
+      focus: buildFocus(a),
       summary: buildSummary(a),
-      frictions: buildFrictions(f),
-      roadmap: buildRoadmap(pkg, s, f),
+      // El CRM y el PDF leen `roadmap` desde antes de que existieran los dos
+      // planes. Se sigue publicando, ahora derivado del arranque, para no
+      // partir un diagnóstico ya guardado ni la plantilla del PDF.
+      roadmap: plans.arranque.map(function (p) { return { title: p.title, desc: p.how }; }),
       package: {
         key: pkg.key,
         label: PACKAGES[pkg.key].label,
@@ -1861,6 +2339,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ═══════════════════════════════════════════════════════════ */
   var CAL_URL = 'https://cal.com/geiner-porras-aj8irz/abdismart';
 
+  // El WhatsApp comercial, el que atiende una persona. No es el número del
+  // agente informativo: quien acaba de ver su diagnóstico y escribe quiere
+  // hablar con alguien, no con otro asistente.
+  var WA_NUMERO = '50689814520';
+
   function finish() {
     // Honeypot lleno = bot. Se le muestra el resultado y no se guarda nada.
     if (hp.value) { paintResult(diagnose(state.answers)); return; }
@@ -1887,6 +2370,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         roadmap: r.roadmap,
         package: r.package,
         scores: r.scores,
+        // La capa nueva se guarda entera: el CRM ya lee `roadmap` y
+        // `frictions`, y estos campos le dan de dónde armar el PDF con
+        // el marcador y la evidencia cuando se actualice.
+        overall_score: r.overall_score,
+        overall_level: r.overall_level,
+        areas: r.areas,
+        leaks: r.leaks,
+        modules: r.modules,
+        plans: r.plans,
         qa: preguntasYRespuestas()
       },
       recommended_package: r.package.key,
@@ -1914,6 +2406,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         derived_features: r.features,
         fricciones: r.frictions,
         ruta: r.roadmap.map(function (s) { return s.title; }),
+        marcador: r.overall_score,
+        areas: r.areas.map(function (ar) { return ar.name + ': ' + ar.score + ' (' + ar.level + ')'; }),
+        modulos: r.modules.map(function (m) { return m.name; }),
         paquete_recomendado: r.package.key,
         paquete_label: r.package.label,
         urgencia: r.urgency_level,
@@ -2004,7 +2499,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         package_label: r.package.label,
         summary: r.summary,
         frictions: r.frictions,
-        steps: r.roadmap.map(function (s) { return s.title; }),
+        steps: r.plans.arranque.map(function (p) { return p.title; }),
+        overall_score: r.overall_score,
+        areas: r.areas.map(function (ar) {
+          return { name: ar.name, score: ar.score, level: ar.level };
+        }),
+        leaks: r.leaks.map(function (l) {
+          return { title: l.title, evidence: l.evidence, impact: l.impact };
+        }),
+        modules: r.modules.map(function (m) { return m.name; }),
+        focus: r.focus,
         answers: legibleAnswers()
       })
     }).then(function (res) {
@@ -2066,96 +2570,201 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       'Seguimiento: ' + (labelOf('follow_up', a.follow_up) || '—'),
       'Web: ' + (labelOf('website_status', a.website_status) || '—'),
       'Prioridad: ' + (labelOf('primary_goal', a.primary_goal) || '—'),
-      'Fricciones: ' + (r.frictions.join(' | ') || 'ninguna detectada'),
-      'Ruta: ' + r.roadmap.map(function (s, i) { return (i + 1) + ') ' + s.title; }).join(' ')
+      'Marcador general: ' + (r.overall_score === null ? '—' : r.overall_score + '/100 (' + r.overall_level + ')'),
+      'Áreas: ' + r.areas.map(function (ar) { return ar.name + ' ' + ar.score; }).join(' | '),
+      'Fugas: ' + (r.frictions.join(' | ') || 'ninguna detectada'),
+      'Módulos: ' + r.modules.map(function (m) { return m.name; }).join(' | '),
+      'Arranque: ' + r.plans.arranque.map(function (s, i) { return (i + 1) + ') ' + s.title; }).join(' ')
     ].join('\n');
   }
 
   /* ── Pintar el resultado ──────────────────────────────────── */
+
+  // Todo lo que sale a pantalla pasa por textContent. El motor arma frases y
+  // el modelo escribe prosa: ninguno de los dos debe poder inyectar markup.
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function vaciar(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+  // El semáforo se pinta con una variable CSS local, así el color viaja al
+  // número, a la barra y al borde sin repetir la regla tres veces.
+  var LVL_VAR = {
+    verde:    ['var(--ok)',   'var(--ok-dim)'],
+    amarillo: ['var(--warn)', 'var(--warn-dim)'],
+    rojo:     ['var(--bad)',  'var(--bad-dim)']
+  };
+
+  function pintarNivel(node, level) {
+    var par = LVL_VAR[level] || LVL_VAR.amarillo;
+    node.style.setProperty('--lvl', par[0]);
+    node.style.setProperty('--lvl-dim', par[1]);
+  }
+
+  var SCORE_NOTA = {
+    verde:    'Tu operación está en buena forma. Lo que sigue no es rehacer nada, es sostenerlo y medirlo.',
+    amarillo: 'Funciona, pero con puntos donde las consultas se enfrían. Abajo está cuáles y en qué orden.',
+    rojo:     'Hay varias partes por donde se están perdiendo consultas. Abajo están, ordenadas por lo que más pesa.'
+  };
+
+  function pintarScore(r) {
+    var card = document.getElementById('score-ring');
+    var num  = document.getElementById('score-num');
+    var nota = document.getElementById('score-note');
+    var foco = document.getElementById('score-focus');
+
+    if (r.overall_score === null) {
+      // Caso de borde: ninguna pregunta de área respondida. Se esconde el
+      // marcador entero antes que enseñar un número sin respaldo.
+      card.closest('.score-card').hidden = true;
+      return;
+    }
+
+    pintarNivel(card, r.overall_level);
+    num.textContent = String(r.overall_score);
+    nota.textContent = SCORE_NOTA[r.overall_level];
+
+    if (r.focus) { foco.textContent = r.focus; foco.hidden = false; }
+    else foco.hidden = true;
+  }
+
+  function pintarAreas(r) {
+    var box = document.getElementById('res-areas');
+    vaciar(box);
+    r.areas.forEach(function (ar) {
+      var card = el('div', 'area');
+      pintarNivel(card, ar.level);
+
+      var top = el('div', 'area-top');
+      top.appendChild(el('span', 'area-name', ar.name));
+      top.appendChild(el('span', 'area-score', String(ar.score)));
+
+      var bar = el('div', 'bar');
+      var fill = el('i');
+      fill.style.width = ar.score + '%';
+      bar.appendChild(fill);
+
+      card.appendChild(top);
+      card.appendChild(bar);
+      card.appendChild(el('p', 'area-say', ar.what_it_means));
+      box.appendChild(card);
+    });
+  }
+
+  function pintarFugas(r, notas) {
+    var card = document.getElementById('res-frictions-card');
+    var box  = document.getElementById('res-frictions');
+    vaciar(box);
+
+    // Sin fugas no se inventa ninguna: se quita la tarjeta entera.
+    if (!r.leaks.length) { card.style.display = 'none'; return; }
+    card.style.display = '';
+
+    r.leaks.forEach(function (fuga, i) {
+      var li = el('li');
+      li.appendChild(el('span', 'fr-num', '0' + (i + 1)));
+
+      var body = el('div', 'fr-body');
+      var head = el('span', null, fuga.title);
+      body.appendChild(head);
+
+      var imp = el('span', 'fr-impact', fuga.impact === 'alto' ? 'Impacto alto' : 'Impacto medio');
+      pintarNivel(imp, fuga.impact === 'alto' ? 'rojo' : 'amarillo');
+      head.appendChild(imp);
+
+      // Lo que esa fuga le cuesta a este negocio. Si el análisis no llegó,
+      // el título y la evidencia se sostienen solos.
+      var nota = notas && notas[i];
+      if (nota) body.appendChild(el('p', 'fr-note', nota));
+
+      if (fuga.evidence.length) {
+        var ev = el('div', 'ev');
+        fuga.evidence.forEach(function (t) { ev.appendChild(el('span', null, t)); });
+        body.appendChild(ev);
+      }
+
+      li.appendChild(body);
+      box.appendChild(li);
+    });
+  }
+
+  // Los dos planes se pintan igual. Solo el arranque lleva las notas que
+  // escribió el análisis: el segundo bloque es plantilla y no las espera.
+  function pintarPlan(id, acciones, notas) {
+    var box = document.getElementById(id);
+    vaciar(box);
+    acciones.forEach(function (paso, i) {
+      var row = el('div', 'road-step');
+      row.appendChild(el('div', 'road-num', String(i + 1)));
+
+      var body = el('div', 'road-body');
+      body.appendChild(el('h3', null, paso.title));
+      body.appendChild(el('p', null, paso.how));
+      body.appendChild(el('p', 'road-why', paso.why));
+
+      var nota = notas && notas[i];
+      if (nota) body.appendChild(el('p', 'road-note', nota));
+
+      row.appendChild(body);
+      box.appendChild(row);
+    });
+  }
+
+  // Solo se listan los módulos que las reglas activaron. La razón redactada
+  // por el análisis gana a la de plantilla, si vino y si calza con el módulo.
+  function pintarModulos(r, razones) {
+    var box = document.getElementById('res-modules');
+    vaciar(box);
+    r.modules.forEach(function (m, i) {
+      var li = el('li');
+      var tick = el('span', 'tick', '\u2713');
+      tick.setAttribute('aria-hidden', 'true');
+      li.appendChild(tick);
+
+      var body = el('div');
+      body.appendChild(el('strong', null, m.name));
+      body.appendChild(el('p', null, (razones && razones[i]) || m.reason));
+      li.appendChild(body);
+      box.appendChild(li);
+    });
+  }
+
   function paintResult(r, analisis) {
     var aCard = document.getElementById('res-analysis-card');
     var aBox  = document.getElementById('res-analysis');
-    aBox.innerHTML = '';
+    vaciar(aBox);
     if (analisis && analisis.analysis && analisis.analysis.length) {
-      analisis.analysis.forEach(function (t) {
-        var p = document.createElement('p');
-        p.textContent = t;
-        aBox.appendChild(p);
-      });
+      analisis.analysis.forEach(function (t) { aBox.appendChild(el('p', null, t)); });
       aCard.hidden = false;
     } else {
       aCard.hidden = true;
     }
 
+    pintarScore(r);
+    pintarAreas(r);
+    pintarFugas(r, analisis && analisis.leak_notes);
+
     var sum = document.getElementById('res-summary');
-    sum.innerHTML = '';
+    vaciar(sum);
     r.summary.forEach(function (t) {
-      var li = document.createElement('li');
-      var dot = document.createElement('span');
-      dot.className = 'dot';
+      var li = el('li');
+      var dot = el('span', 'dot');
       dot.setAttribute('aria-hidden', 'true');
-      var span = document.createElement('span');
-      span.textContent = t;
       li.appendChild(dot);
-      li.appendChild(span);
+      li.appendChild(el('span', null, t));
       sum.appendChild(li);
     });
 
-    var frCard = document.getElementById('res-frictions-card');
-    var fr = document.getElementById('res-frictions');
-    fr.innerHTML = '';
-    if (!r.frictions.length) {
-      // Sin fricciones no se inventa ninguna: se quita la tarjeta entera.
-      frCard.style.display = 'none';
-    } else {
-      frCard.style.display = '';
-      r.frictions.forEach(function (t, i) {
-        var li = document.createElement('li');
-        var num = document.createElement('span');
-        num.className = 'fr-num';
-        num.textContent = '0' + (i + 1);
-        var span = document.createElement('span');
-        span.textContent = t;
-        li.appendChild(num);
-        li.appendChild(span);
-        fr.appendChild(li);
-      });
-    }
-
-    var road = document.getElementById('res-roadmap');
-    road.innerHTML = '';
-    r.roadmap.forEach(function (s, i) {
-      var row = document.createElement('div');
-      row.className = 'road-step';
-
-      var num = document.createElement('div');
-      num.className = 'road-num';
-      num.textContent = String(i + 1);
-
-      var body = document.createElement('div');
-      body.className = 'road-body';
-      var h = document.createElement('h3');
-      h.textContent = s.title;
-      var p = document.createElement('p');
-      p.textContent = s.desc;
-      body.appendChild(h);
-      body.appendChild(p);
-
-      var nota = analisis && analisis.step_notes && analisis.step_notes[i];
-      if (nota) {
-        var n = document.createElement('p');
-        n.className = 'road-note';
-        n.textContent = nota;
-        body.appendChild(n);
-      }
-
-      row.appendChild(num);
-      row.appendChild(body);
-      road.appendChild(row);
-    });
+    pintarPlan('res-arranque', r.plans.arranque, analisis && analisis.step_notes);
+    pintarPlan('res-estable', r.plans.estable, null);
 
     document.getElementById('pkg-label').textContent = r.package.label;
     document.getElementById('pkg-rationale').textContent = r.package.rationale;
+    pintarModulos(r, analisis && analisis.module_reasons);
 
     var explorando = state.answers.urgency === 'explorando';
 
@@ -2181,6 +2790,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     cal.textContent = explorando ? 'Agendar cuando te haga sentido' : 'Agendar llamada de 30 min';
     cal.addEventListener('click', function () {
       patchRow({ status: 'booked', cal_clicked_at: new Date().toISOString() });
+    }, { once: true });
+
+    // CTA 2 · WhatsApp con una persona. El mensaje va escrito desde el lado
+    // del cliente y lleva lo justo para que quien conteste sepa de qué
+    // diagnóstico habla: su nombre, el punto de partida y la referencia.
+    // Nada de teléfono ni correo en la barra de direcciones: eso ya está
+    // en el CRM.
+    var wa = document.getElementById('cta-wa');
+    var nombre = String(state.lead.name || '').trim();
+    var mensaje = 'Hola. ' + (nombre ? 'Soy ' + nombre + '. ' : '') +
+      'Acabo de hacer el diagnóstico y me salió ' + r.package.label + '. ' +
+      'Quisiera ver cómo seguir. Ref. ' + String(state.id).slice(0, 8);
+    wa.href = 'https://wa.me/' + WA_NUMERO + '?text=' + encodeURIComponent(mensaje);
+    wa.addEventListener('click', function () {
+      patchRow({ whatsapp_clicked_at: new Date().toISOString() });
     }, { once: true });
 
     show('result');
