@@ -20,7 +20,7 @@
   </script>
   <!-- End Google tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Doce preguntas sobre cómo atiendes hoy. Al final ves qué está frenando tus consultas y por dónde empezar. Sin costo.">
+  <meta name="description" content="Trece preguntas sobre cómo atiendes hoy. Al final ves qué está frenando tus consultas y por dónde empezar. Sin costo.">
 
   <title>Diagnóstico express de tu atención digital — Abdismart</title>
 
@@ -851,7 +851,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="intro-head">
         <div class="eyebrow">Diagnóstico express</div>
         <h1 class="h-display">Descubre qué está frenando <em>tus consultas</em></h1>
-        <p class="lede">Doce preguntas sobre cómo atiendes hoy. Al final ves dónde se te escapan las consultas y por dónde conviene empezar.</p>
+        <p class="lede">Trece preguntas sobre cómo atiendes hoy. Al final ves dónde se te escapan las consultas y por dónde conviene empezar.</p>
       </div>
 
       <ul class="value-list">
@@ -899,7 +899,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="intro-cta">
         <button type="button" class="btn-primary" id="btn-start">Iniciar diagnóstico →</button>
-        <span class="intro-meta">12 preguntas · 3 minutos · sin costo</span>
+        <span class="intro-meta">13 preguntas · 3 minutos · sin costo</span>
       </div>
       <p class="save-note" id="resume-note"></p>
     </div>
@@ -1054,6 +1054,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         { v: 'depende', t: 'Depende del día' }
       ] },
 
+    { id: 'off_hours_response',
+      q: '¿Tu clínica responde y agenda un viernes a las 11 p.m.?',
+      options: [
+        { v: 'si', t: 'Sí' },
+        { v: 'no', t: 'No' }
+      ] },
+
     { id: 'responder_model',
       q: '¿Quién responde la mayoría de consultas?',
       options: [
@@ -1168,6 +1175,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return {
       high_urgency:           has(a.response_time, ['15_60', 'gt_60', 'depende']) || a.urgency === 'esta_semana',
       whatsapp_risk:          a.lead_source_channel === 'whatsapp' && a.responder_model === 'una_persona',
+      after_hours_gap:        a.off_hours_response === 'no',
       followup_gap:           has(a.follow_up, ['sin_seguimiento', 'manual']),
       web_gap:                has(a.website_status, ['no_tengo', 'desactualizada', 'no_convierte', 'no_se']),
       info_gap:               has(a.public_info_clarity, ['parcial', 'no']),
@@ -1178,8 +1186,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   function scoreCategories(a, f) {
     var s = { atencion: 0, automatizacion: 0, presencia: 0 };
 
-    if (f.high_urgency)  s.atencion += 3;
-    if (f.whatsapp_risk) s.atencion += 2;
+    if (f.high_urgency)    s.atencion += 3;
+    if (f.whatsapp_risk)   s.atencion += 2;
+    if (f.after_hours_gap) s.atencion += 2;
     if (a.responder_model === 'no_definido') s.atencion += 1;
 
     if (f.followup_gap)          s.automatizacion += 3;
@@ -1331,6 +1340,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     { when: 'cancellation_priority', w: 3, t: 'Sin confirmaciones ni recordatorios, la agenda queda con huecos.' },
     { when: 'web_gap',               w: 3, t: 'Tu web no está pensada para que la gente agende.' },
     { when: 'whatsapp_risk',         w: 2, t: 'Todo el WhatsApp depende de una sola persona.' },
+    { when: 'after_hours_gap',       w: 2, t: 'Fuera de horario nadie responde ni agenda.' },
     { when: 'info_gap',              w: 2, t: 'La información pública está incompleta: horarios, sedes o servicios.' }
   ];
 
