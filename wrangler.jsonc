@@ -7,6 +7,15 @@
   "compatibility_date": "2026-07-28",
   "main": "src/worker.js",
 
+  "vars": {
+    // El id del píxel no es un secreto: ya viaja en el HTML de la landing,
+    // porque el navegador lo necesita para cargar el píxel. Aquí va como
+    // variable y no como secreto para que se vea en el repositorio y se
+    // pueda revisar. El token de la Conversions API sí es secreto y se
+    // configura con `wrangler secret put META_CAPI_TOKEN`.
+    "META_PIXEL_ID": "2728168144250754"
+  },
+
   "assets": {
     // Raíz del sitio publicado. Todo lo que quede fuera de esta carpeta
     // no se publica — incluido Resultado/CRM, que no debe ser público.
