@@ -16,11 +16,10 @@
 
   var WORKER = 'https://abdismart.geiner-porras-mb.workers.dev';
 
-  // Hoy no hay aviso de cookies, y el píxel se carga en cuanto abre la
-  // página: eso está declarado en la sección 06 de la política. Cuando el
-  // banner exista, tendrá que llamar a AbdiMeta.setConsent() con lo que la
-  // persona haya respondido y este valor dejará de ser fijo.
-  var consent = true;
+  // Arranca en falso y solo lo levanta el aviso de cookies. Si este archivo
+  // carga antes que cookies.js, la decisión ya tomada queda esperando en
+  // __abdiConsentPendiente y se recoge aquí.
+  var consent = global.__abdiConsentPendiente === true;
 
   function setConsent(valor) { consent = valor === true; }
 

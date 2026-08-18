@@ -348,6 +348,126 @@ function validateContent(value, input) {
   return { analysis, leak_notes: leaks, step_notes: stepNotes, module_reasons: modules, bridge };
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   LA SESIÓN DEL DIAGNÓSTICO
+
+   El navegador escribía directo en Supabase con la anon key, y las
+   actualizaciones no llegaban nunca: hay política de INSERT y de UPDATE
+   para `anon`, pero no de SELECT, y en Postgres un `update ... where id = X`
+   necesita poder VER la fila para localizarla. Sin lectura no la ve, y
+   actualiza cero filas. PostgREST responde 200 y el navegador cree que
+   guardó. Así se perdieron todas las respuestas desde que se publicó.
+
+   Ahora escribe el Worker con la llave de servicio, que no pasa por RLS.
+   La ventana de seis horas que protegía la política se mantiene, aquí como
+   filtro de la propia petición.
+═══════════════════════════════════════════════════════════════════════ */
+
+// Lo que el navegador puede tocar. `ai_analysis`, `ai_status` y `actor_hash`
+// quedan fuera a propósito: los escribe el análisis, y dejar que el
+// navegador los mande permitiría falsear de dónde salió un texto.
+const CAMPOS_SESION = new Set([
+  'last_step', 'status', 'answers', 'derived_features', 'result',
+  'recommended_package', 'top_friction', 'urgency_level',
+  'lead_name', 'lead_whatsapp', 'lead_email',
+  'cal_clicked_at', 'whatsapp_clicked_at',
+  'utm_source', 'utm_campaign', 'referrer'
+]);
+
+const ESTADOS = new Set(['started', 'completed', 'booked', 'follow_up']);
+const URGENCIAS = new Set(['alta', 'media', 'baja']);
+
+function normalizeSessionPatch(value) {
+  if (!value || typeof value !== 'object') return null;
+  const out = {};
+
+  for (const [campo, dato] of Object.entries(value)) {
+    if (!CAMPOS_SESION.has(campo)) continue;
+
+    if (campo === 'last_step') {
+      const n = Number(dato);
+      if (Number.isFinite(n)) out.last_step = Math.min(Math.max(Math.floor(n), 0), 12);
+      continue;
+    }
+    if (campo === 'status') {
+      if (ESTADOS.has(dato)) out.status = dato;
+      continue;
+    }
+    if (campo === 'urgency_level') {
+      if (URGENCIAS.has(dato)) out.urgency_level = dato;
+      continue;
+    }
+    // Los tres jsonb pasan tal cual: el motor de reglas del navegador ya los
+    // armó y volver a validarlos aquí obligaría a duplicar el cuestionario.
+    if (['answers', 'derived_features', 'result'].includes(campo)) {
+      if (dato && typeof dato === 'object') out[campo] = dato;
+      continue;
+    }
+    if (dato === null) { out[campo] = null; continue; }
+    const texto = clean(dato, campo === 'top_friction' ? 300 : 200);
+    if (texto) out[campo] = texto;
+  }
+
+  return Object.keys(out).length ? out : null;
+}
+
+// Seis horas, la misma ventana que protegía la política de RLS. Va como
+// filtro de la petición para que lo aplique Postgres y no este código.
+const VENTANA_SESION_H = 6;
+
+export async function diagnosticSession(request, env) {
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Solicitud inválida.' }, 400); }
+
+  const sessionId = clean(body?.session_id, 40);
+  if (!UUID_RE.test(sessionId)) return json({ error: 'Sesión inválida.' }, 400);
+
+  const patch = normalizeSessionPatch(body?.patch);
+  if (!patch) return json({ error: 'Nada que guardar.' }, 400);
+
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
+    return json({ status: 'no_configurado' }, 200);
+  }
+
+  const desde = new Date(Date.now() - VENTANA_SESION_H * 60 * 60 * 1000).toISOString();
+  const filtro = `diagnostic_sessions?id=eq.${sessionId}&created_at=gte.${encodeURIComponent(desde)}`;
+
+  const actualizada = await supabaseRequest(env, filtro, {
+    method: 'PATCH',
+    headers: { prefer: 'return=representation' },
+    body: JSON.stringify(patch)
+  });
+
+  if (actualizada?.ok) {
+    const filas = await actualizada.json();
+    if (Array.isArray(filas) && filas.length) return json({ status: 'actualizada' }, 200);
+  } else if (actualizada) {
+    console.error(JSON.stringify({
+      event: 'sesion_patch_falló', status: actualizada.status,
+      detalle: (await actualizada.text()).slice(0, 200)
+    }));
+    return json({ error: 'No se pudo guardar.' }, 502);
+  }
+
+  // No existía —o se perdió el alta—, así que se crea con lo que haya. Que
+  // el primer paso se caiga no puede costar el diagnóstico entero.
+  const creada = await supabaseRequest(env, 'diagnostic_sessions', {
+    method: 'POST',
+    headers: { prefer: 'return=minimal, resolution=merge-duplicates' },
+    body: JSON.stringify({ id: sessionId, ...patch })
+  });
+
+  if (!creada?.ok) {
+    console.error(JSON.stringify({
+      event: 'sesion_alta_falló', status: creada?.status,
+      detalle: creada ? (await creada.text()).slice(0, 200) : 'sin respuesta'
+    }));
+    return json({ error: 'No se pudo guardar.' }, 502);
+  }
+
+  return json({ status: 'creada' }, 200);
+}
+
 export async function diagnosticAnalyze(request, env, ctx) {
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Solicitud inválida.' }, 400); }

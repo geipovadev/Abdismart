@@ -1,7 +1,7 @@
 import { getBusiness } from './businesses.js';
 import { prospectingRun } from './prospecting.js';
 import { previewEvent, previewGenerate, previewLead } from './preview.js';
-import { diagnosticAnalyze } from './diagnostico.js';
+import { diagnosticAnalyze, diagnosticSession } from './diagnostico.js';
 import { metaConversion } from './capi.js';
 import { whatsappReply, whatsappVerify, whatsappWebhook } from './whatsapp.js';
 import { instagramVerify, instagramWebhook } from './instagram.js';
@@ -89,7 +89,8 @@ async function lead(request, env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (request.method === 'OPTIONS' && (url.pathname.startsWith('/api/agent/') || url.pathname.startsWith('/api/preview') || url.pathname === '/api/diagnostico' || url.pathname === '/api/meta/conversion' || url.pathname === '/api/whatsapp/reply')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type, authorization' } });
+    if (request.method === 'OPTIONS' && (url.pathname.startsWith('/api/agent/') || url.pathname.startsWith('/api/preview') || url.pathname === '/api/diagnostico' || url.pathname === '/api/diagnostico/sesion' || url.pathname === '/api/meta/conversion' || url.pathname === '/api/whatsapp/reply')) return new Response(null, { status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'POST, OPTIONS', 'access-control-allow-headers': 'content-type, authorization' } });
+    if (request.method === 'POST' && url.pathname === '/api/diagnostico/sesion') return diagnosticSession(request, env);
     if (request.method === 'POST' && url.pathname === '/api/diagnostico') return diagnosticAnalyze(request, env, ctx);
     if (request.method === 'POST' && url.pathname === '/api/meta/conversion') return metaConversion(request, env, ctx);
     if (request.method === 'POST' && url.pathname === '/api/preview') return previewGenerate(request, env, ctx);

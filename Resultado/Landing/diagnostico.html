@@ -2,6 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <!-- El aviso de cookies va PRIMERO: declara el estado por defecto
+       de Consent Mode, y si llega después de GTM el arranque de la
+       visita ya se midió sin permiso. -->
+  <script src="assets/cookies.js?v=1"></script>
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -974,7 +979,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="callout">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>
-          <span><b>Privacidad.</b> Usamos solo la información que nos compartes para darte la recomendación. No pedimos datos de pacientes. Lee la <a href="privacidad.html" style="color:var(--accent)">política de privacidad</a>.</span>
+          <span><b>Privacidad.</b> Usamos solo la información que nos compartes para darte la recomendación. No pedimos datos de pacientes. Lee la <a href="privacidad.html" style="color:var(--accent)">política de privacidad</a> <a href="#" data-cookies-preferencias>Preferencias de cookies</a>.</span>
         </div>
       </div>
 
@@ -1990,24 +1995,49 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     utm_campaign: UTM.utm_campaign
   }).then(function () {}, function () {});
 
+  // La landing se publica en Netlify y el Worker vive en su propio dominio,
+  // así que la llamada es cruzada y va con URL absoluta, igual que en el CRM.
+  // Una ruta relativa aquí no daría error visible: caería siempre al respaldo
+  // y ni la sesión ni el análisis llegarían nunca.
+  var WORKER = 'https://abdismart.geiner-porras-mb.workers.dev';
+
   var rowCreated = false;
+
+  // La sesión ya no se escribe directo en Supabase. El navegador tiene la
+  // anon key, y con ella las actualizaciones nunca llegaron: hay política de
+  // INSERT y de UPDATE para `anon`, pero no de SELECT, y Postgres necesita
+  // ver la fila para localizarla en un UPDATE. Devolvía 200 y cero filas.
+  // Ahora escribe el Worker con la llave de servicio.
+  function guardarSesion(patch) {
+    if (!state.id || !patch) return;
+    fetch(WORKER + '/api/diagnostico/sesion', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ session_id: state.id, patch: patch }),
+      keepalive: true
+    }).then(function (res) {
+      // El silencio de antes es lo que dejó pasar meses el fallo. Ahora al
+      // menos queda en la consola de quien lo esté mirando.
+      if (!res.ok) console.error('[abdi] no se guardó el paso del diagnóstico:', res.status);
+    }, function (e) {
+      console.error('[abdi] no se pudo contactar al servidor del diagnóstico:', e);
+    });
+  }
 
   function createRow() {
     if (rowCreated) return;
     rowCreated = true;
-    db.from('diagnostic_sessions').insert({
-      id: state.id,
+    guardarSesion({
       last_step: 0,
       status: 'started',
       referrer: document.referrer || null,
       utm_source: UTM.utm_source,
       utm_campaign: UTM.utm_campaign
-    }).then(function () {}, function () {});
+    });
   }
 
   function patchRow(patch) {
-    if (!state.id) return;
-    db.from('diagnostic_sessions').update(patch).eq('id', state.id).then(function () {}, function () {});
+    guardarSesion(patch);
   }
 
   /* ═══════════════════════════════════════════════════════════
@@ -2491,12 +2521,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       cerrar(null);
     });
   }
-
-  // La landing se publica en Netlify y el Worker vive en su propio dominio,
-  // así que la llamada es cruzada y va con URL absoluta, igual que en el CRM.
-  // Una ruta relativa aquí no daría error visible: caería siempre al respaldo
-  // y el análisis no se generaría nunca.
-  var WORKER = 'https://abdismart.geiner-porras-mb.workers.dev';
 
   function fetchAnalysis(r) {
     return fetch(WORKER + '/api/diagnostico', {

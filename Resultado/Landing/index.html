@@ -2,6 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <!-- El aviso de cookies va PRIMERO: declara el estado por defecto
+       de Consent Mode, y si llega después de GTM el arranque de la
+       visita ya se midió sin permiso. -->
+  <script src="assets/cookies.js?v=1"></script>
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -3840,6 +3845,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <ul class="footer-links">
         <li><a href="terminos.html">Términos</a></li>
         <li><a href="privacidad.html">Privacidad</a></li>
+        <li><a href="#" data-cookies-preferencias>Preferencias de cookies</a></li>
       </ul>
     </div>
     <div class="footer-copy mono">
