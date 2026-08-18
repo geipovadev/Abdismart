@@ -2034,6 +2034,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       utm_source: UTM.utm_source,
       utm_campaign: UTM.utm_campaign
     });
+
+    // Marca el inicio para poder armar en Meta el público de «empezó y no
+    // terminó»: ese grupo es anónimo para nosotros —no dejó contacto— y la
+    // única forma de volver a alcanzarlo es que Meta lo reconozca con sus
+    // propios identificadores. Sin datos personales: quien abandona antes
+    // de la última pregunta no nos dio ninguno.
+    //
+    // El `content_name` es lo que distingue este público del de la portada,
+    // que también dispara ViewContent. Si se cambia aquí, hay que rehacer
+    // el público en el administrador de Meta.
+    if (window.AbdiMeta) {
+      window.AbdiMeta.track('ViewContent', { content_name: 'diagnostico_iniciado' }, {});
+    }
   }
 
   function patchRow(patch) {

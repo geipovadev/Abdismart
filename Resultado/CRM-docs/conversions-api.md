@@ -102,6 +102,40 @@ como `fb.0.1787077308142.683384788902175265.AQYAAQIB`. Una comprobación que
 exija que empiece por `fb.1.` o `fb.2.` descarta la mayoría de las cookies
 buenas, en silencio.
 
+## El público de «empezó y no terminó»
+
+Quien abandona el diagnóstico antes de la última pregunta **no dejó ningún
+dato de contacto**: la captura es la pregunta 14. No hay a quién escribirle.
+La única forma de volver a alcanzarlo es que Meta lo reconozca con sus
+propios identificadores.
+
+Para eso la landing dispara dos eventos:
+
+| Momento | Evento | `content_name` |
+|---|---|---|
+| Pulsa «Iniciar diagnóstico» | `ViewContent` | `diagnostico_iniciado` |
+| Deja su contacto al final | `Lead` | `diagnostico` |
+
+El `content_name` es lo que los distingue del resto: la portada también
+dispara `ViewContent`, con `programa_fundador`. **Si se cambian esas
+cadenas, hay que rehacer el público en Meta**, que las tiene escritas.
+
+En el Administrador de anuncios → Públicos → Crear público personalizado →
+Sitio web:
+
+1. Incluir: `ViewContent` donde `content_name` sea `diagnostico_iniciado`,
+   en los últimos 30 días.
+2. Excluir: `Lead` donde `content_name` sea `diagnostico`, mismos días.
+
+Dos cosas que conviene saber antes de montar la campaña:
+
+- **Solo entra quien aceptó publicidad** en el aviso de cookies. Ese es el
+  precio del consentimiento, y por eso Conversions API se montó primero:
+  de quien sí acepta, la señal llega íntegra aunque el píxel falle.
+- **El público tarda en llenarse.** Meta pide un mínimo de personas para
+  poder entregar anuncios, y con el volumen actual del diagnóstico eso no
+  es cuestión de días.
+
 ## Eventos permitidos
 
 Lista cerrada en `src/capi.js`: `Lead`, `Contact`, `ViewContent`,
