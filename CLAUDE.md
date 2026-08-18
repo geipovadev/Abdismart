@@ -286,8 +286,11 @@ hay recomendación. Guarda solo la ficha estructurada y el contacto, nunca el tr
 Vistas: resumen, solicitudes, clientes, producción, onboarding, ventas, pagos, tareas,
 conversaciones, diagnósticos, documentos, aprendizaje, actividad, Abdi Leads y usuarios.
 
+El sitio se identifica por su id, no por su nombre: `--site=abdi-crm` responde
+«Not Found» aunque el sitio se llame así en el panel.
+
 ```bash
-npx netlify-cli deploy --dir=Resultado/CRM --prod --site=abdi-crm
+npx netlify-cli deploy --dir=Resultado/CRM --prod --site=37745d5c-2eb6-4922-a9d5-035fec7704a8
 ```
 
 **Supabase.** Base de datos y auth. Las migraciones se aplican a mano desde el editor SQL
