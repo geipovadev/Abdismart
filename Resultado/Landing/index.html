@@ -37,6 +37,7 @@
     fbq('track', 'PageView');
   </script>
   <!-- End Meta Pixel Code -->
+  <script src="assets/meta-eventos.js?v=1"></script>
 
   <!-- Open Graph / redes sociales -->
   <meta property="og:title" content="Abdi — Tu negocio de salud, listo para atraer más clientes">
@@ -4100,7 +4101,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const marketingAttribution = Object.fromEntries(Object.entries({ ...storedAttribution, ...currentAttribution }).filter(([, value]) => value));
   try { sessionStorage.setItem(attributionKey, JSON.stringify(marketingAttribution)); } catch (e) {}
 
-  function trackMeta(event, data) {
+  // Pasa por AbdiMeta para que el mismo evento salga también desde el
+  // Worker, con el mismo id. Si el archivo no cargó, queda el píxel solo.
+  function trackMeta(event, data, persona) {
+    if (window.AbdiMeta) return window.AbdiMeta.track(event, data || {}, persona || {});
     if (typeof window.fbq === 'function') window.fbq('track', event, data || {});
   }
 
@@ -4240,7 +4244,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     showFounderStep('success');
-    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio });
+    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio },
+      { name: nombre, phone: whatsapp, email: email });
   });
 
   // Registro de visita (conversión = waitlist / page_views)
@@ -4343,7 +4348,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return;
     }
 
-    trackMeta('Contact', { content_name: servicio });
+    trackMeta('Contact', { content_name: servicio }, { name: nombre, phone: whatsapp });
     const message = `Hola, soy ${nombre}. Me pueden enviar información sobre ${servicio}.`;
     window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   });
@@ -4397,7 +4402,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     wlForm.style.display = 'none';
     wlSuccess.style.display = 'block';
-    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio });
+    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio },
+      { name: nombre, phone: whatsapp });
   });
 </script>
 <script src="assets/agent-widget.js?v=17" data-business="abdismart" defer></script>
