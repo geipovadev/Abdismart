@@ -7,6 +7,8 @@
 // recomendaciones distintas, y tarde o temprano recomendaría algo que Abdi
 // no vende.
 
+import { enviarRutaPorCorreo } from './correo-diagnostico.js';
+
 const OPENAI_URL = 'https://api.openai.com/v1/responses';
 const DAILY_LIMIT = 8;            // análisis por persona y día
 const OPENAI_TIMEOUT_MS = 14000;  // por encima de esto, el navegador ya se rindió
@@ -478,11 +480,13 @@ export async function diagnosticAnalyze(request, env, ctx) {
     // No es un error para quien lo pide: el navegador ya tiene su ruta por
     // reglas y la muestra igual. Solo se queda sin el texto redactado.
     ctx.waitUntil(saveAnalysis(env, input.session_id, { ai_status: 'rate_limited', actor_hash: hash }));
+    ctx.waitUntil(enviarRutaPorCorreo(env, input.session_id, null));
     return json({ status: 'rate_limited' }, 200);
   }
 
   if (!env.OPENAI_API_KEY) {
     ctx.waitUntil(saveAnalysis(env, input.session_id, { ai_status: 'fallback', actor_hash: hash }));
+    ctx.waitUntil(enviarRutaPorCorreo(env, input.session_id, null));
     return json({ status: 'fallback' }, 200);
   }
 
@@ -501,6 +505,7 @@ export async function diagnosticAnalyze(request, env, ctx) {
 
   if (!result) {
     ctx.waitUntil(saveAnalysis(env, input.session_id, { ai_status: 'fallback', actor_hash: hash }));
+    ctx.waitUntil(enviarRutaPorCorreo(env, input.session_id, null));
     return json({ status: 'fallback' }, 200);
   }
 
@@ -517,6 +522,8 @@ export async function diagnosticAnalyze(request, env, ctx) {
       generated_at: new Date().toISOString()
     }
   }));
+
+  ctx.waitUntil(enviarRutaPorCorreo(env, input.session_id, result.content));
 
   return json({ status: 'generated', ...result.content });
 }
