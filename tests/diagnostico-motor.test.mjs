@@ -102,9 +102,14 @@ test('caso 1 · la clínica lenta sale en rojo y con las tres fugas que dijo ten
   assert.ok(r.leaks.every(l => l.impact === 'alto'));
   assert.deepEqual(r.leaks.map(l => l.key).sort(), ['cancelaciones', 'seguimiento', 'velocidad']);
 
-  // Cada fuga se sostiene con la respuesta que la persona eligió.
+  // Cada fuga se sostiene con la respuesta que la persona eligió, y agrava
+  // con otro dato suyo en vez de repetir el título que ya va impreso.
   const seguimiento = r.leaks.find(l => l.key === 'seguimiento');
-  assert.deepEqual(seguimiento.evidence, ['Quien no agenda: Nadie le vuelve a escribir']);
+  assert.deepEqual(seguimiento.evidence, [
+    'Quien no agenda: Nadie le vuelve a escribir',
+    'Canal principal: WhatsApp',
+    'Web: no hay dónde recuperarla después'
+  ]);
 
   // Con todo en rojo entran los cinco módulos, más medición al final.
   assert.equal(r.modules.length, 6);

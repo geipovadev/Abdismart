@@ -842,6 +842,22 @@
       color: var(--fog);
       line-height: 1.6;
     }
+    .cta-fundador {
+      margin: 14px auto 0;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .06em;
+      color: var(--accent);
+    }
+    .cta-alt {
+      margin: 9px auto 0;
+      text-align: center;
+      font-size: 14px;
+      color: var(--fog);
+    }
+    .cta-alt a { color: var(--fog); text-decoration: underline; }
+    .cta-alt a:hover { color: var(--lime); }
     .cta-row {
       margin-top: 22px;
       display: flex;
@@ -1088,8 +1104,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="bridge" id="bridge-text"></p>
       <div class="cta-row">
         <a class="btn-primary" id="cta-cal" href="#" target="_blank" rel="noopener">Agendar llamada de 30 min</a>
-        <a class="btn-ghost" id="cta-wa" href="#" target="_blank" rel="noopener">Escribir por WhatsApp</a>
       </div>
+      <p class="cta-fundador">Programa fundador · Solo 7 lugares. Tu tarifa de fundador no aumenta.</p>
+      <p class="cta-alt">¿Prefieres escribir? <a id="cta-wa" href="#" target="_blank" rel="noopener">Contáctanos por WhatsApp</a></p>
 
       <p class="disclaimer">
         No damos consejos médicos. Trabajamos con información aprobada por ti y con foco en procesos digitales.
@@ -1655,9 +1672,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
     if (key === 'agenda') {
       di('Se agenda', 'booking_method');
+      di('Quién responde', 'responder_model');
     }
     if (key === 'seguimiento') {
       di('Quien no agenda', 'follow_up');
+      // Repetir el título no es evidencia. Lo que agrava es de dónde venía
+      // esa consulta: si costó una llamada, ya costó tiempo propio.
+      di('Canal principal', 'lead_source_channel');
+      if (a.website_status === 'no_tengo') e.push('Web: no hay dónde recuperarla después');
     }
     if (key === 'cancelaciones') {
       di('Cancelaciones', 'cancellations_impact');
@@ -2652,11 +2674,23 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     node.style.setProperty('--lvl-dim', par[1]);
   }
 
+  // La nota fija leía igual con 39 que con 12: el número más grande de la
+  // pantalla no decía nada de este negocio. Ahora nombra su área más débil
+  // con su puntaje, que es lo que hace que la persona se reconozca.
   var SCORE_NOTA = {
     verde:    'Tu operación está en buena forma. Lo que sigue no es rehacer nada, es sostenerlo y medirlo.',
     amarillo: 'Funciona, pero con puntos donde las consultas se enfrían. Abajo está cuáles y en qué orden.',
     rojo:     'Hay varias partes por donde se están perdiendo consultas. Abajo están, ordenadas por lo que más pesa.'
   };
+
+  function scoreNota(r) {
+    var areas = (r.areas || []).slice().sort(function (x, y) { return x.score - y.score; });
+    var peor = areas[0];
+    // En verde no hay nada que señalar: la nota de siempre es la correcta.
+    if (!peor || r.overall_level === 'verde') return SCORE_NOTA[r.overall_level];
+    var sig = (SIGNIFICADO[peor.key] || {})[peor.level] || '';
+    return 'Lo que más pesa hoy: ' + peor.name.toLowerCase() + ', ' + peor.score + ' de 100. ' + sig;
+  }
 
   function pintarScore(r) {
     var card = document.getElementById('score-ring');
@@ -2673,7 +2707,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     pintarNivel(card, r.overall_level);
     num.textContent = String(r.overall_score);
-    nota.textContent = SCORE_NOTA[r.overall_level];
+    nota.textContent = scoreNota(r);
 
     if (r.focus) { foco.textContent = r.focus; foco.hidden = false; }
     else foco.hidden = true;

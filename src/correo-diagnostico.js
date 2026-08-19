@@ -36,6 +36,16 @@ function esc(value) {
 
 function color(nivel) { return COLOR[nivel] || COLOR.amarillo; }
 
+function areaMasDebil(areas) {
+  return lista(areas).slice().sort((a, b) => (Number(a.score) || 0) - (Number(b.score) || 0))[0] || null;
+}
+
+function notaMarcador(result, nivel) {
+  const peor = areaMasDebil(result?.areas);
+  if (!peor || nivel === 'verde') return '';
+  return `Lo que más pesa hoy: ${String(peor.name || '').toLowerCase()}, ${Number(peor.score) || 0} de 100.`;
+}
+
 function lista(value) { return Array.isArray(value) ? value : []; }
 
 function primerNombre(nombre) {
@@ -139,6 +149,7 @@ export function construirCorreo(fila, analisis) {
   const bridge = String(analisis?.bridge || '').trim()
     || 'Si quieres, revisamos juntos esta ruta en una llamada de 30 minutos y decides qué conviene primero.';
 
+  const nota = notaMarcador(result, nivel);
   const saludo = nombre ? `${esc(nombre)}, esta es tu ruta.` : 'Esta es tu ruta.';
   const bajada = [negocio, 'Lo que sigue sale de tus propias respuestas. Guárdalo, es tuyo.']
     .filter(Boolean).join('. ');
@@ -184,6 +195,7 @@ export function construirCorreo(fila, analisis) {
       </td>
       <td class="stack" valign="top">
         <p style="margin:0 0 8px;font:11px/1 ${MONO};letter-spacing:.1em;text-transform:uppercase;color:${tono}">${esc(ETIQUETA_NIVEL[nivel])}</p>
+        ${nota ? `<p style="margin:0 0 9px;font:600 15px/1.6 ${SANS};color:#f4f5f7">${esc(nota)}</p>` : ''}
         ${parrafos}
       </td>
     </tr></table>`)}
@@ -215,7 +227,8 @@ export function construirCorreo(fila, analisis) {
             <a href="${CAL_URL}" style="display:inline-block;padding:14px 30px;font:600 15px/1 ${SANS};color:#0a0b0d;text-decoration:none;border-radius:10px">Agendar la llamada</a>
           </td></tr>
         </table>
-        <p style="margin:16px 0 0;font:13.5px/1.5 ${SANS};color:#a6abb8">O escríbenos por <a href="${WHATSAPP_URL}" style="color:#c6ff3d;text-decoration:none">WhatsApp</a> si prefieres.</p>
+        <p style="margin:14px 0 0;font:11px/1.5 ${MONO};letter-spacing:.06em;color:#c6ff3d">Programa fundador · Solo 7 lugares. Tu tarifa de fundador no aumenta.</p>
+        <p style="margin:10px 0 0;font:13.5px/1.5 ${SANS};color:#a6abb8">¿Prefieres escribir? <a href="${WHATSAPP_URL}" style="color:#a6abb8">Contáctanos por WhatsApp</a></p>
       </td></tr>
     </table>
   </td></tr>
@@ -241,6 +254,7 @@ export function construirCorreo(fila, analisis) {
     bajada,
     '',
     `Tu marcador: ${marcador} de 100 — ${ETIQUETA_NIVEL[nivel]}`,
+    nota,
     frases.length ? frases.join(' ') : (result.summary || ''),
     '',
     areas.length ? 'ÁREA POR ÁREA' : '',
@@ -258,6 +272,7 @@ export function construirCorreo(fila, analisis) {
     '',
     result.package?.label ? `Lo que más te conviene ahora: ${result.package.label}` : '',
     bridge,
+    'Programa fundador · Solo 7 lugares. Tu tarifa de fundador no aumenta.',
     `Agendar la llamada: ${CAL_URL}`,
     `WhatsApp: ${WHATSAPP_URL}`,
     '',

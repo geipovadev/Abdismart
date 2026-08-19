@@ -138,6 +138,30 @@ test('el correo lleva el marcador, las áreas, la fuga y el paso', () => {
   assert.match(text, /Velocidad de respuesta: 58/);
 });
 
+test('el marcador nombra el área más débil, no una frase igual para todos', () => {
+  const { html, text } = construirCorreo(FILA, ANALISIS);
+  // 22 es el peor puntaje de las áreas de prueba.
+  assert.match(html, /Lo que más pesa hoy: cobertura fuera de horario, 22 de 100/);
+  assert.match(text, /Lo que más pesa hoy: cobertura fuera de horario, 22 de 100/);
+});
+
+test('en verde no se señala ningún área: no hay nada que ordenar', () => {
+  const fila = {
+    ...FILA,
+    result: { ...RESULT, overall_score: 82, overall_level: 'verde' }
+  };
+  const { html } = construirCorreo(fila, ANALISIS);
+  assert.equal(/Lo que más pesa hoy/.test(html), false);
+});
+
+test('el correo lleva el programa fundador y un solo botón', () => {
+  const { html, text } = construirCorreo(FILA, ANALISIS);
+  assert.match(html, /Solo 7 lugares/);
+  assert.match(text, /Solo 7 lugares/);
+  // WhatsApp queda como enlace de texto, no como segundo botón.
+  assert.equal((html.match(/bgcolor="#c6ff3d"/g) || []).length, 1);
+});
+
 test('sin análisis redactado el correo sale igual, con la ruta por reglas', () => {
   const { html } = construirCorreo(FILA, null);
   assert.match(html, /Tu operación digital deja consultas sin atender\./);

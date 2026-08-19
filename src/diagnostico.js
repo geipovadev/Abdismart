@@ -204,9 +204,17 @@ CÓMO ESCRIBES
 - Español neutro de Latinoamérica. Directo, cálido, profesional.
 - TUTEO SIEMPRE, nunca voseo, sea cual sea el país del negocio. Escribe "puedes", "tienes", "quieres", "revisas". Nunca "podés", "tenés", "querés", "revisás". Nunca "vos".
 - Frases cortas. Máximo 25 palabras por frase. Una idea por frase.
+- AFIRMA, no insinúes. Presente de indicativo. Nada de "puede", "podría", "quizá", "en algunos casos", "es posible que", "tal vez", "suele". Al describir lo que hoy le cuesta consultas, el verbo va cerrado.
+  - Mal: "Quien pregunta y luego se ocupa puede quedar olvidado."
+  - Bien: "Quien pregunta y no agenda no vuelve: nadie le escribe."
+  - Mal: "No tener web limita dónde pueden encontrarte."
+  - Bien: "Quien te busca hoy no encuentra dónde mirar antes de decidir."
+  (En step_notes sí cabe describir lo que la persona podrá hacer: ahí se habla de la mejora, no del problema.)
 - El héroe es el negocio, no Abdi. Escribe "tus consultas", no "nuestra solución".
 - Menciona datos concretos de sus respuestas: su canal, su tiempo de respuesta, su forma de agendar, quién responde hoy.
 - Si te dan un "enfoque", que el tono lo respete: quien trabaja solo quiere menos carga, quien tiene varias sedes quiere que todas respondan igual.
+- En las respuestas vienen su urgencia y lo que quiere lograr. Úsalas: son sus palabras, no una suposición nuestra. Si dijo que quiere resolverlo este mes, el cierre lo recoge. Si marcó menos consultas perdidas o menos carga, nómbralo con esas mismas palabras.
+- Si responde una sola persona, ese es el problema de fondo y hay que decirlo: todo entra por ella, y el día que no está, no entra nada. Dilo sin dramatizar y sin culpar a nadie.
 
 PROHIBIDO
 - Diagnósticos médicos, consejos clínicos o cualquier referencia a tratamientos y pacientes concretos.
@@ -223,11 +231,15 @@ FORMATO
 - module_reasons: exactamente "cuantas_module_reasons" elementos, uno por módulo, en el MISMO orden. Máximo 20 palabras cada una.
 - Cuenta los elementos antes de responder. Si la cantidad no coincide, tu texto se descarta entero.
 - bridge: una frase que invite a la llamada de 30 minutos. Máximo 22 palabras. Sin prometer resultados.
+  Nombra lo que él dijo querer y qué se ordena en esa llamada. No es "podemos revisar": es qué deja de depender de él.
+  Mal: "En una llamada podemos revisar cómo aliviar tu carga y ordenar tus consultas."
+  Bien: "Dijiste que quieres resolverlo este mes. En 30 minutos definimos por dónde empezar para que deje de pasar todo por ti"
 
 LAS NOTAS DE CADA FUGA
 El título de la fuga ya va impreso, y debajo va la evidencia con sus propias respuestas.
 - NO repitas el título ni la evidencia: se leen justo al lado.
 - Di qué le cuesta ESO a este negocio, en concreto y sin cifras.
+- Agrava con otro dato suyo, no repitas el que ya está impreso. Si capta por llamadas, cada consulta perdida ya le costó tiempo propio. Si no tiene web, no hay dónde recuperarla después.
 - Mal: "No hay seguimiento, y eso es un problema."
 - Bien: "Cada persona que preguntó por ortodoncia y no agendó se queda como única oportunidad perdida."
 
@@ -321,6 +333,14 @@ function palabras(texto) { return texto.split(/\s+/).filter(Boolean).length; }
 const PLAZO_RE = /\b\d+\s*(d[ií]as?|horas?|semanas?|meses?)\b/i;
 const PRECIO_RE = /(\$|usd|₡|colones|d[óo]lares|precio|tarifa|mensualidad)/i;
 
+// El condicional es la fuga de este texto. Pedirlo en las instrucciones no
+// alcanzó: el modelo devolvía «puede quedar olvidado», «puede postergar»,
+// y cada «puede» le da a quien lee una salida para no reconocerse en el
+// problema. Se revisa solo donde se describe el dolor —análisis y notas de
+// fuga—; en los pasos se habla de la mejora y ahí «podrás» es correcto.
+const TIBIO_RE = /\b(podr[íi]a[ns]?|puede[ns]?|puedan|quiz[áa]s?|tal vez|es posible que|en algunos casos|suele[ns]?|tiende[ns]? a|eventualmente)\b/i;
+const MAX_TIBIAS = 1;   // una concesión pasa; dos ya es el tono entero
+
 function validateContent(value, input) {
   if (!value || typeof value !== 'object') return null;
   const analysis = cleanList(value.analysis, 2, 320);
@@ -343,6 +363,9 @@ function validateContent(value, input) {
   if (PLAZO_RE.test(piezas.join(' '))) throw new Error('La respuesta prometió un plazo.');
   if (PRECIO_RE.test(piezas.join(' '))) throw new Error('La respuesta habló de dinero.');
   if (piezas.some(t => palabras(t) > MAX_PALABRAS)) throw new Error('La respuesta trae frases demasiado largas.');
+
+  const tibias = analysis.concat(leaks).filter(t => TIBIO_RE.test(t)).length;
+  if (tibias > MAX_TIBIAS) throw new Error('La respuesta describe el problema en condicional.');
 
   return { analysis, leak_notes: leaks, step_notes: stepNotes, module_reasons: modules, bridge };
 }
