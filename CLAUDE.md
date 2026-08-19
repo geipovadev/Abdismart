@@ -267,6 +267,7 @@ npx wrangler deploy   # publica la API del Worker
 |---|---|---|
 | `POST /api/agent/chat` · `/api/agent/lead` | Agente de diagnóstico del widget web | `agent.js`, `businesses.js` |
 | `POST /api/diagnostico` | Diagnóstico express con análisis de IA y PDF | `diagnostico.js` |
+| — | Al terminar el análisis, la ruta sale por correo a quien dejó email | `correo-diagnostico.js` |
 | `POST /api/preview` · `/event` · `/lead` | Generador de vistas previas, con tope de consumo | `preview.js` |
 | `GET/POST /api/whatsapp/webhook` · `POST /api/whatsapp/reply` | Agente informativo de WhatsApp | `whatsapp.js` |
 | `GET/POST /api/instagram/webhook` | Canal de Instagram | `instagram.js` |
@@ -279,6 +280,12 @@ validan firma HMAC, responden 200 de inmediato y procesan en segundo plano.
 
 El diagnóstico web se cierra tras un máximo de 8 respuestas del visitante, o antes si ya
 hay recomendación. Guarda solo la ficha estructurada y el contacto, nunca el transcript.
+
+Quien deja su correo en el diagnóstico recibe su ruta por email. Lo dispara «Ver mi ruta»,
+y sale al final del análisis para que lleve el texto ya redactado. El destinatario se lee
+de la fila en Supabase, nunca del cuerpo de la petición: así el endpoint no sirve para
+escribirle a un tercero. `ruta_email_enviada_at` evita el duplicado. Ver
+`Resultado/CRM-docs/correo-diagnostico.md`.
 
 **Pruebas:** `npm test` (`node --test`). `npm run check` hace `wrangler deploy --dry-run`.
 
