@@ -137,6 +137,12 @@ export function leerAviso(body, request, cookies) {
     phone: limpiar(body.telefono, 40),
     city:  limpiar(body.ciudad, 80),
 
+    // El id lo genera el navegador y lo comparten los dos caminos: el píxel
+    // manda el evento con este mismo `eventID` y Meta descarta el duplicado.
+    // Sin esto cada conversión se contaría dos veces y las campañas se leerían
+    // el doble de buenas de lo que son.
+    eventId: /^[A-Za-z0-9._-]{8,64}$/.test(String(body.event_id || '')) ? String(body.event_id) : '',
+
     extra: (body.datos && typeof body.datos === 'object') ? body.datos : {},
 
     ip:        limpiar(request?.headers?.get('cf-connecting-ip'), 60),
@@ -213,7 +219,10 @@ export async function medicionAviso(request, env, ctx) {
   if (aviso.publicidad) {
     tareas.push(enviarEventoMeta(env, {
       eventName: aviso.evento.meta,
-      eventId: `${aviso.evento.meta}.${vid}.${ahora}`,
+      // Si el navegador no mandó uno válido —JS a medias, o una petición
+      // hecha a mano— se inventa aquí: sin `event_id` Meta no puede
+      // deduplicar, pero al menos el evento entra.
+      eventId: aviso.eventId || `${aviso.evento.meta}.${vid}.${ahora}`,
       eventTime: Math.floor(ahora / 1000),
       sourceUrl: aviso.pageLocation,
       email: aviso.email,

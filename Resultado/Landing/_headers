@@ -21,14 +21,18 @@
 # Al agregar una herramienta nueva (chat, mapa, vídeo) hay que sumar su dominio
 # aquí, o dejará de cargar sin ningún mensaje visible en la página.
 #
-# Ya no hay NINGÚN dominio de terceros en la política, y eso es deliberado: la
-# landing no carga nada de fuera. Las tipografías se sirven desde
-# assets/fonts/, el SDK de Supabase se cambió por assets/supabase-rest.js, y
-# Google Tag Manager, gtag.js y el píxel de Meta salieron del navegador —ahora
-# la medición la hace el Worker, ver src/medicion.js—.
+# El único dominio externo permitido es connect.facebook.net, y está solo
+# porque el píxel de Meta hace falta para las campañas. Google Tag Manager y
+# gtag.js salieron del navegador —esa medición la hace el Worker, ver
+# src/medicion.js—, las tipografías se sirven desde assets/fonts/ y el SDK de
+# Supabase se cambió por assets/supabase-rest.js.
 #
-# El efecto secundario es que esta política ya sirve de alarma: si mañana algo
-# intenta cargar un script de fuera, el navegador lo bloquea y aparece en la
+# El píxel además no se descarga al abrir la página: assets/medicion.js espera
+# a la primera interacción. Cargarlo de entrada costaba 12 puntos de Lighthouse
+# en móvil.
+#
+# Con la lista así de corta, esta política sirve de alarma: si algo intenta
+# cargar un script de otro sitio, el navegador lo bloquea y aparece en la
 # consola en vez de colarse en silencio. Añadir un dominio aquí tiene que ser
 # una decisión, no un descuido.
 
@@ -38,7 +42,7 @@
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://abdismart.geiner-porras-mb.workers.dev https://zmlslhftqjljhvetmbya.supabase.co; frame-src 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https://www.facebook.com; connect-src 'self' https://abdismart.geiner-porras-mb.workers.dev https://zmlslhftqjljhvetmbya.supabase.co https://connect.facebook.net https://www.facebook.com; frame-src 'none'; upgrade-insecure-requests
 
 # Nada de assets/ cambia entre despliegues sin cambiar de nombre, así que se
 # cachea con agresividad. El patrón entra en las subcarpetas, de modo que cubre

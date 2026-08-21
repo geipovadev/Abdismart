@@ -183,3 +183,21 @@ test('una URL inválida no rompe el aviso', () => {
   assert.equal(aviso.pageLocation, '');
   assert.equal(aviso.campaignSource, '');
 });
+
+test('el event_id del navegador se conserva: es lo que evita contar doble', () => {
+  // El píxel manda el evento con este mismo id y Meta descarta el duplicado.
+  // Si aquí se ignorara, cada conversión se contaría dos veces y las campañas
+  // se leerían el doble de buenas de lo que son.
+  const bueno = leerAviso(
+    { evento: 'lead', medicion: true, publicidad: true, event_id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890' },
+    peticionFalsa(), {}
+  );
+  assert.equal(bueno.eventId, 'a1b2c3d4-e5f6-7890-abcd-ef1234567890');
+
+  // Lo que no tiene forma de id se descarta, y el Worker inventa uno: sin
+  // deduplicación, pero el evento entra.
+  for (const malo of ['', 'corto', 'con espacios aqui', '<script>', null]) {
+    const a = leerAviso({ evento: 'lead', publicidad: true, event_id: malo }, peticionFalsa(), {});
+    assert.equal(a.eventId, '', `deberia descartarse: ${JSON.stringify(malo)}`);
+  }
+});
