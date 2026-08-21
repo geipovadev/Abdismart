@@ -7,9 +7,9 @@
   var history=[],visitorName='',busy=false,chatClosed=false,diagnosis={business_type:'',specialty:'',problem_detected:'',impact:'',current_process:'',recommended_service:''};
   var root=document.createElement('div');root.className='abdi-agent-root';root.innerHTML='\
     <div class="abdi-agent-greeting" role="status" aria-live="polite" hidden>Hola, estoy aquí para guiarte</div>\
-    <button class="abdi-agent-launcher" type="button" aria-label="Abrir chat con Abdi" aria-expanded="false"><img src="assets/abdi-avatar-v2.png" alt="" aria-hidden="true"><span class="abdi-agent-eye-layer" aria-hidden="true"><i></i><i></i></span><span class="abdi-agent-launcher-dot" aria-hidden="true"></span></button>\
+    <button class="abdi-agent-launcher" type="button" aria-label="Abrir chat con Abdi" aria-expanded="false"><img src="assets/abdi-avatar-v2.webp" alt="" aria-hidden="true"><span class="abdi-agent-eye-layer" aria-hidden="true"><i></i><i></i></span><span class="abdi-agent-launcher-dot" aria-hidden="true"></span></button>\
     <section class="abdi-agent-panel" aria-hidden="true" aria-label="Chat con Abdi">\
-      <header class="abdi-agent-head"><span class="abdi-agent-mark" aria-hidden="true"><img src="assets/abdi-avatar-v2.png" alt=""></span><div><div class="abdi-agent-title">Abdi</div><div class="abdi-agent-status">Disponible ahora</div></div><button class="abdi-agent-close" type="button" aria-label="Cerrar chat">×</button></header>\
+      <header class="abdi-agent-head"><span class="abdi-agent-mark" aria-hidden="true"><img src="assets/abdi-avatar-v2.webp" alt=""></span><div><div class="abdi-agent-title">Abdi</div><div class="abdi-agent-status">Disponible ahora</div></div><button class="abdi-agent-close" type="button" aria-label="Cerrar chat">×</button></header>\
       <div class="abdi-agent-messages" aria-live="polite"></div>\
       <form class="abdi-agent-compose"><div class="abdi-agent-input-row"><input class="abdi-agent-input" maxlength="600" autocomplete="off" placeholder="Escribe tu nombre" aria-label="Tu respuesta"><button class="abdi-agent-send" type="submit" aria-label="Enviar respuesta">→</button></div><div class="abdi-agent-note">Diagnóstico inicial de tu negocio</div></form>\
     </section>';

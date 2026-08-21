@@ -22,8 +22,8 @@
     'warm-sand': ['Arena cálida', 'linear-gradient(135deg,#FBF7F0,#E8B779)']
   };
   const imageLibrary = {
-    odontologia: 'assets/odontologa-clinica-robles.png',
-    default: 'assets/servicios-recepcion-digital.png'
+    odontologia: 'assets/odontologa-clinica-robles.webp',
+    default: 'assets/servicios-recepcion-digital.webp'
   };
 
   function id() {
@@ -82,7 +82,7 @@
     root.setAttribute('aria-hidden', 'true');
     root.innerHTML = `
       <header class="preview-builder-topbar">
-        <div class="preview-builder-brand"><img src="assets/logo-abdismart-dark.png" alt="Abdismart"><span>Imagina tu web</span></div>
+        <div class="preview-builder-brand"><img src="assets/logo-abdismart-dark.webp" alt="Abdismart"><span>Imagina tu web</span></div>
         <button class="preview-builder-close" type="button" aria-label="Cerrar constructor">×</button>
       </header>
       <div class="preview-builder-body">

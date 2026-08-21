@@ -1,0 +1,129 @@
+/* Las cuatro familias de la marca, servidas desde el propio dominio y
+ * recortadas a los caracteres que el sitio escribe.
+ *
+ * Antes venían de fonts.googleapis.com, y eso costaba dos viajes de ida y
+ * vuelta antes de poder pintar el titular: primero la hoja de estilo, que
+ * bloquea el render, y solo entonces los .woff2 desde fonts.gstatic.com, un
+ * segundo dominio con su propio DNS y su propio TLS.
+ *
+ * QUÉ CARACTERES ENTRAN. ASCII imprimible, Latin-1 completo —que cubre el
+ * español entero: á é í ó ú ü ñ ¿ ¡ « » © ® ° ×—, comillas tipográficas,
+ * rayas, flechas, ₡ y €. El sitio usa hoy 151 caracteres distintos; el
+ * subconjunto lleva bastante más, a propósito, para que un texto nuevo no se
+ * caiga al tipo de respaldo.
+ *
+ * Y AQUÍ ESTÁ EL RIESGO: un carácter fuera de ese rango se pinta con la
+ * tipografía de respaldo, sin avisar y sin error en consola. Si algún día hay
+ * que escribir en otro idioma —o aparece un nombre con ç, ā, ł, ş— hay que
+ * regenerar estos archivos con el rango ampliado. Los originales completos de
+ * Google no están en el repositorio: se vuelven a bajar de fonts.gstatic.com.
+ *
+ * Ya no hay unicode-range ni archivos latin-ext. latin-ext servía para checo,
+ * polaco o turco, que este sitio no escribe, y con el subconjunto actual la
+ * división dejó de tener sentido: un archivo por peso y estilo.
+ *
+ * Archivo carga en 500, 600 y 700. El 600 no lo usa la landing pero sí
+ * diagnostico.html y assets/agent-widget.css: al quitarlo, el navegador lo
+ * sustituye por el 700 sin avisar.
+ *
+ * Los archivos viven en assets/fonts/ y los cubre la regla immutable de
+ * _headers, o sea un año de caché. Al cambiar una fuente hay que cambiarle el
+ * nombre al archivo, no solo el contenido, y subir el ?v= de esta hoja.
+ */
+
+/* Archivo 700 normal */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/archivo-700-normal-latin.woff2) format('woff2');
+}
+/* Poppins 400 normal */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/poppins-400-normal-latin.woff2) format('woff2');
+}
+/* Poppins 500 normal */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/poppins-500-normal-latin.woff2) format('woff2');
+}
+/* Poppins 600 normal */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/poppins-600-normal-latin.woff2) format('woff2');
+}
+/* Poppins 700 normal */
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(fonts/poppins-700-normal-latin.woff2) format('woff2');
+}
+/* Poppins 400 italic */
+@font-face {
+  font-family: 'Poppins';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/poppins-400-italic-latin.woff2) format('woff2');
+}
+/* JetBrains Mono 400 normal */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/jetbrains-mono-400-normal-latin.woff2) format('woff2');
+}
+/* JetBrains Mono 500 normal */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/jetbrains-mono-500-normal-latin.woff2) format('woff2');
+}
+/* Instrument Serif 400 italic */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/instrument-serif-400-italic-latin.woff2) format('woff2');
+}
+/* Instrument Serif 400 normal */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/instrument-serif-400-normal-latin.woff2) format('woff2');
+}
+/* Archivo 600 normal */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(fonts/archivo-600-normal-latin.woff2) format('woff2');
+}
+/* Archivo 500 normal */
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/archivo-500-normal-latin.woff2) format('woff2');
+}
