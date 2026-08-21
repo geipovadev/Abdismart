@@ -1,0 +1,26 @@
+# OJO: Cloudflare antepone su propio bloque a este archivo.
+#
+# Tiene activada la gestión de robots.txt, así que lo que se sirve en
+# abdismart.com/robots.txt es: primero el bloque "Cloudflare Managed content"
+# —que declara Content-Signal y bloquea rastreadores de entrenamiento de IA
+# como GPTBot, ClaudeBot, CCBot y Google-Extended— y después esto.
+#
+# Googlebot NO está bloqueado: Google-Extended es solo el de entrenamiento de
+# IA, no el de búsqueda. Para verlo tal como queda:
+#   curl -s https://abdismart.com/robots.txt
+#
+# Por eso aquí NO se repite `User-agent: * / Allow: /`: Cloudflare ya lo pone,
+# y duplicarlo solo añade un segundo grupo que hay que interpretar.
+#
+# Las páginas que no deben salir en buscadores —términos, privacidad y
+# empezar— llevan `noindex` en su HTML, que es lo correcto. Bloquearlas aquí
+# impediría que Google las leyera, y sin leerlas nunca vería el `noindex`:
+# se quedarían indexadas y sin descripción.
+
+# La API no tiene nada que indexar y cada rastreo gasta presupuesto.
+# Sin línea en blanco antes del Disallow: una línea vacía puede leerse como
+# fin de grupo y dejar la regla huérfana.
+User-agent: *
+Disallow: /api/
+
+Sitemap: https://abdismart.com/sitemap.xml

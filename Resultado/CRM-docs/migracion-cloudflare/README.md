@@ -97,7 +97,7 @@ Se ven en la consola del navegador, y **dos ya pasaban antes de migrar**:
 
 | Bloqueado | Qué es | Desde cuándo |
 |---|---|---|
-| `static.cloudflareinsights.com/beacon.min.js` | Cloudflare Web Analytics, que Cloudflare inyecta solo | **Nuevo**: apareció con la migración |
+| `static.cloudflareinsights.com/beacon.min.js` | Cloudflare Web Analytics, que Cloudflare inyecta solo | **Nuevo**: apareció con la migración. **Cuesta 8 puntos** de «Prácticas recomendadas» en Lighthouse, y no mide nada porque la CSP lo bloquea. Como GA4 ya mide desde el Worker, lo suyo es **apagarlo en el panel de Cloudflare** (Analytics → Web Analytics). La alternativa —permitir el dominio en la CSP— reintroduce un script de terceros que no hace falta. |
 | `capi-automation.s3.us-east-2.amazonaws.com/…/clientParamBuilder.bundle.js` | Constructor de parámetros de la Conversions API de Meta, lo carga una plantilla de GTM | Ya pasaba antes |
 | `od-….on.aws/events` y `….run.app/events` | Endpoints que pide el contenedor de GTM | Ya pasaba antes |
 

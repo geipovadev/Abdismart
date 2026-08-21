@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Las URL van en su forma corta, sin .html: el Worker sirve con
+     auto-trailing-slash y /diagnostico.html responde 307 hacia /diagnostico.
+     Un sitemap lleno de redirecciones desperdicia presupuesto de rastreo.
+     Aquí solo van las páginas indexables. Se quedan fuera términos,
+     privacidad y empezar, que llevan `noindex` en su HTML: pedirle a Google
+     que rastree algo que después le decimos que ignore gasta presupuesto de
+     rastreo y sale como aviso en Search Console. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://abdismart.com/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://abdismart.com/diagnostico</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://abdismart.com/servicios</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://abdismart.com/servicio-landing-pages</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://abdismart.com/servicio-agentes-ia</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://abdismart.com/servicio-automatizaciones</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>

@@ -13,6 +13,28 @@
 
   <title>Términos y condiciones — Abdismart</title>
 
+  <link rel="canonical" href="https://abdismart.com/terminos">
+  <!-- Las legales no compiten en buscadores: se indexan las que venden.
+       `follow` se conserva para que el enlace del pie siga pasando autoridad. -->
+  <meta name="robots" content="noindex, follow">
+
+  <!-- Open Graph / redes sociales. Sin og:image, WhatsApp y Facebook muestran
+       el enlace sin imagen y el clic cae en picado. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Abdismart">
+  <meta property="og:locale" content="es_CR">
+  <meta property="og:url" content="https://abdismart.com/terminos">
+  <meta property="og:title" content="Términos y condiciones — Abdismart">
+  <meta property="og:description" content="Términos y condiciones de contratación de Abdismart, operado por Grupo Abdi S.R.L. en Costa Rica.">
+  <meta property="og:image" content="https://abdismart.com/assets/og-abdismart.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Abdismart — tu negocio de salud, listo para atraer más clientes">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Términos y condiciones — Abdismart">
+  <meta name="twitter:description" content="Términos y condiciones de contratación de Abdismart, operado por Grupo Abdi S.R.L. en Costa Rica.">
+  <meta name="twitter:image" content="https://abdismart.com/assets/og-abdismart.png">
+
   <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
 
   <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
@@ -320,7 +342,12 @@
       font-size: 11px;
       color: var(--fog);
     }
-    .footer-legal { display: block; margin-top: 4px; opacity: .75; }
+    /* Sin `opacity` a propósito. Con .75, --fog (#565C69) se aclaraba a
+       #7e838d y sobre el fondo claro daba 3,55:1, por debajo del 4,5:1 que
+       exige un texto de 11px. Aclarar un color ya atenuado es la forma más
+       fácil de romper el contraste sin notarlo: el color del token sí pasa,
+       la opacidad encima es la que lo tumba. */
+    .footer-legal { display: block; margin-top: 4px; }
 
     @media (max-width: 940px) {
       .wrap { grid-template-columns: 1fr; gap: 32px; padding-top: 36px; }

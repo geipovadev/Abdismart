@@ -14,6 +14,25 @@
 
   <title>Empieza tu web — Abdi</title>
 
+  <link rel="canonical" href="https://abdismart.com/empezar">
+
+  <!-- Open Graph / redes sociales. Sin og:image, WhatsApp y Facebook muestran
+       el enlace sin imagen y el clic cae en picado. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Abdismart">
+  <meta property="og:locale" content="es_CR">
+  <meta property="og:url" content="https://abdismart.com/empezar">
+  <meta property="og:title" content="Empieza tu web — Abdi">
+  <meta property="og:description" content="Cuéntanos de tu negocio en 9 preguntas. Dos minutos y te contactamos por WhatsApp para arrancar tu web.">
+  <meta property="og:image" content="https://abdismart.com/assets/og-abdismart.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Abdismart — tu negocio de salud, listo para atraer más clientes">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Empieza tu web — Abdi">
+  <meta name="twitter:description" content="Cuéntanos de tu negocio en 9 preguntas. Dos minutos y te contactamos por WhatsApp para arrancar tu web.">
+  <meta name="twitter:image" content="https://abdismart.com/assets/og-abdismart.png">
+
   <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
 
   <!-- Se aplica el tema antes de pintar para evitar el parpadeo de color. -->
@@ -38,6 +57,13 @@
   <link rel="stylesheet" href="assets/fonts.css?v=3">
 
   <style>
+    /* Visible para lectores de pantalla y buscadores, no para la vista. Se usa
+       en el h1 de esta página: el asistente pinta las preguntas con JS y no hay
+       sitio en el diseño para un titular, pero la página necesita uno. */
+    .solo-lectores {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     /* Tokens del sistema Monolito — idénticos a index.html. */
@@ -500,10 +526,11 @@
 </header>
 
 <main class="stage">
+  <h1 class="solo-lectores">Empieza tu web con Abdismart</h1>
   <!-- Paso activo. El contenido lo pinta el script. -->
   <div class="step-wrap anim" id="step-wrap">
     <div class="counter" id="counter"></div>
-    <h1 class="question" id="question"></h1>
+    <h2 class="question" id="question"></h2>
     <p class="help is-hidden" id="help"></p>
     <div id="field-slot"></div>
     <div class="hp-field" aria-hidden="true">
@@ -521,7 +548,7 @@
   <!-- Pantalla final. -->
   <div class="done" id="done">
     <div class="done-icon">✓</div>
-    <h1 class="done-title">Recibido.</h1>
+    <h2 class="done-title">Recibido.</h2>
     <p class="done-text">Te escribiremos pronto por el medio que elegiste para coordinar los pasos finales.</p>
     <div class="done-actions">
       <a class="btn-primary" href="https://wa.me/50689814520" target="_blank" rel="noopener">Escríbenos por WhatsApp</a>

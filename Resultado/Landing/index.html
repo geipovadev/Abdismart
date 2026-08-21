@@ -13,16 +13,27 @@
 
   <script src="assets/medicion.js?v=3" defer></script>
 
-  <!-- Open Graph / redes sociales -->
-  <meta property="og:title" content="Abdi — Tu negocio de salud, listo para atraer más clientes">
-  <meta property="og:description" content="Web profesional, dominio y soporte continuo para tu negocio de salud. Abdi resuelve la parte técnica por ti.">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="es_LA">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Abdi — Tu negocio de salud, listo para atraer más clientes">
-  <meta name="twitter:description" content="Web profesional, dominio y soporte continuo para tu negocio de salud. Abdi resuelve la parte técnica por ti.">
 
   <title>Abdi — Tu negocio de salud, listo para atraer más clientes</title>
+
+  <link rel="canonical" href="https://abdismart.com/">
+
+  <!-- Open Graph / redes sociales. Sin og:image, WhatsApp y Facebook muestran
+       el enlace sin imagen y el clic cae en picado. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Abdismart">
+  <meta property="og:locale" content="es_CR">
+  <meta property="og:url" content="https://abdismart.com/">
+  <meta property="og:title" content="Abdi — Tu negocio de salud, listo para atraer más clientes">
+  <meta property="og:description" content="Abdi crea y mantiene webs profesionales para negocios de salud. Dominio, hosting y soporte continuo en español incluidos.">
+  <meta property="og:image" content="https://abdismart.com/assets/og-abdismart.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Abdismart — tu negocio de salud, listo para atraer más clientes">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Abdi — Tu negocio de salud, listo para atraer más clientes">
+  <meta name="twitter:description" content="Abdi crea y mantiene webs profesionales para negocios de salud. Dominio, hosting y soporte continuo en español incluidos.">
+  <meta name="twitter:image" content="https://abdismart.com/assets/og-abdismart.png">
 
   <meta name="theme-color" content="#0A0B0D" id="meta-theme-color">
 
@@ -40,17 +51,63 @@
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
 
-  <!-- TODO al publicar: reemplazar con la URL absoluta del dominio final -->
-  <!-- <meta property="og:image" content="https://TUDOMINIO.com/og-image.png"> -->
-  <!-- <link rel="canonical" href="https://TUDOMINIO.com/"> -->
 
+  <!-- Datos estructurados. El bloque FAQPage es el que puede dar resultados
+       enriquecidos en Google: las preguntas aparecen desplegables bajo el
+       enlace y ocupan más espacio en la página de resultados.
+
+       OJO: las respuestas de aquí tienen que decir lo mismo que las de la
+       página. Si se editan las de abajo y estas no, Google lo trata como
+       contenido engañoso y puede retirar el resultado enriquecido.
+
+       Y no hay plazo de entrega en ninguna respuesta, a propósito: la fecha
+       se acuerda en la cotización. Ver CLAUDE.md. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Abdi",
-    "description": "Webs profesionales para negocios de salud. Dominio, hosting y soporte continuo en español incluidos.",
-    "email": "hola@abdismart.com"
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "¿Cuánto tarda en estar lista mi web?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Al confirmar el alcance y recibir la información de tu negocio, te indicamos una fecha de entrega clara. El plazo depende del contenido y las funciones que necesites, para que nunca sacrifiquemos calidad por velocidad."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué incluye exactamente el pago inicial?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "El briefing guiado, el diseño completo, la revisión humana, el dominio (primer año), la configuración de hosting, SSL, SEO básico, integraciones y el video de onboarding. La mensualidad cubre hosting, soporte, actualizaciones de seguridad y cambios menores mensuales."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Puedo pedir cambios en mi web?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí, cuando quieras. Tu mensualidad incluye un equipo especializado que hace los cambios por ti — textos, imágenes, precios, nuevas secciones. Tú pides por WhatsApp, nosotros lo resolvemos. Sin que toques nada."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Qué pasa si no me gusta el resultado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Antes de publicar tienes una ronda de revisión para pedir ajustes. Si después de eso el resultado no cumple con lo acordado en el briefing, lo rehacemos. No publicamos nada sin tu aprobación."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Puedo cancelar cuando quiera?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí. La mensualidad es mes a mes, sin contrato largo. Si cancelas, el dominio es tuyo y podemos exportarte los archivos de tu web. Sin drama, sin penalizaciones."
+        }
+      }
+    ]
   }
   </script>
 
@@ -2677,7 +2734,12 @@
       text-align: center;
       padding-top: 24px;
     }
-    .footer-legal { display: block; margin-top: 4px; opacity: .75; }
+    /* Sin `opacity` a propósito. Con .75, --fog (#565C69) se aclaraba a
+       #7e838d y sobre el fondo claro daba 3,55:1, por debajo del 4,5:1 que
+       exige un texto de 11px. Aclarar un color ya atenuado es la forma más
+       fácil de romper el contraste sin notarlo: el color del token sí pasa,
+       la opacidad encima es la que lo tumba. */
+    .footer-legal { display: block; margin-top: 4px; }
 
     /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 900px) {
