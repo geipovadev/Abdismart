@@ -3,6 +3,7 @@ import { prospectingRun } from './prospecting.js';
 import { previewEvent, previewGenerate, previewLead } from './preview.js';
 import { diagnosticAnalyze, diagnosticSession } from './diagnostico.js';
 import { metaConversion } from './capi.js';
+import { medicionAviso } from './medicion.js';
 import { whatsappReply, whatsappVerify, whatsappWebhook } from './whatsapp.js';
 import { instagramVerify, instagramWebhook } from './instagram.js';
 import { cleanText, MAX_USER_TURNS, normalizeHistory, runAgent } from './agent.js';
@@ -102,6 +103,13 @@ async function enrutarApi(request, env, ctx) {
   if (request.method === 'POST' && url.pathname === '/api/diagnostico') {
     if (await superaTope(env.RL_IA, request)) return json(TOPE_SUPERADO, 429);
     return diagnosticAnalyze(request, env, ctx);
+  }
+  // Un solo aviso para Meta y GA4, desde un beacon propio. Reemplaza a Google
+  // Tag Manager, gtag.js y el píxel: 400 KiB de terceros que se ejecutaban
+  // antes del primer pintado. Ver src/medicion.js.
+  if (request.method === 'POST' && url.pathname === '/api/medicion') {
+    if (await superaTope(env.RL_EVENTO, request)) return json(TOPE_SUPERADO, 429);
+    return medicionAviso(request, env, ctx);
   }
   if (request.method === 'POST' && url.pathname === '/api/meta/conversion') {
     if (await superaTope(env.RL_EVENTO, request)) return json(TOPE_SUPERADO, 429);

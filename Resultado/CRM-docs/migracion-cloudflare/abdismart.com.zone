@@ -1,0 +1,28 @@
+; Zona abdismart.com — para importar en Cloudflare
+; Generado desde la zona de Netlify (NS1), 19/08/2026.
+;
+; NO incluye los registros tipo NETLIFY, que son propietarios y no existen
+; fuera de esa plataforma. Se reemplazan así:
+;   abdismart.com      -> Custom Domain del Worker (lo crea wrangler)
+;   www.abdismart.com  -> Custom Domain del Worker
+;   crm.abdismart.com  -> ya viaja como CNAME más abajo, sigue en Netlify
+;
+; Tras importar, revisar en Cloudflare que estos queden en "DNS only" (nube
+; gris): crm, app, soporte y send. Proxiarlos rompe sus certificados.
+; n8n sí debe quedar proxiado (nube naranja): es un túnel de Cloudflare.
+
+_dmarc.abdismart.com.              3600   IN TXT   "v=DMARC1; p=none;"
+abdismart.com.                     3600   IN MX    10 mx1.privateemail.com.
+abdismart.com.                     3600   IN MX    10 mx2.privateemail.com.
+abdismart.com.                     3600   IN TXT   "v=spf1 include:spf.privateemail.com ~all"
+abdismart.com.                     3600   IN TXT   "google-site-verification=3MSeTWF82eCuY_uPU_P9bPyvjCFSp1n3d4tMeLhwhjo"
+abdismart.com.                     3600   IN TXT   "v=spf1 include:_spf.mlsend.com include:spf.privateemail.com ~all"
+abdismart.com.                     3600   IN TXT   "mailerlite-domain-verification=8788b74735f4e119e14645f6972221e9da890da8"
+app.abdismart.com.                 3600   IN CNAME 592a5f85c508c7a6.vercel-dns-017.com.
+crm.abdismart.com.                 3600   IN CNAME abdi-crm.netlify.app.
+litesrv._domainkey.abdismart.com.  3600   IN CNAME litesrv._domainkey.mlsend.com.
+n8n.abdismart.com.                 3600   IN CNAME efc77490-f1f5-4758-b3ec-6a97bbcda21f.cfargotunnel.com.
+resend._domainkey.abdismart.com.   3600   IN TXT   "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDWiM3q7ens3c9eNBbXQ54Uj4ZyV2rvhapJvqGTNUrr489KhYcEv60CJ8MJ9YVWam935J4VNfPrJFqAwGtLeDFqBm95T1HwHCMHnMsGJ2d/JkF9OWtCedX1QYxTCP4Wd2BuNA4m5EPL4r7n5SNWZWSop2mm1Avo43+NiTBgWCAf9QIDAQAB"
+send.abdismart.com.                3600   IN MX    10 feedback-smtp.us-east-1.amazonses.com.
+send.abdismart.com.                3600   IN TXT   "v=spf1 include:amazonses.com ~all"
+soporte.abdismart.com.             3600   IN CNAME links1.resend-dns.com.

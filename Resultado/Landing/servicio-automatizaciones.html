@@ -5,37 +5,21 @@
   <!-- El aviso de cookies va PRIMERO: declara el estado por defecto
        de Consent Mode, y si llega después de GTM el arranque de la
        visita ya se midió sin permiso. -->
-  <script src="assets/cookies.js?v=1"></script>
+  <script src="assets/cookies.js?v=2"></script>
+  <script src="assets/medicion.js?v=2" defer></script>
 
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-T48PBKJC');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTMTBVV7TT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-KTMTBVV7TT');
-  </script>
-  <!-- End Google tag -->
   <meta name="description" content="Automatizaciones para confirmar citas, reducir ausencias y recuperar espacios cancelados en consultorios.">
   <title>Automatizaciones para consultorios · Abdismart</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Poppins:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tipografías propias, no de fonts.googleapis.com. Ver assets/fonts.css:
+       la hoja de Google bloqueaba el render y encima obligaba a abrir conexión
+       a un segundo dominio para bajar los .woff2. -->
+  <link rel="preload" href="assets/fonts/archivo-700-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts.css?v=3">
   <link rel="stylesheet" href="assets/servicio-detalle.css">
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T48PBKJC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-<nav><div class="container nav-inner"><a class="logo" href="index.html"><img src="assets/logo-abdismart-dark.png" alt="Abdismart"></a><a class="back" href="index.html#servicios">← Volver a servicios</a></div></nav>
+<nav><div class="container nav-inner"><a class="logo" href="index.html"><img src="assets/logo-abdismart-dark.webp" alt="Abdismart"></a><a class="back" href="index.html#servicios">← Volver a servicios</a></div></nav>
 <main>
   <section class="hero"><div class="container"><span class="eyebrow">Automatizaciones personalizadas</span><h1>Tu equipo no debería perseguir confirmaciones.</h1><p class="hero-lead">Confirma citas, gestiona cancelaciones y vuelve a ofrecer los espacios libres. Sin llamadas repetidas ni listas manuales.</p><div class="hero-actions"><a class="btn btn-primary" href="empezar.html">Quiero recuperar tiempo y citas →</a><a class="btn btn-ghost" href="#solucion">Ver cómo funciona</a></div><div class="proof"><span>Recordatorios automáticos</span><span>Reprogramación guiada</span><span>Agenda actualizada</span></div></div></section>
   <section class="pain"><div class="container split"><div><span class="label">El costo de lo manual</span><h2>Una cancelación vacía más que la agenda.</h2></div><div class="pain-list"><div class="pain-item"><b>Confirmar consume horas.</b><p>El equipo repite los mismos mensajes antes de cada cita.</p></div><div class="pain-item"><b>Las cancelaciones llegan tarde.</b><p>Sin un flujo rápido, el horario queda libre y es difícil recuperarlo.</p></div><div class="pain-item"><b>La agenda depende de la memoria.</b><p>Seguimientos y reprogramaciones compiten con la atención del día.</p></div></div></div></section>

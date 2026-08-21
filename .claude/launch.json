@@ -39,6 +39,17 @@
         "dev"
       ],
       "port": 3000
+    },
+    {
+      "name": "worker",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--port",
+        "8788"
+      ],
+      "port": 8788
     }
   ]
 }

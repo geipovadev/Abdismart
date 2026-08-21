@@ -243,23 +243,49 @@ en los dos.
 ## Infraestructura
 
 **Landing.** HTML estático, sin build ni dependencias, un archivo por página. Se publica
-desde `Resultado/Landing/`, que no es la raíz del repositorio: por eso existen
-`wrangler.jsonc` (`assets.directory`) y `netlify.toml` (`build.publish`), que conviven
-apuntando a la misma carpeta. `_headers` define seguridad y caché.
+desde `Resultado/Landing/`, que no es la raíz del repositorio: por eso `wrangler.jsonc`
+declara `assets.directory`. `netlify.toml` (`build.publish`) apunta a la misma carpeta y
+se conserva por si hay que volver atrás, pero ya no es el camino de producción.
+`_headers` define seguridad y caché, y lo leen las dos plataformas.
 
-**Quién sirve qué:** `abdismart.com` lo sirve **Netlify**, con el sitio conectado al
-repositorio de GitHub —un push a `main` lo reconstruye—. El **Worker** sirve la API en
-`abdismart.geiner-porras-mb.workers.dev`, y la landing lo llama desde el navegador por
-ese dominio; por eso responde con cabeceras CORS.
+**Quién sirve qué:** `abdismart.com` lo sirve el **Worker de Cloudflare**, landing y API
+juntas, desde `Resultado/Landing` (`assets.directory` en `wrangler.jsonc`). Se migró desde
+Netlify en agosto de 2026 porque Netlify bloqueó el despliegue por crédito agotado
+—`Skipped due to account credit usage exceeded`, y el CLI responde `Forbidden`—. El
+detalle está en `Resultado/CRM-docs/migracion-cloudflare/`.
 
-`npx wrangler deploy` publica la API, **no la landing**. Para cambiar lo que se ve en
-`abdismart.com` hay que pasar por Netlify. El Worker sabe servir la landing como
-respaldo, pero no es el camino de producción.
+**Un solo comando publica todo:**
 
 ```bash
 npx wrangler dev      # landing + endpoints del Worker, en local
-npx wrangler deploy   # publica la API del Worker
+npx wrangler deploy   # publica la landing Y la API
 ```
+
+Cuatro cosas que no se deducen de los archivos:
+
+- **`crm.abdismart.com` sigue en Netlify.** La migración fue solo de la landing. Y como
+  Netlify está bloqueado, el CRM no se puede volver a desplegar hasta resolver el
+  crédito; lo ya publicado se sigue sirviendo.
+- **El dominio está conectado desde el panel, no desde `wrangler.jsonc`.** No hay
+  `routes` declaradas. Un `deploy` no lo desconecta, pero el enlace no es reproducible
+  desde el repositorio: si se recrea el Worker, el dominio no vuelve solo. El bloque
+  `routes` listo para pegar está en el README de la migración.
+- **La URL buena pasa a ser la corta.** El Worker sirve con `html_handling:
+  auto-trailing-slash`, así que `/diagnostico.html` responde 307 hacia `/diagnostico`.
+  Los enlaces viejos siguen funcionando.
+- **`_headers` sí lo aplica el Worker**, incluida la caché de las subcarpetas: la regla
+  `/assets/*` cubre `assets/fonts/`. Comprobado con `wrangler dev` y en producción.
+
+El Worker también responde en `abdismart.geiner-porras-mb.workers.dev`, y sigue mandando
+cabeceras CORS.
+
+**Pendiente de la migración:** la landing todavía llama a la API por ese dominio absoluto
+—`diagnostico.html`, `assets/meta-eventos.js`, `assets/preview-builder.js`—, cuando ahora
+es el mismo Worker el que sirve `abdismart.com`. Las rutas ya responden en el dominio
+propio (`OPTIONS https://abdismart.com/api/agent/chat` → 204), así que pasarlas a rutas
+relativas ahorraría un DNS más un TLS a un segundo dominio, y el preflight de CORS: unos
+260 ms en la primera llamada. `assets/agent-widget.js` ya elige el destino según el
+`hostname`, y ahí hay que mirar el contrato de la skill empaquetada antes de tocarlo.
 
 **Worker** (`src/worker.js`). Rutas:
 
@@ -268,10 +294,22 @@ npx wrangler deploy   # publica la API del Worker
 | `POST /api/agent/chat` · `/api/agent/lead` | Agente de diagnóstico del widget web | `agent.js`, `businesses.js` |
 | `POST /api/diagnostico` | Diagnóstico express con análisis de IA y PDF | `diagnostico.js` |
 | — | Al terminar el análisis, la ruta sale por correo a quien dejó email | `correo-diagnostico.js` |
+| `POST /api/medicion` | Medición del sitio: reparte a Meta y a GA4 desde el servidor | `medicion.js`, `ga4.js`, `capi.js` |
 | `POST /api/preview` · `/event` · `/lead` | Generador de vistas previas, con tope de consumo | `preview.js` |
 | `GET/POST /api/whatsapp/webhook` · `POST /api/whatsapp/reply` | Agente informativo de WhatsApp | `whatsapp.js` |
 | `GET/POST /api/instagram/webhook` | Canal de Instagram | `instagram.js` |
 | `POST /api/abdi-leads/run` | Captación con Apify (alias: `/api/prospecting/run`) | `prospecting.js` |
+
+**Medición.** La landing no carga Google Tag Manager, gtag.js ni el píxel de Meta:
+eran 400 KiB de terceros antes del primer pintado y costaban 15 puntos de Lighthouse
+en móvil. Ahora el navegador solo lleva `assets/medicion.js`, de un kilobyte, y el
+Worker reenvía a Meta por Conversions API y a Google por Measurement Protocol.
+
+Necesita dos cosas configuradas o no mide nada, y falla en silencio:
+`GA4_MEASUREMENT_ID` en `vars` y el secreto `GA4_API_SECRET`. Los nombres de evento
+son los del negocio —`vista`, `lead`, `contacto`…— y se traducen a la jerga de cada
+plataforma en `src/medicion.js`. Ver `Resultado/CRM-docs/medicion-servidor.md`, que
+incluye cómo verificarlo y qué se pierde respecto al píxel.
 
 Dos perfiles de agente en `agent.js`: `discovery` (la web pregunta para diagnosticar) e
 `info` (WhatsApp responde preguntas). La información aprobada de cada negocio está aislada
@@ -299,6 +337,13 @@ El sitio se identifica por su id, no por su nombre: `--site=abdi-crm` responde
 ```bash
 npx netlify-cli deploy --dir=Resultado/CRM --prod --site=37745d5c-2eb6-4922-a9d5-035fec7704a8
 ```
+
+> **Hoy este comando no publica.** Netlify tiene la cuenta bloqueada por crédito agotado
+> y responde `Forbidden`; fue lo que obligó a mudar la landing a Cloudflare el
+> 19/08/2026. El CRM ya publicado se sigue sirviendo, pero no se puede actualizar hasta
+> resolver el crédito. Si hay que sacar un cambio del CRM antes de eso, la salida es
+> mudarlo también a Cloudflare, y entonces `crm.abdismart.com` deja de ser «DNS only» en
+> el DNS de Cloudflare.
 
 **Supabase.** Base de datos y auth. Las migraciones se aplican a mano desde el editor SQL
 y viven en `Resultado/CRM-docs/migraciones/`. El pipeline de producción usa los estados

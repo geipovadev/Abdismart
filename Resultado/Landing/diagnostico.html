@@ -5,25 +5,8 @@
   <!-- El aviso de cookies va PRIMERO: declara el estado por defecto
        de Consent Mode, y si llega después de GTM el arranque de la
        visita ya se midió sin permiso. -->
-  <script src="assets/cookies.js?v=1"></script>
+  <script src="assets/cookies.js?v=2"></script>
 
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-T48PBKJC');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTMTBVV7TT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-KTMTBVV7TT');
-  </script>
-  <!-- End Google tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Trece preguntas sobre cómo atiendes hoy. Al final ves qué está frenando tus consultas y por dónde empezar. Sin costo.">
 
@@ -51,13 +34,14 @@
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/medicion.js?v=2" defer></script>
 
-  <script src="assets/meta-eventos.js?v=1"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tipografías propias, no de fonts.googleapis.com. Ver assets/fonts.css:
+       la hoja de Google bloqueaba el render y encima obligaba a abrir conexión
+       a un segundo dominio para bajar los .woff2. -->
+  <link rel="preload" href="assets/fonts/archivo-700-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts.css?v=3">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -919,18 +903,14 @@
   </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T48PBKJC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <div class="bg-glow"></div>
 <div class="bg-grid"></div>
 
 <header class="topbar">
   <a class="logo" href="index.html" aria-label="Abdismart — ir al inicio">
-    <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
-    <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+    <img class="logo-dark"  src="assets/logo-abdismart-dark.webp"  alt="Abdismart" width="421" height="90">
+    <img class="logo-light" src="assets/logo-abdismart-light.webp" alt="Abdismart" width="421" height="90">
   </a>
   <div class="topbar-right">
     <div class="theme-toggle" role="group" aria-label="Modo de color">
@@ -1119,6 +1099,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="progress" id="progress"><div class="progress-bar" id="progress-bar"></div></div>
 
+<!-- Antes de quien lo usa, no en <head>: así no frena el primer
+     pintado. No puede llevar defer porque el script de abajo lo
+     necesita ya, y los diferidos corren después de los que van
+     en línea. -->
+<script src="assets/supabase-rest.js?v=1"></script>
 <script>
 (function () {
   'use strict';
@@ -2002,7 +1987,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ═══════════════════════════════════════════════════════════ */
   var SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
   var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
-  var db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  var db = window.AbdiSupabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
   var params = new URLSearchParams(location.search);
   var UTM = {
@@ -2066,8 +2051,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     // El `content_name` es lo que distingue este público del de la portada,
     // que también dispara ViewContent. Si se cambia aquí, hay que rehacer
     // el público en el administrador de Meta.
-    if (window.AbdiMeta) {
-      window.AbdiMeta.track('ViewContent', { content_name: 'diagnostico_iniciado' }, {});
+    if (window.AbdiMedicion) {
+      window.AbdiMedicion.track('ver_servicio', { content_name: 'diagnostico_iniciado' }, {});
     }
   }
 
@@ -2487,8 +2472,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     // Aviso de conversión a Meta. Va después de guardar, no antes: si algo
     // falla aquí, el lead ya está en el CRM, que es lo que no se puede perder.
-    if (window.AbdiMeta) {
-      window.AbdiMeta.track('Lead',
+    if (window.AbdiMedicion) {
+      window.AbdiMedicion.track('lead',
         { content_name: 'diagnostico', content_category: r.package.key },
         { name: String(state.lead.name || ''), phone: wa, email: mail });
     }

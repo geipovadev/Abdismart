@@ -13,7 +13,16 @@
     // variable y no como secreto para que se vea en el repositorio y se
     // pueda revisar. El token de la Conversions API sí es secreto y se
     // configura con `wrangler secret put META_CAPI_TOKEN`.
-    "META_PIXEL_ID": "2728168144250754"
+    "META_PIXEL_ID": "2728168144250754",
+
+    // El id del flujo de GA4. Tampoco es secreto: viajaba en el HTML cuando la
+    // medición la hacía gtag.js en el navegador. Lo que sí es secreto es
+    // GA4_API_SECRET, que va con `wrangler secret put`.
+    //
+    // Si falta cualquiera de los dos, src/ga4.js devuelve `no_configurado` y
+    // sigue adelante sin error: el sitio funciona igual y deja de medirse sin
+    // que nadie se entere. Ver Resultado/CRM-docs/medicion-servidor.md.
+    "GA4_MEASUREMENT_ID": "G-KTMTBVV7TT"
   },
 
   // Topes de ráfaga por IP, contados en el borde de Cloudflare.

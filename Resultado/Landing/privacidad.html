@@ -5,25 +5,9 @@
   <!-- El aviso de cookies va PRIMERO: declara el estado por defecto
        de Consent Mode, y si llega después de GTM el arranque de la
        visita ya se midió sin permiso. -->
-  <script src="assets/cookies.js?v=1"></script>
+  <script src="assets/cookies.js?v=2"></script>
+  <script src="assets/medicion.js?v=2" defer></script>
 
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-T48PBKJC');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTMTBVV7TT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-KTMTBVV7TT');
-  </script>
-  <!-- End Google tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Política de privacidad de Abdismart, operado por Grupo Abdi S.R.L. en Costa Rica. Qué datos recolectamos, para qué los usamos y cómo ejercer sus derechos.">
 
@@ -45,9 +29,12 @@
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230A0B0D'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23C6FF3D'/%3E%3C/svg%3E">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tipografías propias, no de fonts.googleapis.com. Ver assets/fonts.css:
+       la hoja de Google bloqueaba el render y encima obligaba a abrir conexión
+       a un segundo dominio para bajar los .woff2. -->
+  <link rel="preload" href="assets/fonts/archivo-700-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts.css?v=3">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -357,15 +344,11 @@
   </style>
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T48PBKJC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
 <header class="topbar">
   <a class="logo" href="index.html" aria-label="Abdismart — ir al inicio">
-    <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
-    <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+    <img class="logo-dark"  src="assets/logo-abdismart-dark.webp"  alt="Abdismart" width="421" height="90">
+    <img class="logo-light" src="assets/logo-abdismart-light.webp" alt="Abdismart" width="421" height="90">
   </a>
   <div class="topbar-right">
     <div class="theme-toggle" role="group" aria-label="Modo de color">
@@ -420,7 +403,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="aviso">
       <strong>Lo esencial en cinco líneas</strong>
-      Recolectamos su nombre, su WhatsApp, su correo y los datos de su negocio para contactarlo y prestarle el servicio. No vendemos datos. Usamos inteligencia artificial para responder en WhatsApp y para escribir su diagnóstico, y siempre hay una persona detrás. El sitio usa herramientas de medición de Google y de Meta, y le preguntamos antes de activarlas. Puede pedirnos acceso, corrección o eliminación de sus datos cuando quiera, escribiendo a <a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a>. Esta política complementa los <a class="link" href="terminos.html">términos y condiciones</a>.
+      Recolectamos su nombre, su WhatsApp, su correo y los datos de su negocio para contactarlo y prestarle el servicio. No vendemos datos. Usamos inteligencia artificial para responder en WhatsApp y para escribir su diagnóstico, y siempre hay una persona detrás. Medimos las visitas con Google y Meta, pero desde nuestro servidor: su navegador no se conecta con ellos. Le preguntamos antes de activarlo. Puede pedirnos acceso, corrección o eliminación de sus datos cuando quiera, escribiendo a <a class="link" href="mailto:hola@abdismart.com">hola@abdismart.com</a>. Esta política complementa los <a class="link" href="terminos.html">términos y condiciones</a>.
     </div>
 
     <section id="s1">
@@ -509,11 +492,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p>Nuestro sitio usa cuatro tipos de tecnologías de almacenamiento y medición:</p>
       <ul>
         <li><strong>Preferencias del sitio.</strong> Guardamos en su navegador el modo de color que eligió, claro u oscuro, y el borrador del diagnóstico durante 24 horas para que pueda continuarlo. No identifican a nadie y no salen de su dispositivo.</li>
-        <li><strong>Google Analytics y Google Tag Manager.</strong> El sitio carga las herramientas de medición de Google para saber qué páginas y campañas funcionan. Registran la página visitada, la página de procedencia, los parámetros de campaña, su dirección IP y datos de su dispositivo, e instalan cookies propias de Google. Esa información se procesa en servidores de Google, principalmente en Estados Unidos.</li>
-        <li><strong>Píxel de Meta.</strong> La página de inicio carga el píxel de Meta Platforms para medir el resultado de nuestros anuncios en Facebook e Instagram. Ese píxel puede instalar cookies de Meta y enviarle información sobre su visita. Meta trata esos datos como responsable independiente, según sus propias políticas.</li>
+        <li><strong>Medición desde nuestro servidor.</strong> Nuestro sitio ya no carga las herramientas de Google ni el píxel de Meta: su navegador no se conecta con ellos. En su lugar, cuando usted acepta, nuestro propio servidor les envía la información de la visita. Lo que se envía es la página visitada, la página de procedencia, los parámetros de campaña, su dirección IP y el identificador de su navegador. El destino es el mismo de antes —Google Analytics y Meta Platforms, en servidores principalmente en Estados Unidos— y ambos siguen tratando esos datos como responsables independientes, conforme a sus propias políticas.</li>
+        <li><strong>Cookies de medición, ahora nuestras.</strong> Para reconocer que varias páginas son la misma visita, nuestro servidor instala cuatro cookies propias: un identificador de visitante, el inicio de la sesión y dos identificadores que Meta necesita para relacionar una consulta con el anuncio por el que usted llegó. Son cookies de este dominio y están marcadas <em>HttpOnly</em>, de modo que ningún script de la página puede leerlas.</li>
+        <li><strong>Sus datos de contacto hacia Meta.</strong> Cuando usted deja nombre, correo o teléfono en un formulario, enviamos esos datos a Meta <strong>cifrados con un resumen criptográfico irreversible</strong>, nunca en claro, para que pueda medir si su consulta vino de un anuncio. Meta solo puede comprobar si coinciden con alguien que ya conoce; no puede reconstruirlos desde ese resumen. A Google no le enviamos ningún dato de contacto.</li>
         <li><strong>Registro de campaña propio.</strong> Cuando usted deja sus datos guardamos junto a ellos la página de procedencia y los parámetros de campaña, para saber de dónde llegó la consulta.</li>
       </ul>
-      <p>Al abrir el sitio por primera vez le mostramos un <strong>aviso para aceptar, rechazar o elegir por categoría</strong>. Hasta que responda, la medición y la publicidad quedan desactivadas: las herramientas de Google y de Meta no pueden escribir cookies ni enviar identificadores. Solo funcionan las necesarias, que son las que guardan su modo de color y el borrador del diagnóstico.</p>
+      <p>Al abrir el sitio por primera vez le mostramos un <strong>aviso para aceptar, rechazar o elegir por categoría</strong>. Hasta que responda no enviamos nada ni instalamos ninguna cookie de medición: que el envío salga de nuestro servidor y no de su navegador no cambia esa regla, y nuestro servidor vuelve a comprobar su respuesta antes de reenviar cada dato. Si acepta la medición pero rechaza la publicidad, Google recibe la visita marcada para que no alimente públicos de anuncios y a Meta no le enviamos nada. Mientras tanto solo funcionan las cookies necesarias, que son las que guardan su modo de color y el borrador del diagnóstico.</p>
       <p>Su elección se guarda durante seis meses y puede cambiarla cuando quiera desde <a class="link" href="#" data-cookies-preferencias>Preferencias de cookies</a>, en el pie de página. También puede bloquear o eliminar las cookies desde la configuración de su navegador y limitar la publicidad personalizada desde su cuenta de Facebook o Instagram. Rechazarlas no afecta el funcionamiento del sitio ni su capacidad de contratarnos.</p>
     </section>
 
@@ -546,7 +530,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div><dt>Mensajería</dt><dd><strong>Meta Platforms</strong>. Envío y recepción de mensajes por la API de WhatsApp Business y por Instagram.</dd></div>
         <div><dt>Modelos de IA</dt><dd><strong>OpenAI</strong>. Generación de las respuestas del agente y del texto del diagnóstico.</dd></div>
         <div><dt>Correo</dt><dd>Notificaciones de nuevas consultas y comunicaciones del proyecto.</dd></div>
-        <div><dt>Medición y publicidad</dt><dd><strong>Google</strong> (Analytics y Tag Manager) y <strong>Meta Platforms</strong> (píxel). Ver la sección 06.</dd></div>
+        <div><dt>Medición y publicidad</dt><dd><strong>Google</strong> (Analytics) y <strong>Meta Platforms</strong> (Conversions API). Los datos salen desde nuestro servidor, no desde su navegador. Ver la sección 06.</dd></div>
         <div><dt>Agenda de llamadas</dt><dd><strong>Cal.com</strong>. Cuando usted pulsa el botón para agendar, le trasladamos su nombre y su correo para rellenar el formulario de reserva.</dd></div>
         <div><dt>Prospección</dt><dd><strong>Apify</strong>. Recolección de la información pública de negocios descrita en la sección 08. Aquí no se trata ningún dato de nuestros clientes ni de quien nos escribe.</dd></div>
         <div><dt>Pagos</dt><dd>Procesamiento del medio de pago acordado en la cotización.</dd></div>

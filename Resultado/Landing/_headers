@@ -20,6 +20,17 @@
 #
 # Al agregar una herramienta nueva (chat, mapa, vídeo) hay que sumar su dominio
 # aquí, o dejará de cargar sin ningún mensaje visible en la página.
+#
+# Ya no hay NINGÚN dominio de terceros en la política, y eso es deliberado: la
+# landing no carga nada de fuera. Las tipografías se sirven desde
+# assets/fonts/, el SDK de Supabase se cambió por assets/supabase-rest.js, y
+# Google Tag Manager, gtag.js y el píxel de Meta salieron del navegador —ahora
+# la medición la hace el Worker, ver src/medicion.js—.
+#
+# El efecto secundario es que esta política ya sirve de alarma: si mañana algo
+# intenta cargar un script de fuera, el navegador lo bloquea y aparece en la
+# consola en vez de colarse en silencio. Añadir un dominio aquí tiene que ser
+# una decisión, no un descuido.
 
 /*
   X-Content-Type-Options: nosniff
@@ -27,8 +38,15 @@
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://api.fontshare.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.fontshare.com https://api.fontshare.com; img-src 'self' data: https://www.googletagmanager.com https://www.google-analytics.com https://www.facebook.com; connect-src 'self' https://abdismart.geiner-porras-mb.workers.dev https://zmlslhftqjljhvetmbya.supabase.co https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://connect.facebook.net https://www.facebook.com; frame-src https://www.googletagmanager.com; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self' https://abdismart.geiner-porras-mb.workers.dev https://zmlslhftqjljhvetmbya.supabase.co; frame-src 'none'; upgrade-insecure-requests
 
-# El logotipo no cambia entre despliegues: se puede cachear con agresividad.
+# Nada de assets/ cambia entre despliegues sin cambiar de nombre, así que se
+# cachea con agresividad. El patrón entra en las subcarpetas, de modo que cubre
+# también assets/fonts/*.woff2, que son 243 KB que conviene bajar una sola vez.
+#
+# El precio de esto es que un archivo editado sin renombrar se queda pegado en
+# el navegador del visitante durante un año. Por eso las hojas y los scripts
+# llevan ?v= en el HTML, y las tipografías llevan el peso y el subconjunto en el
+# nombre: al cambiar una fuente se cambia el archivo, no su contenido.
 /assets/*
   Cache-Control: public, max-age=31536000, immutable

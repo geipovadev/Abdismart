@@ -20,7 +20,10 @@ const SEND_TIMEOUT_MS = 8000;
 // Los que la landing dispara hoy. Lista cerrada: un `event_name` libre
 // ensucia el panel de Meta con eventos que nadie definió y que después no se
 // pueden borrar.
-const EVENTS = new Set(['Lead', 'Contact', 'ViewContent', 'CompleteRegistration', 'Schedule']);
+// `PageView` entró al quitar el píxel del navegador: antes lo mandaba fbq y
+// ahora no hay fbq. Meta lo usa para construir públicos de remarketing, así
+// que sin él las campañas pierden a quién volver a mostrarles el anuncio.
+const EVENTS = new Set(['PageView', 'Lead', 'Contact', 'ViewContent', 'CompleteRegistration', 'Schedule']);
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
@@ -218,6 +221,19 @@ async function enviarAMeta(env, evento) {
   } finally {
     clearTimeout(timer);
   }
+}
+
+// Envía un evento a Meta sin pasar por el endpoint HTTP. La usa medicion.js,
+// que ya validó consentimiento y armó la identidad del visitante, para no
+// tener que fabricar una petición falsa solo para reusar este código.
+export async function enviarEventoMeta(env, entrada) {
+  if (!env.META_PIXEL_ID || !env.META_CAPI_TOKEN) return { ok: false, motivo: 'no_configurado' };
+  if (!EVENTS.has(entrada.eventName)) return { ok: false, motivo: 'evento_no_reconocido' };
+
+  const user = await construirUserData(entrada);
+  const evento = construirEvento({ ...entrada, eventTime: horaEvento(entrada.eventTime) }, user);
+  const ok = await enviarAMeta(env, evento);
+  return { ok, motivo: ok ? 'enviado' : 'fallo' };
 }
 
 export async function metaConversion(request, env, ctx) {

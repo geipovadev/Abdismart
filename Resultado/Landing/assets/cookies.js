@@ -1,18 +1,20 @@
 /* Aviso de cookies.
  *
- * Este archivo tiene que cargar ANTES que Google Tag Manager. El estado por
- * defecto se declara con `gtag('consent', 'default', ...)`, y si llega
- * después, el arranque de la visita ya se midió sin permiso: Consent Mode
- * no puede retroceder sobre lo que ya salió.
+ * Desde que la medición salió del navegador, este archivo tiene un solo
+ * interlocutor: `AbdiMedicion`, en assets/medicion.js. Ya no hay Consent Mode
+ * de Google ni `fbq('consent')` que avisar, porque Google Tag Manager, gtag.js
+ * y el píxel de Meta ya no cargan.
  *
- * Qué hace cada mecanismo:
- *   Google  · Consent Mode. Las etiquetas cargan igual pero arrancan sin
- *             poder escribir cookies ni mandar identificadores. Al aceptar
- *             se les levanta la restricción y la medición pasa a completa.
- *   Meta    · fbq('consent', 'revoke') encola los eventos sin enviarlos.
- *             Consent Mode es de Google y no toca al píxel.
- *   Abdi    · AbdiMeta deja de mandar conversiones al Worker, que a su vez
- *             vuelve a comprobar el consentimiento antes de reenviarlas.
+ * Eso simplifica una cosa que antes era delicada. Con las etiquetas de
+ * terceros, el orden importaba: si este archivo llegaba después de Google Tag
+ * Manager, el arranque de la visita ya se había medido sin permiso y Consent
+ * Mode no podía retroceder. Ahora no hay carrera posible: medicion.js no manda
+ * absolutamente nada mientras no haya respuesta —la deja en cola— y el Worker
+ * la vuelve a comprobar antes de reenviar a Meta o a Google.
+ *
+ * Las dos respuestas van por separado hasta el servidor. Aceptar medición y
+ * rechazar publicidad es un estado válido: GA4 recibe el evento marcado como
+ * `non_personalized_ads` y Meta no recibe nada.
  */
 (function (global, doc) {
   'use strict';
@@ -40,47 +42,32 @@
 
   /* ── Declaración por defecto, antes de que cargue nada ───────── */
 
-  global.dataLayer = global.dataLayer || [];
-  function gtag() { global.dataLayer.push(arguments); }
+  // Ya no hay Consent Mode de Google ni `fbq('consent')` que avisar: Google Tag
+  // Manager, gtag.js y el píxel de Meta salieron del navegador y ahora la
+  // medición la hace el Worker. El estado por defecto sigue siendo «denegado»,
+  // pero se aplica donde importa: AbdiMedicion no manda nada hasta que esta
+  // persona responda, y el Worker lo vuelve a comprobar antes de reenviar.
+  //
+  // El almacenamiento de funcionalidad —modo claro u oscuro, borrador del
+  // diagnóstico— no se pregunta: es almacenamiento que la persona pidió al
+  // usar el sitio, y no se puede negar sin romperlo.
 
   var previo = leer();
 
-  // `functionality_storage` va concedido: cubre el modo claro u oscuro y el
-  // borrador del diagnóstico, que son almacenamiento que la persona pidió al
-  // usar el sitio. No se pregunta lo que no se puede negar.
-  gtag('consent', 'default', {
-    ad_storage: 'denied',
-    analytics_storage: 'denied',
-    ad_user_data: 'denied',
-    ad_personalization: 'denied',
-    personalization_storage: 'denied',
-    functionality_storage: 'granted',
-    security_storage: 'granted',
-    wait_for_update: 500
-  });
-
-  function aplicar(estado, esActualizacion) {
-    gtag('consent', esActualizacion ? 'update' : 'default', {
-      analytics_storage: estado.medicion ? 'granted' : 'denied',
-      ad_storage: estado.publicidad ? 'granted' : 'denied',
-      ad_user_data: estado.publicidad ? 'granted' : 'denied',
-      ad_personalization: estado.publicidad ? 'granted' : 'denied'
-    });
-
-    // El píxel puede no haber cargado todavía; se reintenta al cargar la
-    // página para no perder la orden.
-    function meta() {
-      if (typeof global.fbq !== 'function') return false;
-      global.fbq('consent', estado.publicidad ? 'grant' : 'revoke');
-      return true;
+  // Las dos respuestas viajan por separado hasta el Worker: se puede aceptar
+  // medición y rechazar publicidad, y entonces GA4 recibe el evento pero Meta
+  // no, y GA4 lo marca como `non_personalized_ads`.
+  function aplicar(estado) {
+    if (global.AbdiMedicion) {
+      global.AbdiMedicion.setConsent(estado.medicion, estado.publicidad);
+    } else {
+      // medicion.js puede no haber cargado todavía. Se deja la respuesta
+      // esperando y él la recoge al arrancar.
+      global.__abdiConsentPendiente = { medicion: estado.medicion, publicidad: estado.publicidad };
     }
-    if (!meta()) doc.addEventListener('DOMContentLoaded', meta);
-
-    if (global.AbdiMeta) global.AbdiMeta.setConsent(estado.publicidad);
-    else global.__abdiConsentPendiente = estado.publicidad;
   }
 
-  if (previo) aplicar(previo, true);
+  if (previo) aplicar(previo);
 
   /* ── El aviso ───────────────────────────────────────────────── */
 
@@ -201,7 +188,7 @@
   }
 
   function decidir(medicion, publicidad) {
-    aplicar(escribir(medicion, publicidad), true);
+    aplicar(escribir(medicion, publicidad));
     if (aviso) aviso.hidden = true;
   }
 

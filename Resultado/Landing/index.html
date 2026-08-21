@@ -5,44 +5,13 @@
   <!-- El aviso de cookies va PRIMERO: declara el estado por defecto
        de Consent Mode, y si llega después de GTM el arranque de la
        visita ya se midió sin permiso. -->
-  <script src="assets/cookies.js?v=1"></script>
+  <script src="assets/cookies.js?v=2"></script>
 
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-T48PBKJC');</script>
-  <!-- End Google Tag Manager -->
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTMTBVV7TT"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-KTMTBVV7TT');
-  </script>
-  <!-- End Google tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Abdi crea y mantiene webs profesionales para negocios de salud. Dominio, hosting y soporte continuo en español incluidos.">
   <meta name="facebook-domain-verification" content="enh67lc9il0a00pl7qzvflesyrnnd5" />
 
-  <!-- Meta Pixel Code -->
-  <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '2728168144250754');
-    fbq('track', 'PageView');
-  </script>
-  <!-- End Meta Pixel Code -->
-  <script src="assets/meta-eventos.js?v=1"></script>
+  <script src="assets/medicion.js?v=2" defer></script>
 
   <!-- Open Graph / redes sociales -->
   <meta property="og:title" content="Abdi — Tu negocio de salud, listo para atraer más clientes">
@@ -85,11 +54,14 @@
   }
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tipografías propias, no de fonts.googleapis.com. Ver assets/fonts.css.
+       El titular del hero es el elemento que Lighthouse mide como LCP y se
+       compone en Archivo 700: ese archivo se precarga para que llegue junto
+       con la hoja de estilo y no haya un segundo repintado al cambiar la
+       fuente. Poppins 400 es el cuerpo, y aparece igual de temprano. -->
+  <link rel="preload" href="assets/fonts/archivo-700-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/poppins-400-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/fonts.css?v=3">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -602,8 +574,7 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       margin-bottom: 36px;
-      opacity: 0;
-      animation: fadeUp .6s ease .1s forwards;
+      animation: slideUp .6s ease both;
     }
     .badge-dot {
       width: 6px; height: 6px;
@@ -621,8 +592,12 @@
       line-height: .94;
       color: var(--bone);
       margin-bottom: 28px;
-      opacity: 0;
-      animation: fadeUp .7s ease .22s forwards;
+      /* Sin animación de entrada, a propósito. Este titular es el elemento que
+         Lighthouse mide como LCP, y mientras estaba en `opacity: 0` esperando
+         un fadeUp con .22s de retraso el navegador no tenía nada que pintar:
+         el LCP no llegaba hasta que la animación arrancaba, ya con el hilo
+         principal ocupado. El resto del hero sí conserva su entrada, pero
+         desplazándose (slideUp), no apareciendo. */
     }
     .hero-headline em {
       font-family: 'Instrument Serif', serif;
@@ -636,8 +611,7 @@
       max-width: 520px;
       margin-bottom: 44px;
       line-height: 1.55;
-      opacity: 0;
-      animation: fadeUp .7s ease .38s forwards;
+      animation: slideUp .7s ease .06s both;
     }
     .hero-actions {
       display: flex;
@@ -669,6 +643,14 @@
       from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+    /* La misma entrada, pero sin tocar la opacidad. Lo que se anima está
+       pintado desde el primer fotograma, así que puede contar como LCP.
+       Es la variante que usa el hero; fadeUp se queda para lo de más abajo,
+       que no compite con el primer pintado. */
+    @keyframes slideUp {
+      from { transform: translateY(22px); }
+      to   { transform: translateY(0); }
+    }
     @keyframes iconBounce {
       0%,100% { transform: translateY(0); }
       20%      { transform: translateY(-0.3em); }
@@ -678,18 +660,97 @@
     }
 
     /* ─── TEXT ROTATION ──────────────────────────────────────── */
-    .rot-nowrap { white-space: nowrap; }
+    /* Rejilla de una sola celda: las cinco palabras se superponen ahí, así que
+       el hueco mide siempre lo que la más larga y cambiar de palabra no
+       recompone la línea del titular. Con el ancho suelto, pasar de "Clínica"
+       a "Odontología" reflotaba el <h1> y arrastraba medio hero: eran 0,157 de
+       los 0,159 de CLS. El sobrante de las palabras cortas queda después de la
+       coma, al final de la línea, y no se ve. */
     .rotating-word {
       color: var(--accent);
-      display: inline-block;
-      min-width: 0.25em;
+      display: inline-grid;
+      vertical-align: bottom;
+    }
+    .rot-word {
+      grid-area: 1 / 1;
+      justify-self: start;
+      white-space: nowrap;
     }
     .char-wrap {
       display: inline-block;
       overflow: hidden;
       vertical-align: bottom;
     }
-    .char-el { display: inline-block; }
+    /* La entrada y la salida escalonadas son CSS, no temporizadores por letra.
+       Antes cada cambio de palabra programaba dos setTimeout por carácter —unos
+       veinticuatro por ciclo, para siempre—; si el navegador los estrangulaba,
+       la letra se quedaba aparcada fuera de su marco y la palabra desaparecía
+       del titular. Aquí el escalón es transition-delay y --ci lleva el índice
+       invertido, que se escribe una sola vez al construir las palabras. */
+    .char-el {
+      display: inline-block;
+      transform: translateY(110%);
+      opacity: 0;
+      transition: transform .52s cubic-bezier(.34,1.56,.64,1) calc(var(--ci, 0) * 28ms),
+                  opacity   .3s  ease                         calc(var(--ci, 0) * 28ms);
+    }
+    .rot-word.is-in .char-el {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .rot-word.is-out .char-el {
+      transform: translateY(-110%);
+      opacity: 0;
+      transition: transform .3s  cubic-bezier(.4,0,1,1) calc(var(--ci, 0) * 22ms),
+                  opacity   .22s ease                   calc(var(--ci, 0) * 22ms);
+    }
+    /* Sin movimiento, el relevo es un corte seco. La palabra sigue cambiando:
+       lo que se quita es el desplazamiento, no la información. */
+    @media (prefers-reduced-motion: reduce) {
+      .char-el, .rot-word.is-out .char-el { transition: none; }
+    }
+    /* La usa el JS un solo fotograma, para recolocar la palabra sin que se vea
+       el salto cuando el visitante vuelve de otra pestaña. */
+    .rotating-word.sin-transicion .char-el { transition: none; }
+
+    /* ─── SALTAR EL RENDER DE LO QUE NO SE VE ─────────────────
+       La página mide unos 16.000 px en móvil y tiene 1.470 elementos, y el
+       navegador calculaba estilo y disposición de todos en cada pase, aunque
+       estuvieran a diez pantallas de distancia. Solo #servicios son 406
+       elementos —el 28% del DOM— con maquetas que además animan en bucle
+       fuera de pantalla.
+
+       Medido con red y CPU de móvil lento: el hilo principal baja de 3031 a
+       1607 ms, Style & Layout de 908 a 369 y Rendering de 437 a 124.
+
+       VA SOBRE EL .container INTERNO, NO SOBRE LA <section>. No es un capricho:
+       content-visibility implica `contain: layout`, que crea un contexto de
+       formato nuevo. Puesto en la sección, sus márgenes dejan de colapsar con
+       los de la siguiente y cada una crece unos 160 px —casi mil en total—.
+       Sobre el hijo, el exterior de la sección se comporta igual que antes.
+       Comprobado: la página mide 16.148 px con esto y 16.162 px sin ello.
+
+       contain-intrinsic-size reserva el alto mientras la sección no se pinta,
+       para que la barra de scroll no salte. Lleva `auto` porque el navegador
+       recuerda la medida real tras el primer render: el número es solo la
+       primera estimación, tomada a 375 px de ancho, y no necesita ser exacta.
+
+       El hero y la barra de confianza quedan fuera: se ven de entrada y
+       saltárselos no ahorraría nada. */
+    #como-funciona > .container,
+    #servicios > .container,
+    #incluye > .container,
+    #crece-con-abdi > .container,
+    #faq > .container,
+    #contacto > .container {
+      content-visibility: auto;
+    }
+    #como-funciona  > .container { contain-intrinsic-size: auto 1815px; }
+    #servicios      > .container { contain-intrinsic-size: auto 3516px; }
+    #incluye        > .container { contain-intrinsic-size: auto 2250px; }
+    #crece-con-abdi > .container { contain-intrinsic-size: auto 1730px; }
+    #faq            > .container { contain-intrinsic-size: auto  714px; }
+    #contacto       > .container { contain-intrinsic-size: auto  769px; }
 
     /* ─── TRUST BAR ──────────────────────────────────────────── */
     .trust-bar {
@@ -1223,7 +1284,7 @@
       border-radius: 90px 90px 14px 14px;
       background:
         linear-gradient(180deg, transparent 55%, rgba(15,38,34,.35)),
-        url('assets/odontologa-clinica-robles.png') center 24% / cover;
+        url('assets/odontologa-clinica-robles.webp') center 24% / cover;
       box-shadow: 0 16px 30px rgba(33,77,69,.18);
     }
     .dentist-photo::before {
@@ -1313,7 +1374,7 @@
       border-radius: 12px;
       background:
         linear-gradient(180deg, transparent 48%, rgba(19,45,40,.58)),
-        url('assets/odontologa-clinica-robles.png') center 19% / cover;
+        url('assets/odontologa-clinica-robles.webp') center 19% / cover;
       box-shadow: 0 14px 28px rgba(33,77,69,.14);
     }
     .dentist-about-visual::after {
@@ -2769,7 +2830,7 @@
       .flow-result { margin-top: 22px; }
       .visual-status { left: 14px; right: 14px; bottom: 14px; justify-content: center; }
       section       { padding: 80px 0; }
-      /* .rot-nowrap mantiene unidos palabra y coma, pero el espacio anterior
+      /* .rotating-word es inline-grid y no se parte, pero el espacio anterior
          sigue siendo punto de corte: en móvil la palabra baja de línea sola
          y el titular conserva tamaño en vez de encogerse. */
       .hero-headline { font-size: clamp(34px, 12vw, 52px); }
@@ -2817,25 +2878,17 @@
       .flow-line::after { transform: none; }
     }
   </style>
-  <link rel="stylesheet" href="assets/agent-widget.css?v=17">
+  <link rel="stylesheet" href="assets/agent-widget.css?v=18">
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T48PBKJC"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
-<noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=2728168144250754&amp;ev=PageView&amp;noscript=1"
-  alt=""
-/></noscript>
 
 <!-- NAV -->
 <nav id="nav">
   <div class="nav-inner">
     <div class="logo">
-      <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
-      <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+      <img class="logo-dark"  src="assets/logo-abdismart-dark.webp"  alt="Abdismart" width="421" height="90">
+      <img class="logo-light" src="assets/logo-abdismart-light.webp" alt="Abdismart" width="421" height="90">
     </div>
     <div class="menu" role="navigation" id="main-menu">
       <button class="menu__item active" data-href="#" style="--lineWidth:0px">
@@ -2919,7 +2972,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         Tu negocio con IA
       </div>
       <h1 class="hero-headline">
-        Abdi, tu <span class="rot-nowrap"><span id="rotating-word" class="rotating-word"></span>,</span><br>listo para atraer <em>más clientes.</em>
+        <!-- "Consultorio," va escrita en el HTML, con su coma, no la inyecta el
+             JS. Es la palabra más grande del titular que mide el LCP: si llega
+             recién cuando corre el script del final de la página, el LCP se
+             retrasa hasta ahí. El JS la trocea en letras al arrancar y añade
+             detrás las otras cuatro, apiladas en la misma celda. -->
+        Abdi, tu <span id="rotating-word" class="rotating-word">Consultorio,</span><br>listo para atraer <em>más clientes.</em>
       </h1>
       <p class="hero-sub">
         Web profesional, dominio y soporte continuo.<br>
@@ -3139,7 +3197,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
 
       <figure class="services-visual reveal d1" data-active="landing">
-        <img class="services-image" src="assets/servicios-recepcion-digital.png" alt="" width="1568" height="1003" loading="lazy">
+        <img class="services-image" src="assets/servicios-recepcion-digital.webp" alt="" width="1000" height="640" loading="lazy" decoding="async">
 
         <div class="service-demo demo-landing" aria-hidden="true">
           <div class="demo-window landing-mock">
@@ -3839,8 +3897,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="footer-inner">
       <div class="logo">
-        <img class="logo-dark"  src="assets/logo-abdismart-dark.png"  alt="Abdismart" width="421" height="90">
-        <img class="logo-light" src="assets/logo-abdismart-light.png" alt="Abdismart" width="421" height="90">
+        <img class="logo-dark"  src="assets/logo-abdismart-dark.webp"  alt="Abdismart" width="421" height="90" loading="lazy" decoding="async">
+        <img class="logo-light" src="assets/logo-abdismart-light.webp" alt="Abdismart" width="421" height="90" loading="lazy" decoding="async">
       </div>
       <ul class="footer-links">
         <li><a href="terminos.html">Términos</a></li>
@@ -3855,6 +3913,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </footer>
 
+<!-- Antes de quien lo usa, no en <head>: así no frena el primer
+     pintado. No puede llevar defer porque el script de abajo lo
+     necesita ya, y los diferidos corren después de los que van
+     en línea. -->
+<script src="assets/supabase-rest.js?v=1"></script>
 <script>
   // Cada servicio recibe su propia demostración a partir de una plantilla común.
   const serviceTemplate = document.querySelector('.services-template .services-visual');
@@ -3993,67 +4056,115 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   });
 
   // ── Text rotation (hero headline) ──────────────────────────
-  const ROT_WORDS  = ['Consultorio', 'Clínica', 'Odontología', 'Estética', 'Laboratorio'];
-  const INTERVAL   = 2600;
-  const STAGGER_IN = 28;
+  //
+  // Dos reglas gobiernan este bloque, y las dos vinieron de medir la página:
+  //
+  // 1. No se borra nada del DOM. Las cinco palabras se construyen una vez y se
+  //    quedan, apiladas en la misma celda de la rejilla (ver .rotating-word).
+  //    Antes cada cambio hacía `innerHTML = ''` y rehacía el subárbol del <h1>.
+  //    Eso invalidaba el candidato a LCP cada 2,6 s: Chrome descartaba el
+  //    titular y buscaba otro, así que Lighthouse medía 11,7 s cuando el
+  //    titular en realidad se pintaba a los 2,3. Y como las palabras no miden
+  //    lo mismo, la línea se recomponía en cada relevo y arrastraba el hero:
+  //    ahí estaba casi todo el CLS.
+  //
+  // 2. El escalón por letra es CSS, no JavaScript. Solo se cambian dos clases;
+  //    las transiciones y sus retrasos viven en la hoja de estilo. La versión
+  //    con dos setTimeout por carácter dejaba la palabra invisible en cuanto el
+  //    navegador estrangulaba los temporizadores.
+  //
+  // Estados de cada .rot-word: sin clase = esperando abajo, .is-in = en su
+  // sitio, .is-out = saliendo por arriba. Las dos posiciones de espera están a
+  // opacidad 0, así que pasar de una a otra no se ve y no hay que sincronizar
+  // nada más que el relevo.
+  const ROT_WORDS   = ['Consultorio', 'Clínica', 'Odontología', 'Estética', 'Laboratorio'];
+  const INTERVAL    = 2600;
   const STAGGER_OUT = 22;
+  const SALIDA_MS   = 300;   // debe coincidir con la transición de .is-out
 
-  let rotIdx = 0;
   const rotEl = document.getElementById('rotating-word');
 
-  function buildChars(word) {
-    return word.split('').map(char => {
-      const wrap = document.createElement('span');
-      wrap.className = 'char-wrap';
-      const el = document.createElement('span');
-      el.className = 'char-el';
-      el.textContent = char;
-      wrap.appendChild(el);
-      return { wrap, el };
-    });
-  }
+  let rotIdx = 0;
+  let rotWords = [];
 
-  function wordIn(word) {
-    rotEl.innerHTML = '';
-    const chars = buildChars(word);
-    const total  = chars.length;
-    chars.forEach(({ wrap }) => rotEl.appendChild(wrap));
-    chars.forEach(({ el }, i) => {
-      el.style.transform = 'translateY(110%)';
-      el.style.opacity   = '0';
-      const delay = (total - 1 - i) * STAGGER_IN;
-      setTimeout(() => {
-        el.style.transition = `transform 0.52s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms,
-                               opacity   0.3s  ease ${delay}ms`;
-        el.style.transform  = 'translateY(0)';
-        el.style.opacity    = '1';
-      }, 16);
-    });
-  }
+  // Un <span> por palabra y un <span> por letra. Corre una sola vez, antes del
+  // primer pintado, y sustituye el texto plano del HTML por la misma palabra ya
+  // troceada. La primera nace con .is-in: al estar la clase puesta desde que el
+  // nodo entra al documento no hay transición, así que se pinta sólida de una
+  // vez —es la que mide el LCP—.
+  function buildWords() {
+    const frag = document.createDocumentFragment();
+    rotWords = ROT_WORDS.map((word, index) => {
+      const wordEl = document.createElement('span');
+      wordEl.className = index === 0 ? 'rot-word is-in' : 'rot-word';
+      if (index !== 0) wordEl.setAttribute('aria-hidden', 'true');
 
-  function wordOut() {
-    const chars = Array.from(rotEl.querySelectorAll('.char-el'));
-    const total  = chars.length;
-    return new Promise(resolve => {
-      chars.forEach((el, i) => {
-        const delay = (total - 1 - i) * STAGGER_OUT;
-        setTimeout(() => {
-          el.style.transition = 'transform 0.3s cubic-bezier(0.4,0,1,1), opacity 0.22s ease';
-          el.style.transform  = 'translateY(-110%)';
-          el.style.opacity    = '0';
-        }, delay);
+      const letras = `${word},`.split('');
+      letras.forEach((char, i) => {
+        const wrap = document.createElement('span');
+        wrap.className = 'char-wrap';
+        const el = document.createElement('span');
+        el.className = 'char-el';
+        // Índice invertido: la última letra abre el escalón, como antes.
+        el.style.setProperty('--ci', String(letras.length - 1 - i));
+        el.textContent = char;
+        wrap.appendChild(el);
+        wordEl.appendChild(wrap);
       });
-      setTimeout(resolve, total * STAGGER_OUT + 340);
+
+      frag.appendChild(wordEl);
+      return wordEl;
     });
+    rotEl.replaceChildren(frag);
   }
 
-  async function cycleWord() {
-    await wordOut();
-    rotIdx = (rotIdx + 1) % ROT_WORDS.length;
-    wordIn(ROT_WORDS[rotIdx]);
+  // Deja la palabra activa en su sitio de golpe, sin transición, y las demás
+  // fuera. Es la red de seguridad del relevo: ver el comentario de cycleWord.
+  function snapActiva() {
+    const activa = rotWords[rotIdx];
+    rotEl.classList.add('sin-transicion');
+    rotWords.forEach(w => {
+      if (w === activa) return;
+      w.className = 'rot-word';
+      w.setAttribute('aria-hidden', 'true');
+    });
+    activa.className = 'rot-word is-in';
+    activa.removeAttribute('aria-hidden');
+    void rotEl.offsetWidth;   // fuerza el recálculo antes de devolver la transición
+    rotEl.classList.remove('sin-transicion');
   }
 
-  wordIn(ROT_WORDS[0]);
+  // Con la pestaña en segundo plano el navegador congela las transiciones. Si
+  // el relevo ocurriera ahí, la palabra entrante se quedaría a medio camino
+  // —o sea, invisible— y al volver el titular se leería "Abdi, tu ___, listo
+  // para atraer más clientes". Pasa de verdad: basta abrir la landing en una
+  // pestaña de fondo. Así que el ciclo se detiene mientras nadie mira, y al
+  // volver se recoloca la palabra activa antes de seguir.
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) snapActiva();
+  });
+
+  function cycleWord() {
+    if (document.hidden) return;
+
+    const saliente = rotWords[rotIdx];
+    rotIdx = (rotIdx + 1) % rotWords.length;
+    const entrante = rotWords[rotIdx];
+
+    saliente.classList.replace('is-in', 'is-out');
+    saliente.setAttribute('aria-hidden', 'true');
+
+    // La salida escalonada termina con la última letra: su retraso más la
+    // duración de la transición.
+    const salida = SALIDA_MS + (saliente.querySelectorAll('.char-el').length - 1) * STAGGER_OUT;
+    setTimeout(() => {
+      saliente.classList.remove('is-out');
+      entrante.removeAttribute('aria-hidden');
+      entrante.classList.add('is-in');
+    }, salida);
+  }
+
+  buildWords();
   setInterval(cycleWord, INTERVAL);
 
   // Muro continuo: las tres historias se alternan y se duplican
@@ -4089,7 +4200,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ── Supabase: waitlist + métricas ───────────────────────────
   const SUPABASE_URL  = 'https://zmlslhftqjljhvetmbya.supabase.co';
   const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InptbHNsaGZ0cWpsamh2ZXRtYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1MDE3NjksImV4cCI6MjA5MzA3Nzc2OX0.ZCEMvADpg-SMaZqUQFxJBnacx5552rwTAFbfg0S485M';
-  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  // Ver assets/supabase-rest.js: mismas llamadas, sin el SDK del CDN.
+  const db = window.AbdiSupabase.createClient(SUPABASE_URL, SUPABASE_ANON);
   const params = new URLSearchParams(location.search);
   const attributionKey = 'abdismart_marketing_attribution_v1';
   const currentAttribution = {
@@ -4107,11 +4219,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const marketingAttribution = Object.fromEntries(Object.entries({ ...storedAttribution, ...currentAttribution }).filter(([, value]) => value));
   try { sessionStorage.setItem(attributionKey, JSON.stringify(marketingAttribution)); } catch (e) {}
 
-  // Pasa por AbdiMeta para que el mismo evento salga también desde el
-  // Worker, con el mismo id. Si el archivo no cargó, queda el píxel solo.
-  function trackMeta(event, data, persona) {
-    if (window.AbdiMeta) return window.AbdiMeta.track(event, data || {}, persona || {});
-    if (typeof window.fbq === 'function') window.fbq('track', event, data || {});
+  // Un solo camino: el beacon propio, que el Worker reenvía a Meta y a GA4.
+  // Antes había dos —píxel del navegador y Worker— y había que deduplicarlos
+  // por event_id; ya no hace falta porque el píxel no existe.
+  // Los nombres son los del negocio, no los de cada plataforma: la traducción
+  // vive en src/medicion.js.
+  function medir(evento, datos, persona) {
+    if (window.AbdiMedicion) window.AbdiMedicion.track(evento, datos || {}, persona || {});
   }
 
   // Pop-up de dos pasos para Crece con Abdi.
@@ -4138,7 +4252,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     document.body.classList.add('founder-modal-open');
     if (!founderModal.dataset.viewTracked) {
       founderModal.dataset.viewTracked = 'true';
-      trackMeta('ViewContent', { content_name: 'programa_fundador', content_category: 'odontologia' });
+      medir('ver_servicio', { content_name: 'programa_fundador', content_category: 'odontologia' });
     }
     if (!manual) {
       try { sessionStorage.setItem(founderSeenKey, '1'); } catch (e) {}
@@ -4250,17 +4364,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     showFounderStep('success');
-    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio },
+    medir('lead', { content_name: 'programa_fundador', content_category: negocio },
       { name: nombre, phone: whatsapp, email: email });
   });
 
-  // Registro de visita (conversión = waitlist / page_views)
-  db.from('page_views').insert({
-    path: location.pathname,
-    referrer: document.referrer || null,
-    utm_source: marketingAttribution.source || null,
-    utm_campaign: marketingAttribution.campaign || null
-  }).then(() => {});
+  // Registro de visita (conversión = waitlist / page_views).
+  // Va después de que la página termine de cargar: es telemetría, nadie la
+  // espera, y disparada durante la carga competía por el hilo principal con
+  // el primer pintado.
+  function registrarVisita() {
+    db.from('page_views').insert({
+      path: location.pathname,
+      referrer: document.referrer || null,
+      utm_source: marketingAttribution.source || null,
+      utm_campaign: marketingAttribution.campaign || null
+    }).then(() => {});
+  }
+  if (document.readyState === 'complete') registrarVisita();
+  else addEventListener('load', registrarVisita, { once: true });
 
   // WhatsApp: guardar el contacto antes de abrir la conversación.
   const whatsappNumber = '50689814520';
@@ -4354,7 +4475,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return;
     }
 
-    trackMeta('Contact', { content_name: servicio }, { name: nombre, phone: whatsapp });
+    medir('contacto', { content_name: servicio }, { name: nombre, phone: whatsapp });
     const message = `Hola, soy ${nombre}. Me pueden enviar información sobre ${servicio}.`;
     window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
   });
@@ -4408,11 +4529,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     wlForm.style.display = 'none';
     wlSuccess.style.display = 'block';
-    trackMeta('Lead', { content_name: 'programa_fundador', content_category: negocio },
+    medir('lead', { content_name: 'programa_fundador', content_category: negocio },
       { name: nombre, phone: whatsapp });
   });
 </script>
-<script src="assets/agent-widget.js?v=17" data-business="abdismart" defer></script>
+<script src="assets/agent-widget.js?v=18" data-business="abdismart" defer></script>
 
 </body>
 </html>
