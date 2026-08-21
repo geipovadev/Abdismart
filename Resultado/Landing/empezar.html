@@ -1013,6 +1013,25 @@
 
     function finish() {
       state.sending = false;
+
+      // El brief es el formulario más largo del sitio: quien lo termina ya
+      // decidió. Hasta ahora esta página no medía ninguna conversión.
+      //
+      // Va como `lead` y no como `registro` a propósito. Meta necesita volumen
+      // para aprender a quién buscar, y aquí llegan pocos al mes: partir la
+      // señal en dos eventos distintos dejaría a los dos sin suficiente para
+      // optimizar. El content_name permite separarlos en los informes sin
+      // separar la señal.
+      //
+      // Va dentro de finish() y no de showDone() porque showDone() también se
+      // llama cuando el honeypot detecta un bot: ahí se muestra el éxito sin
+      // guardar nada, y medir eso sería inventarse conversiones.
+      if (window.AbdiMedicion) {
+        window.AbdiMedicion.track('lead',
+          { content_name: 'brief_completo', content_category: base.negocio || '' },
+          { name: base.nombre, phone: base.whatsapp, email: base.email || '' });
+      }
+
       showDone();
     }
 

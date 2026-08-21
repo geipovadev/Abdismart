@@ -2856,6 +2856,27 @@
     cal.textContent = explorando ? 'Agendar cuando te haga sentido' : 'Agendar llamada de 30 min';
     cal.addEventListener('click', function () {
       patchRow({ status: 'booked', cal_clicked_at: new Date().toISOString() });
+
+      // La señal de intención más fuerte del sitio: alguien que terminó el
+      // diagnóstico y pide una llamada de media hora. Hasta ahora solo se
+      // guardaba en el CRM y a Meta no le llegaba nada.
+      //
+      // OJO CON LO QUE MIDE: esto es el clic hacia Cal.com, no una cita
+      // confirmada. La persona puede irse sin reservar. Se manda como `agenda`
+      // —Schedule para Meta— porque es el evento estándar más cercano, y uno
+      // estándar sirve para optimizar campañas mientras que uno a medida no.
+      // Para medir la reserva de verdad haría falta un webhook de Cal.com
+      // hacia el Worker; mientras tanto, esta cifra se lee como intención, no
+      // como agenda llena.
+      if (window.AbdiMedicion) {
+        window.AbdiMedicion.track('agenda',
+          { content_name: 'llamada_30min', content_category: r.package.key },
+          {
+            name:  String(state.lead.name || ''),
+            phone: String(state.lead.whatsapp || ''),
+            email: String(state.lead.email || '')
+          });
+      }
     }, { once: true });
 
     // CTA 2 · WhatsApp con una persona. El mensaje va escrito desde el lado
