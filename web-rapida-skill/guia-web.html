@@ -1,0 +1,703 @@
+<meta charset="utf-8">
+<title>web-rapida</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  /* ───────────────────────────────────────────────────────────
+     Paleta completa en :root = tema claro. Los bloques de abajo
+     solo REDEFINEN tokens, nunca declaran color de un componente:
+     un color cuyo único sitio es un [data-theme] no se aplica en
+     el estado «sistema», que es el que ve la mayoría.
+     ─────────────────────────────────────────────────────────── */
+  :root {
+    --fondo:        #F5F7F9;
+    --superficie:   #FFFFFF;
+    --superficie-2: #EDF1F4;
+    --hundido:      #16202B;   /* fondo de los bloques de código */
+    --hundido-tinta:#DCE5EC;
+    --hundido-tenue:#8A9DAC;  /* sobre el fondo oscuro del código, no el de la página */
+    --tinta:        #15202B;
+    --tinta-suave:  #4E6273;
+    --tinta-tenue:  #5C6D80;
+    --borde:        #D9E1E7;
+    --borde-fuerte: #BECAD3;
+    --acento:       #A44F08;
+    --acento-flojo: #FBF1E6;
+    --acento-borde: #DFBD97;
+    --mejor:        #0F7A63;
+    --mejor-flojo:  #E7F3EF;
+    --sombra:       0 1px 2px rgba(21,32,43,.05), 0 8px 24px -12px rgba(21,32,43,.14);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fondo:        #10181F;
+      --superficie:   #18222C;
+      --superficie-2: #1F2B36;
+      --hundido:      #0A1016;
+      --hundido-tinta:#C9D6E0;
+    --hundido-tenue:#8A9DAC;
+      --hundido-tenue:#8A9DAC;
+      --tinta:        #E6EDF3;
+      --tinta-suave:  #A2B3C1;
+      --tinta-tenue:  #75899A;
+      --borde:        #263442;
+      --borde-fuerte: #344656;
+      --acento:       #E89445;
+      --acento-flojo: #24190E;
+      --acento-borde: #4A341C;
+      --mejor:        #4BC0A0;
+      --mejor-flojo:  #10251F;
+      --sombra:       0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --fondo:        #10181F;
+    --superficie:   #18222C;
+    --superficie-2: #1F2B36;
+    --hundido:      #0A1016;
+    --hundido-tinta:#C9D6E0;
+    --tinta:        #E6EDF3;
+    --tinta-suave:  #A2B3C1;
+    --tinta-tenue:  #75899A;
+    --borde:        #263442;
+    --borde-fuerte: #344656;
+    --acento:       #E89445;
+    --acento-flojo: #24190E;
+    --acento-borde: #4A341C;
+    --mejor:        #4BC0A0;
+    --mejor-flojo:  #10251F;
+    --sombra:       0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .envoltura { max-width: 50rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  /* ── Cabecera ─────────────────────────────────────────── */
+  header.portada {
+    padding: 4.5rem 0 2.75rem;
+    border-bottom: 1px solid var(--borde);
+    margin-bottom: 3.5rem;
+  }
+  .etiqueta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .7rem; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--acento);
+    display: flex; align-items: center; gap: .6rem;
+    margin-bottom: 1.4rem;
+  }
+  .etiqueta::before {
+    content: ''; width: 1.75rem; height: 1px; background: var(--acento-borde);
+  }
+  h1 {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    font-weight: 700; letter-spacing: -.035em; line-height: 1.02;
+    margin: 0 0 1.1rem; text-wrap: balance;
+  }
+  .bajada {
+    font-size: 1.2rem; color: var(--tinta-suave);
+    max-width: 34rem; margin: 0 0 2rem; text-wrap: pretty;
+  }
+  .meta-portada {
+    display: flex; flex-wrap: wrap; gap: 1.75rem;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: .82rem; color: var(--tinta-tenue);
+  }
+  .meta-portada b {
+    display: block; color: var(--tinta); font-weight: 600;
+    font-size: 1.05rem; font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Tipografía de sección ────────────────────────────── */
+  h2 {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.6rem; font-weight: 650; letter-spacing: -.022em;
+    line-height: 1.18; margin: 3.5rem 0 1rem; text-wrap: balance;
+  }
+  h3 {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.1rem; font-weight: 600; letter-spacing: -.012em;
+    margin: 2.25rem 0 .6rem; text-wrap: balance;
+  }
+  p { margin: 0 0 1.1rem; text-wrap: pretty; }
+  strong { font-weight: 600; color: var(--tinta); }
+  em { font-style: italic; }
+  a { color: var(--acento); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 2px;
+  }
+
+  ul, ol { margin: 0 0 1.2rem; padding-left: 1.3rem; }
+  li { margin-bottom: .45rem; }
+  li::marker { color: var(--tinta-tenue); }
+
+  /* ── Pasos: el número es información, hay un orden real ── */
+  .paso {
+    display: grid; grid-template-columns: 3.25rem 1fr;
+    gap: 0 1.5rem; margin-top: 4rem;
+  }
+  .paso-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .8rem; font-weight: 500; color: var(--acento);
+    padding-top: .55rem;
+    border-top: 2px solid var(--acento);
+    font-variant-numeric: tabular-nums;
+  }
+  .paso > div { min-width: 0; }
+  .paso h2 { margin-top: 0; }
+  @media (max-width: 34rem) {
+    .paso { grid-template-columns: 1fr; gap: .75rem; }
+    .paso-num { border-top: none; padding-top: 0; }
+  }
+
+  /* ── Código ───────────────────────────────────────────── */
+  .cmd {
+    background: var(--hundido);
+    border-radius: 10px;
+    margin: 0 0 1.2rem;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+  .cmd-titulo {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--hundido-tenue);
+    padding: .7rem 1rem .1rem;
+  }
+  .cmd pre {
+    margin: 0; padding: .9rem 1rem 1.05rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .84rem; line-height: 1.68;
+    color: var(--hundido-tinta);
+  }
+  .cmd .c { color: var(--hundido-tenue); }             /* comentario */
+  .cmd .v { color: #E8A155; }             /* valor o bandera */
+  .cmd .n { color: #6FC3A6; }             /* número, resultado */
+  code:not(pre code) {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .85em;
+    background: var(--superficie-2);
+    border: 1px solid var(--borde);
+    border-radius: 4px; padding: .1em .35em;
+    color: var(--tinta);
+  }
+
+  /* ── Tablas ───────────────────────────────────────────── */
+  .tabla-envoltura { overflow-x: auto; margin: 0 0 1.4rem; }
+  table {
+    border-collapse: collapse; width: 100%;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: .9rem;
+  }
+  th, td {
+    text-align: left; padding: .65rem .9rem;
+    border-bottom: 1px solid var(--borde);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600; font-size: .72rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--tinta-tenue);
+    border-bottom: 1px solid var(--borde-fuerte);
+    white-space: nowrap;
+  }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.mejor { color: var(--mejor); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Avisos ───────────────────────────────────────────── */
+  .aviso {
+    background: var(--acento-flojo);
+    border-left: 3px solid var(--acento);
+    border-radius: 0 8px 8px 0;
+    padding: 1.1rem 1.25rem .4rem;
+    margin: 0 0 1.4rem;
+  }
+  .aviso-titulo {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-weight: 650; font-size: .95rem;
+    margin-bottom: .35rem; color: var(--tinta);
+  }
+  .aviso p { margin-bottom: .7rem; }
+  .aviso p:last-child { margin-bottom: .7rem; }
+
+  .nota {
+    border-left: 3px solid var(--borde-fuerte);
+    padding: .2rem 0 .2rem 1.1rem;
+    margin: 0 0 1.4rem;
+    color: var(--tinta-suave);
+    font-size: .96rem;
+  }
+  .nota p:last-child { margin-bottom: 0; }
+
+  /* ── Tarjeta de problema ──────────────────────────────── */
+  .problema {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem .3rem;
+    margin: 0 0 .9rem;
+    box-shadow: var(--sombra);
+  }
+  .problema h3 {
+    margin: 0 0 .5rem; font-size: 1rem;
+  }
+  .problema p:last-child { margin-bottom: 1rem; }
+
+  /* ── Cierre ───────────────────────────────────────────── */
+  footer {
+    margin-top: 5rem; padding-top: 2rem;
+    border-top: 1px solid var(--borde);
+    color: var(--tinta-tenue);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: .85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="envoltura">
+
+<header class="portada">
+  <div class="etiqueta">Skill para Claude Code</div>
+  <h1>web-rapida</h1>
+  <p class="bajada">Mide y mejora el rendimiento y el SEO de tu landing page,
+  con un método que evita las trampas de medición que hacen perder tardes
+  enteras.</p>
+  <div class="meta-portada">
+    <div>Instalación<b>5 min</b></div>
+    <div>Primera medición<b>15 min</b></div>
+    <div>Dependencias para empezar<b>ninguna</b></div>
+  </div>
+</header>
+
+<h2>Qué vas a conseguir</h2>
+
+<p>Esta guía viene de un caso real: una landing de un negocio de salud,
+optimizada de principio a fin. Todas las cifras que verás salen de ahí.
+Ninguna es una estimación.</p>
+
+<div class="tabla-envoltura">
+<table>
+  <thead>
+    <tr><th>Medida</th><th>Antes</th><th>Después</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Rendimiento en móvil</td><td class="num">63</td><td class="num mejor">84</td></tr>
+    <tr><td>Rendimiento en escritorio</td><td class="num">86</td><td class="num mejor">99</td></tr>
+    <tr><td>SEO</td><td class="num">82</td><td class="num mejor">100</td></tr>
+    <tr><td>Accesibilidad</td><td class="num">71</td><td class="num mejor">100</td></tr>
+    <tr><td>Tiempo hasta ver el titular</td><td class="num">11,7 s</td><td class="num mejor">3,7 s</td></tr>
+    <tr><td>Salto de contenido al cargar</td><td class="num">0,041</td><td class="num mejor">0</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="aviso">
+  <div class="aviso-titulo">Sé realista con el móvil</div>
+  <p>Si tu landing carga Google Tag Manager y el píxel de Facebook, tu techo
+  está cerca de <strong>70 puntos</strong>, y no es culpa de tu código: son
+  400 KB de JavaScript ajeno ejecutándose antes de que la página pinte nada.
+  Están medidos en 15 puntos. Hay salida, y está al final de esta guía, pero es
+  una decisión de negocio.</p>
+</div>
+
+<div class="paso">
+  <div class="paso-num">00</div>
+  <div>
+    <h2>Comprueba que tienes lo necesario</h2>
+    <p>Abre una terminal y pega esto:</p>
+    <div class="cmd">
+      <pre>node --version && npx --version && python3 --version</pre>
+    </div>
+    <p>Deberías ver tres números de versión. Si alguno falla:</p>
+    <div class="tabla-envoltura">
+    <table>
+      <thead><tr><th>Falta</th><th>Cómo instalarlo</th></tr></thead>
+      <tbody>
+        <tr><td><code>node</code> o <code>npx</code></td><td>Node.js desde <a href="https://nodejs.org">nodejs.org</a>, versión LTS</td></tr>
+        <tr><td><code>python3</code></td><td>en Mac ya viene. En Windows, desde <a href="https://python.org">python.org</a> marcando «Add to PATH»</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Y necesitas <strong>Google Chrome</strong> instalado. No hace falta abrirlo.</p>
+    <div class="nota">
+      <p><strong>En Windows</strong>, si <code>python3</code> no funciona prueba
+      <code>python</code>. Y usa PowerShell o Git Bash, no el símbolo del sistema
+      antiguo.</p>
+    </div>
+    <p><strong>No hace falta instalar nada más para empezar.</strong> Los dos
+    scripts principales —el que mide y el que audita el SEO— funcionan solo con
+    Python, sin librerías. Los otros dos piden dos paquetes, y solo si los vas a
+    usar.</p>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">01</div>
+  <div>
+    <h2>Instalar la skill</h2>
+    <p>Copia la carpeta <code>web-rapida-skill</code> donde Claude Code busca sus
+    skills.</p>
+    <div class="cmd">
+      <div class="cmd-titulo">Para ti, en todos tus proyectos · recomendada</div>
+      <pre>mkdir -p ~/.claude/skills
+cp -r web-rapida-skill ~/.claude/skills/web-rapida</pre>
+    </div>
+    <div class="cmd">
+      <div class="cmd-titulo">Solo para un proyecto · viaja en git con el repositorio</div>
+      <pre>mkdir -p .claude/skills
+cp -r web-rapida-skill .claude/skills/web-rapida</pre>
+    </div>
+    <p>Comprueba que quedó bien:</p>
+    <div class="cmd">
+      <pre>ls ~/.claude/skills/web-rapida
+<span class="c"># GUIA.md  README.md  SKILL.md  references  scripts</span></pre>
+    </div>
+    <h3>Comprobar que Claude la ve</h3>
+    <p>Abre Claude Code en tu proyecto y escribe <code>/web-rapida</code>. Si
+    aparece en la lista, está instalada. También se activa sola cuando le
+    escribes cosas como «mi web va lenta en móvil».</p>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">02</div>
+  <div>
+    <h2>La primera medición</h2>
+    <p>Este es el paso que más gente se salta, y el que decide si todo lo demás
+    sirve para algo.</p>
+    <p>Localiza <strong>la carpeta que se publica</strong>: la que contiene tu
+    <code>index.html</code>. Suele llamarse <code>public</code>,
+    <code>dist</code>, <code>build</code> o ser la raíz del proyecto.</p>
+    <div class="cmd">
+      <pre>python3 ~/.claude/skills/web-rapida/scripts/medir.py ./public</pre>
+    </div>
+    <p>La primera vez descarga Lighthouse y tarda un par de minutos. Verás
+    algo así:</p>
+    <div class="cmd">
+      <div class="cmd-titulo">Salida</div>
+      <pre><span class="c">  sirviendo ./public con 250 ms de retraso por petición
+  midiendo public (móvil, 3 corridas)…</span>
+
+  categoría                     public
+  ────────────────────────────────────
+  Rendimiento                       <span class="v">63</span>
+  SEO                               <span class="v">82</span>
+  Accesibilidad                     <span class="v">71</span>
+  Prácticas rec.                    <span class="n">92</span>
+
+  FCP                            4.2 s
+  LCP                            <span class="v">8.3 s</span>
+  TBT                           152 ms
+  CLS                            0.041</pre>
+    </div>
+    <p><strong>Apunta estos números.</strong> Son tu línea base. Sin ellos no
+    podrás demostrar después que algo mejoró, ni darte cuenta de que algo
+    empeoró.</p>
+
+    <h3>Por qué el script añade un retraso</h3>
+    <p>Porque medir en tu computadora <em>miente</em>. Un servidor local
+    contesta en un milisegundo; el real tarda 200 o 300. Y como una página pide
+    veinte o treinta archivos, ese retraso se multiplica.</p>
+    <div class="aviso">
+      <div class="aviso-titulo">La trampa que cuesta tardes enteras</div>
+      <p>En el caso real, el mismo sitio daba <strong>91 puntos en local y 63 en
+      producción</strong>, con los archivos idénticos. Con esa diferencia se
+      probaron dos mejoras, las dos parecieron inútiles, y una se descartó.</p>
+      <p>No lo era: valía 20 puntos.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">03</div>
+  <div>
+    <h2>Validar tu instrumento</h2>
+    <p>Si tu sitio ya está publicado, mide también producción:</p>
+    <div class="cmd">
+      <pre>python3 ~/.claude/skills/web-rapida/scripts/medir.py https://tusitio.com</pre>
+    </div>
+    <p>Compara las dos puntuaciones de rendimiento:</p>
+    <div class="tabla-envoltura">
+    <table>
+      <thead><tr><th>Diferencia</th><th>Qué significa</th></tr></thead>
+      <tbody>
+        <tr><td class="num">menos de 5</td><td>perfecto, ya puedes trabajar</td></tr>
+        <tr><td class="num">más de 5</td><td>ajusta el retraso</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Para ajustarlo, mira cuánto tarda tu servidor en contestar: abre tu sitio
+    en Chrome, pulsa <code>F12</code>, pestaña <strong>Red</strong>, recarga, y
+    mira el tiempo de la primera petición. Usa ese número:</p>
+    <div class="cmd">
+      <pre>python3 ~/.claude/skills/web-rapida/scripts/medir.py ./public <span class="v">--rtt 400</span></pre>
+    </div>
+    <p>Sube o baja hasta que las dos se acerquen. <strong>Ese es el momento en
+    que tu instrumento empieza a servir.</strong></p>
+    <div class="nota">
+      <p>Si tu sitio todavía no está publicado, usa 250 ms. Es un valor
+      razonable para un hosting normal.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">04</div>
+  <div>
+    <h2>Auditar el SEO</h2>
+    <p>Esto es instantáneo y no toca ningún archivo:</p>
+    <div class="cmd">
+      <pre>python3 ~/.claude/skills/web-rapida/scripts/auditar-seo.py ./public \
+  <span class="v">--dominio</span> https://tusitio.com</pre>
+    </div>
+    <p>Cada problema viene con la razón detrás:</p>
+    <div class="cmd">
+      <div class="cmd-titulo">Salida</div>
+      <pre>  <span class="v">✗ index.html: sin canonical</span>
+    sin ella, la misma página con y sin barra, con utm_ o en
+    otro dominio se ve como copias distintas
+
+  <span class="v">✗ index.html: sin og:image</span>
+    al compartir el enlace en WhatsApp o Facebook sale sin
+    imagen y casi nadie lo abre</pre>
+    </div>
+    <p>En el caso real encontró <strong>17 problemas</strong> en un sitio que
+    llevaba meses publicado, incluido un <code>canonical</code> que seguía
+    apuntando a <code>TUDOMINIO.com</code> de la plantilla original.</p>
+    <h3>Los cinco que más daño hacen</h3>
+    <ol>
+      <li><strong><code>canonical</code></strong> — sin ella, la misma página se
+      ve como varias copias que compiten entre sí.</li>
+      <li><strong><code>og:image</code></strong> — sin imagen, tu enlace en
+      WhatsApp sale como una línea de texto gris.</li>
+      <li><strong>Un solo <code>h1</code></strong> por página.</li>
+      <li><strong><code>sitemap.xml</code></strong> declarado en <code>robots.txt</code>.</li>
+      <li><strong><code>alt</code></strong> en todas las imágenes.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">05</div>
+  <div>
+    <h2>Pedirle a Claude que lo arregle</h2>
+    <p>Aquí es donde la skill hace el trabajo. Abre Claude Code en tu proyecto y
+    escríbele algo así:</p>
+    <div class="cmd">
+      <div class="cmd-titulo">Lo que le dices a Claude</div>
+      <pre>Quiero mejorar el rendimiento y el SEO de mi landing.
+Está en ./public y en producción es https://tusitio.com.
+
+Ya medí: 63 en móvil, 86 en escritorio, LCP de 8,3 s.
+La auditoría de SEO encontró 17 problemas.</pre>
+    </div>
+    <p>Claude carga la skill y sigue el método: diagnostica, propone en orden de
+    impacto y mide cada cambio.</p>
+
+    <h3>Si prefieres hacerlo tú</h3>
+    <p>El orden importa. Esto es lo que costaba cada cosa, medido:</p>
+    <div class="tabla-envoltura">
+    <table>
+      <thead><tr><th>Causa</th><th>Costaba</th></tr></thead>
+      <tbody>
+        <tr><td>Etiquetas de terceros (GTM, píxel)</td><td class="num">15 puntos</td></tr>
+        <tr><td>El elemento más grande se destruye y se recrea</td><td class="num">hasta 20 puntos</td></tr>
+        <tr><td>Imágenes sin optimizar</td><td class="num">3,2 MB → 51 KB</td></tr>
+        <tr><td>Trabajo de disposición innecesario</td><td class="num">hilo principal −47%</td></tr>
+        <tr><td>Tipografías cargadas desde Google</td><td class="num">2 viajes extra</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p><strong>Empieza por las imágenes.</strong> Es lo que más bytes ahorra con
+    menos riesgo:</p>
+    <div class="cmd">
+      <div class="cmd-titulo">Primero mira qué hay · no modifica nada</div>
+      <pre>python3 ~/.claude/skills/web-rapida/scripts/convertir-imagenes.py ./public/assets</pre>
+    </div>
+    <div class="cmd">
+      <div class="cmd-titulo">Si te convence, convierte</div>
+      <pre>pip install pillow
+python3 ~/.claude/skills/web-rapida/scripts/convertir-imagenes.py \
+  ./public/assets <span class="v">--aplicar --ancho 900</span></pre>
+    </div>
+    <div class="nota">
+      <p><strong>Para saber qué ancho usar:</strong> abre tu página, clic derecho
+      sobre la imagen, <em>Inspeccionar</em>, y mira las dimensiones que muestra
+      el navegador. Multiplica por 2 para pantallas retina.</p>
+    </div>
+    <p>El script <strong>no borra los originales</strong>. Te imprime la lista de
+    referencias que tienes que cambiar en tu HTML y CSS.</p>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">06</div>
+  <div>
+    <h2>Un cambio, una medición</h2>
+    <p>La regla que más tiempo ahorra. Aplica <strong>un</strong> cambio, mide,
+    compara.</p>
+    <div class="cmd">
+      <pre>python3 ~/.claude/skills/web-rapida/scripts/medir.py ./antes ./despues</pre>
+    </div>
+    <p>Te da las dos columnas lado a lado. <strong>Si no mueve la aguja,
+    revierte.</strong></p>
+    <div class="nota">
+      <p>En el caso real, dos hipótesis muy razonables salieron planas al
+      medirlas y se revirtieron. Una tercera, que parecía menor, valía 15 puntos.
+      Sin medir cada cambio por separado no hay forma de saberlo.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">07</div>
+  <div>
+    <h2>Publicar y volver a medir</h2>
+    <p>Sube los cambios y mide producción otra vez. <strong>Lo local nunca es lo
+    real.</strong> Y comprueba que lo publicado es lo que probaste:</p>
+    <div class="cmd">
+      <pre>curl -s https://tusitio.com/ | diff - public/index.html && echo <span class="v">"idénticos"</span></pre>
+    </div>
+    <p>Después, en <strong>Google Search Console</strong>: envía tu
+    <code>sitemap.xml</code> y pide la indexación de la portada. Y pasa tu URL
+    por el <a href="https://developers.facebook.com/tools/debug/">depurador de
+    Facebook</a> para que refresque la imagen al compartir, que se cachea varios
+    días.</p>
+  </div>
+</div>
+
+<h2>Problemas comunes</h2>
+
+<div class="problema">
+  <h3>«Edité un archivo y no cambia nada»</h3>
+  <p>La trampa que más veces se repite. Si tu hosting cachea con
+  <code>immutable</code> y editas un archivo sin cambiarle el <code>?v=</code>,
+  el navegador —y tus pruebas— siguen usando la versión vieja. Sin avisar.</p>
+  <div class="cmd">
+    <pre>curl -s https://tusitio.com/assets/app.js | diff - public/assets/app.js</pre>
+  </div>
+  <p>Si difieren, sube el número: <code>app.js?v=2</code>.</p>
+</div>
+
+<div class="problema">
+  <h3>«La puntuación cambia cada vez que mido»</h3>
+  <p>Es normal, Lighthouse varía. Por eso el script mide <strong>tres
+  veces</strong> y toma la mediana. Si ves 79, 84 y 81, tu puntuación es 81. Una
+  diferencia de 2 o 3 puntos entre mediciones no es una mejora: es ruido.</p>
+</div>
+
+<div class="problema">
+  <h3>«Local da 90 y producción 60»</h3>
+  <p>Tu instrumento no está calibrado. Vuelve al paso 03 y ajusta
+  <code>--rtt</code>. No tomes ninguna decisión hasta que las dos se
+  acerquen.</p>
+</div>
+
+<div class="problema">
+  <h3>«El SEO da 100 pero no aparezco en Google»</h3>
+  <p>Son cosas distintas. La puntuación de SEO mide que tu HTML esté bien
+  puesto: etiquetas, encabezados, enlaces rastreables. Es la condición previa, no
+  el posicionamiento, que depende del contenido y de quién te enlace. Esta skill
+  se ocupa de que la parte técnica no te frene, que es lo que sí está en tu
+  mano.</p>
+</div>
+
+<div class="problema">
+  <h3>«Mi móvil no pasa de 70»</h3>
+  <p>Mira si cargas Google Tag Manager, Google Analytics o el píxel de Facebook.
+  Los tres juntos están medidos en <strong>15 puntos</strong>.</p>
+  <p>No los quites sin más: pagan tus campañas. La salida más simple es cargar el
+  píxel <strong>cuando la persona toque la pantalla</strong> en vez de al abrir
+  la página. Cuesta <strong>0 puntos</strong> y conserva la medición de quien
+  convierte, porque nadie llena un formulario sin tocar nada. El detalle está en
+  <code>references/terceros.md</code>.</p>
+</div>
+
+<h2>Lo que esta skill no hace</h2>
+<ul>
+  <li><strong>No escribe tu contenido.</strong> El SEO técnico es la mitad; la
+  otra es tener algo que valga la pena leer.</li>
+  <li><strong>No decide por ti sobre la medición.</strong> Te da los números para
+  que elijas si sacrificas puntos por atribución de campañas.</li>
+  <li><strong>No promete 100 en móvil.</strong> Con etiquetas de terceros no es
+  alcanzable, y quien diga lo contrario no lo ha medido.</li>
+  <li><strong>No toca producción.</strong> Todo se prueba en local y publicas
+  tú.</li>
+</ul>
+
+<h2>Referencia rápida</h2>
+
+<div class="cmd">
+  <div class="cmd-titulo">Todos los comandos</div>
+  <pre>S=~/.claude/skills/web-rapida/scripts
+
+<span class="c"># medir en local, con instrumento realista</span>
+python3 $S/medir.py ./public
+
+<span class="c"># medir producción, para validar el instrumento</span>
+python3 $S/medir.py https://tusitio.com
+
+<span class="c"># escritorio en vez de móvil</span>
+python3 $S/medir.py ./public <span class="v">--escritorio</span>
+
+<span class="c"># comparar dos versiones</span>
+python3 $S/medir.py ./antes ./despues
+
+<span class="c"># otra página, no la portada</span>
+python3 $S/medir.py ./public <span class="v">--pagina</span> /precios
+
+<span class="c"># auditar SEO</span>
+python3 $S/auditar-seo.py ./public <span class="v">--dominio</span> https://tusitio.com
+
+<span class="c"># imágenes: informe, y luego conversión</span>
+python3 $S/convertir-imagenes.py ./public/assets
+python3 $S/convertir-imagenes.py ./public/assets <span class="v">--aplicar --ancho 900</span>
+
+<span class="c"># tipografías de Google a tu dominio</span>
+python3 $S/alojar-fuentes.py <span class="v">"https://fonts.googleapis.com/css2?family=..."</span> ./public/assets</pre>
+</div>
+
+<h3>Los documentos, cuando quieras el porqué</h3>
+<div class="tabla-envoltura">
+<table>
+  <thead><tr><th>Archivo</th><th>Para qué</th></tr></thead>
+  <tbody>
+    <tr><td><code>SKILL.md</code></td><td>el método completo, es lo que lee Claude</td></tr>
+    <tr><td><code>references/rendimiento.md</code></td><td>cada causa con su coste medido, y lo que <em>no</em> funcionó</td></tr>
+    <tr><td><code>references/lcp-inestable.md</code></td><td>el titular tarda y las cifras no cuadran</td></tr>
+    <tr><td><code>references/terceros.md</code></td><td>GTM y el píxel: cuánto cuestan y qué hacer</td></tr>
+    <tr><td><code>references/seo.md</code></td><td>cada punto de la auditoría y su razón</td></tr>
+  </tbody>
+</table>
+</div>
+
+<footer>
+  Los scripts no modifican nada sin que se lo pidas. Prueba en una rama, no en
+  producción, y publica solo después de medir.
+</footer>
+
+</div>

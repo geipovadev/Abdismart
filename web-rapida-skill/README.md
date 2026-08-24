@@ -25,6 +25,10 @@ comprobar que tu instrumento es de fiar antes de tomar decisiones con él.
 
 ---
 
+> **¿Primera vez?** Empieza por **[GUIA.md](GUIA.md)**: instalación y uso paso a
+> paso, con los comandos listos para copiar y una sección de problemas comunes.
+> Este README es el resumen; la guía es el recorrido.
+
 ## Instalación
 
 ### 1 · Copiar la carpeta
@@ -148,7 +152,9 @@ cliente cuánto tarda su web.
 
 ```
 web-rapida/
-├── SKILL.md                      el proceso, paso a paso
+├── SKILL.md                      el proceso, para Claude
+├── GUIA.md                       instalación y uso paso a paso, para personas
+├── guia-web.html                 la misma guía como página, para compartir
 ├── README.md                     esto
 ├── scripts/
 │   ├── medir.py                  medidor con RTT realista y comparación A/B
