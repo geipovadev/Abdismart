@@ -1,0 +1,696 @@
+<meta charset="utf-8">
+<title>Comentarios de Instagram → directo · n8n</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+  /* ───────────────────────────────────────────────────────────
+     Paleta completa en :root = tema claro. Los bloques de abajo
+     solo REDEFINEN tokens, nunca declaran color de un componente:
+     un color cuyo único sitio es un [data-theme] no se aplica en
+     el estado «sistema», que es el que ve la mayoría.
+     ─────────────────────────────────────────────────────────── */
+  :root {
+    --fondo:        #F5F7F9;
+    --superficie:   #FFFFFF;
+    --superficie-2: #EDF1F4;
+    --hundido:      #16202B;   /* fondo de los bloques de código */
+    --hundido-tinta:#DCE5EC;
+    --hundido-tenue:#8A9DAC;  /* va sobre el fondo del bloque de código, que es
+                                 oscuro en los dos temas: por eso no se redefine abajo */
+    --tinta:        #15202B;
+    --tinta-suave:  #4E6273;
+    --tinta-tenue:  #5C6D80;
+    --borde:        #D9E1E7;
+    --borde-fuerte: #BECAD3;
+    --acento:       #A44F08;
+    --acento-flojo: #FBF1E6;
+    --acento-borde: #DFBD97;
+    --mejor:        #0F7A63;
+    --mejor-flojo:  #E7F3EF;
+    --sombra:       0 1px 2px rgba(21,32,43,.05), 0 8px 24px -12px rgba(21,32,43,.14);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fondo:        #10181F;
+      --superficie:   #18222C;
+      --superficie-2: #1F2B36;
+      --hundido:      #0A1016;
+      --hundido-tinta:#C9D6E0;
+      --tinta:        #E6EDF3;
+      --tinta-suave:  #A2B3C1;
+      --tinta-tenue:  #75899A;
+      --borde:        #263442;
+      --borde-fuerte: #344656;
+      --acento:       #E89445;
+      --acento-flojo: #24190E;
+      --acento-borde: #4A341C;
+      --mejor:        #4BC0A0;
+      --mejor-flojo:  #10251F;
+      --sombra:       0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --fondo:        #10181F;
+    --superficie:   #18222C;
+    --superficie-2: #1F2B36;
+    --hundido:      #0A1016;
+    --hundido-tinta:#C9D6E0;
+    --tinta:        #E6EDF3;
+    --tinta-suave:  #A2B3C1;
+    --tinta-tenue:  #75899A;
+    --borde:        #263442;
+    --borde-fuerte: #344656;
+    --acento:       #E89445;
+    --acento-flojo: #24190E;
+    --acento-borde: #4A341C;
+    --mejor:        #4BC0A0;
+    --mejor-flojo:  #10251F;
+    --sombra:       0 1px 2px rgba(0,0,0,.4), 0 10px 30px -14px rgba(0,0,0,.6);
+    color-scheme: dark;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--fondo);
+    color: var(--tinta);
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    font-size: 19px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .envoltura { max-width: 50rem; margin: 0 auto; padding: 0 1.5rem 6rem; }
+
+  /* ── Cabecera ─────────────────────────────────────────── */
+  header.portada {
+    padding: 4.5rem 0 2.75rem;
+    border-bottom: 1px solid var(--borde);
+    margin-bottom: 3.5rem;
+  }
+  .etiqueta {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .7rem; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--acento);
+    display: flex; align-items: center; gap: .6rem;
+    margin-bottom: 1.4rem;
+  }
+  .etiqueta::before {
+    content: ''; width: 1.75rem; height: 1px; background: var(--acento-borde);
+  }
+  h1 {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    font-weight: 700; letter-spacing: -.035em; line-height: 1.02;
+    margin: 0 0 1.1rem; text-wrap: balance;
+  }
+  .bajada {
+    font-size: 1.2rem; color: var(--tinta-suave);
+    max-width: 34rem; margin: 0 0 2rem; text-wrap: pretty;
+  }
+  .meta-portada {
+    display: flex; flex-wrap: wrap; gap: 1.75rem;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: .82rem; color: var(--tinta-tenue);
+  }
+  .meta-portada b {
+    display: block; color: var(--tinta); font-weight: 600;
+    font-size: 1.05rem; font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Tipografía de sección ────────────────────────────── */
+  h2 {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.6rem; font-weight: 650; letter-spacing: -.022em;
+    line-height: 1.18; margin: 3.5rem 0 1rem; text-wrap: balance;
+  }
+  h3 {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.1rem; font-weight: 600; letter-spacing: -.012em;
+    margin: 2.25rem 0 .6rem; text-wrap: balance;
+  }
+  p { margin: 0 0 1.1rem; text-wrap: pretty; }
+  strong { font-weight: 600; color: var(--tinta); }
+  em { font-style: italic; }
+  a { color: var(--acento); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--acento); outline-offset: 3px; border-radius: 2px;
+  }
+
+  ul, ol { margin: 0 0 1.2rem; padding-left: 1.3rem; }
+  li { margin-bottom: .45rem; }
+  li::marker { color: var(--tinta-tenue); }
+
+  /* ── Pasos: el número es información, hay un orden real ── */
+  .paso {
+    display: grid; grid-template-columns: 3.25rem 1fr;
+    gap: 0 1.5rem; margin-top: 4rem;
+  }
+  .paso-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .8rem; font-weight: 500; color: var(--acento);
+    padding-top: .55rem;
+    border-top: 2px solid var(--acento);
+    font-variant-numeric: tabular-nums;
+  }
+  .paso > div { min-width: 0; }
+  .paso h2 { margin-top: 0; }
+  @media (max-width: 34rem) {
+    .paso { grid-template-columns: 1fr; gap: .75rem; }
+    .paso-num { border-top: none; padding-top: 0; }
+  }
+
+  /* ── Código ───────────────────────────────────────────── */
+  .cmd {
+    background: var(--hundido);
+    border-radius: 10px;
+    margin: 0 0 1.2rem;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+  .cmd-titulo {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--hundido-tenue);
+    padding: .7rem 1rem .1rem;
+  }
+  .cmd pre {
+    margin: 0; padding: .9rem 1rem 1.05rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .84rem; line-height: 1.68;
+    color: var(--hundido-tinta);
+  }
+  .cmd .c { color: var(--hundido-tenue); }             /* comentario */
+  .cmd .v { color: #E8A155; }             /* valor o bandera */
+  .cmd .n { color: #6FC3A6; }             /* número, resultado */
+  code:not(pre code) {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: .85em;
+    background: var(--superficie-2);
+    border: 1px solid var(--borde);
+    border-radius: 4px; padding: .1em .35em;
+    color: var(--tinta);
+  }
+
+  /* ── Tablas ───────────────────────────────────────────── */
+  .tabla-envoltura { overflow-x: auto; margin: 0 0 1.4rem; }
+  table {
+    border-collapse: collapse; width: 100%;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: .9rem;
+  }
+  th, td {
+    text-align: left; padding: .65rem .9rem;
+    border-bottom: 1px solid var(--borde);
+    vertical-align: top;
+  }
+  th {
+    font-weight: 600; font-size: .72rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--tinta-tenue);
+    border-bottom: 1px solid var(--borde-fuerte);
+    white-space: nowrap;
+  }
+  td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.mejor { color: var(--mejor); font-weight: 600; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── Avisos ───────────────────────────────────────────── */
+  .aviso {
+    background: var(--acento-flojo);
+    border-left: 3px solid var(--acento);
+    border-radius: 0 8px 8px 0;
+    padding: 1.1rem 1.25rem .4rem;
+    margin: 0 0 1.4rem;
+  }
+  .aviso-titulo {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-weight: 650; font-size: .95rem;
+    margin-bottom: .35rem; color: var(--tinta);
+  }
+  .aviso p { margin-bottom: .7rem; }
+  .aviso p:last-child { margin-bottom: .7rem; }
+
+  .nota {
+    border-left: 3px solid var(--borde-fuerte);
+    padding: .2rem 0 .2rem 1.1rem;
+    margin: 0 0 1.4rem;
+    color: var(--tinta-suave);
+    font-size: .96rem;
+  }
+  .nota p:last-child { margin-bottom: 0; }
+
+  /* ── Tarjeta de problema ──────────────────────────────── */
+  .problema {
+    background: var(--superficie);
+    border: 1px solid var(--borde);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem .3rem;
+    margin: 0 0 .9rem;
+    box-shadow: var(--sombra);
+  }
+  .problema h3 {
+    margin: 0 0 .5rem; font-size: 1rem;
+  }
+  .problema p:last-child { margin-bottom: 1rem; }
+
+  /* ── Cierre ───────────────────────────────────────────── */
+  footer {
+    margin-top: 5rem; padding-top: 2rem;
+    border-top: 1px solid var(--borde);
+    color: var(--tinta-tenue);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: .85rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+</style>
+
+<div class="envoltura">
+
+<header class="portada">
+  <div class="etiqueta">Automatización con n8n</div>
+  <h1>Comentarios de Instagram → mensaje directo</h1>
+  <p class="bajada">Alguien comenta una palabra en tu reel. Le llega el enlace
+  por privado, y su comentario recibe una respuesta pública para que el resto lo
+  vea. Sin intermediarios y sin mensualidades.</p>
+  <div class="meta-portada">
+    <div>Instalación<b>~45 min</b></div>
+    <div>Coste mensual<b>0</b></div>
+    <div>Servicios de terceros<b>ninguno</b></div>
+  </div>
+</header>
+
+<h2>Qué vas a conseguir</h2>
+
+<ol>
+  <li>Alguien comenta <strong>tu palabra clave</strong> en cualquier publicación.</li>
+  <li>Recibe un <strong>mensaje directo</strong> con tu enlace, opcionalmente con un botón.</li>
+  <li>Su comentario recibe una <strong>respuesta pública</strong>, elegida al azar entre varias.</li>
+  <li>Si toca el botón, le llega un <strong>segundo directo</strong> con el enlace.</li>
+</ol>
+
+<p>Las palabras clave y los textos viven en una <strong>tabla</strong>, no en el
+código. Añadir una campaña nueva es añadir una fila.</p>
+
+<div class="aviso">
+  <div class="aviso-titulo">Lee «Problemas comunes» aunque todo te vaya bien</div>
+  <p>Esa sección es el resultado de una noche entera de fallos reales. Cada
+  apartado es un error que costó horas, con su causa exacta. Dos de ellos no
+  producen ningún mensaje de error: simplemente no pasa nada, y te quedas
+  mirando la pantalla.</p>
+</div>
+
+<div class="paso">
+  <div class="paso-num">00</div>
+  <div>
+    <h2>Lo que necesitas</h2>
+    <p>Una cuenta de Instagram <strong>profesional y pública</strong>. Con una
+    cuenta personal o privada la API no funciona y el panel ni te deja
+    añadirla.</p>
+    <p><strong>n8n accesible desde internet por HTTPS</strong>, porque Meta
+    tiene que poder llamarlo: <code>localhost</code> no sirve. Si lo tienes en
+    casa, un túnel de Cloudflare lo resuelve gratis. La URL debe ser estable.</p>
+    <p>n8n con <strong>tablas de datos</strong>, y una app en Meta for
+    Developers.</p>
+    <div class="aviso">
+      <div class="aviso-titulo">La app tiene que estar «Publicada»</div>
+      <p>En modo desarrollo solo llegan los eventos de prueba del panel y los de
+      gente con un rol en la app. Si tus pruebas funcionan y los usuarios reales
+      no reciben nada, esto es lo primero que hay que mirar.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">01</div>
+  <div>
+    <h2>Las dos tablas</h2>
+    <p>En n8n, <strong>Data tables</strong>. Créalas antes de importar el flujo,
+    porque al importar hay que asociarlas.</p>
+
+    <h3><code>instagram_reglas</code> — toda la configuración</h3>
+    <div class="tabla-envoltura">
+    <table>
+      <thead><tr><th>Columna</th><th>Tipo</th><th>Para qué sirve</th></tr></thead>
+      <tbody>
+        <tr><td><code>palabra</code></td><td>String</td><td>La palabra que dispara todo. Se normaliza: ni mayúsculas ni acentos importan</td></tr>
+        <tr><td><code>dm</code></td><td>String</td><td>El texto del mensaje directo</td></tr>
+        <tr><td><code>publico</code></td><td>String</td><td>La respuesta pública. Varias separadas por <code>|</code></td></tr>
+        <tr><td><code>activa</code></td><td>Boolean</td><td><code>false</code> apaga la regla sin borrar la fila</td></tr>
+        <tr><td><code>boton</code></td><td>String</td><td>Título del botón. Vacío = directo de texto plano</td></tr>
+        <tr><td><code>dm2</code></td><td>String</td><td>Texto del segundo directo, al tocar el botón</td></tr>
+        <tr><td><code>enlace</code></td><td>String</td><td>La URL que entrega el botón</td></tr>
+        <tr><td><code>boton_enlace</code></td><td>String</td><td>Título del botón que abre la URL</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="nota">
+      <p><strong>Pon el enlace también dentro del texto del <code>dm</code>.</strong>
+      Si el botón falla por lo que sea, la persona no se queda sin nada. Es la
+      diferencia entre un fallo molesto y un lead perdido.</p>
+    </div>
+
+    <div class="nota">
+      <p><strong>Escribe cinco o seis respuestas públicas separadas por <code>|</code>.</strong>
+      El flujo elige una al azar. Cien respuestas idénticas bajo un mismo post
+      son un patrón que el antispam de Instagram reconoce.</p>
+    </div>
+
+    <h3><code>instagram_comentarios_contestados</code> — el registro</h3>
+    <div class="tabla-envoltura">
+    <table>
+      <thead><tr><th>Columna</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr><td><code>comment_id</code></td><td>String</td></tr>
+        <tr><td><code>usuario</code></td><td>String</td></tr>
+        <tr><td><code>contestado_at</code></td><td>Date &amp; Time</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Existe porque <strong>Instagram solo permite una respuesta privada por
+    comentario</strong>. Meta reintenta los webhooks, y sin esta tabla un
+    reintento gastaría ese único envío sin que llegue nada.</p>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">02</div>
+  <div>
+    <h2>Importar el flujo</h2>
+    <p>En n8n: menú del flujo → <strong>Import from File</strong> →
+    <code>flujo-n8n.json</code>.</p>
+    <p>Verás 16 nodos, y varios se quejarán de que les faltan credenciales y
+    tablas. Es lo esperado. Asocia las tablas en los tres nodos que las usan:
+    <code>Leer las reglas</code>, <code>Descartar los ya contestados</code> y
+    <code>Apuntar el comentario antes de contestar</code>.</p>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">03</div>
+  <div>
+    <h2>Los permisos y el token</h2>
+    <p>En Meta: <strong>Instagram</strong> → <strong>Configuración de la API con
+    inicio de sesión para empresas de Instagram</strong>.</p>
+    <div class="nota">
+      <p>Hay dos configuraciones parecidas, una con inicio de sesión de
+      <em>Instagram</em> y otra con el de <em>Facebook</em>. Este flujo habla con
+      <code>graph.instagram.com</code>, así que es la de Instagram. Con la otra,
+      el host del código no corresponde y nada funciona.</p>
+    </div>
+    <p>Declara los tres permisos: <code>instagram_business_basic</code>,
+    <code>instagram_business_manage_comments</code> y
+    <code>instagram_business_manage_messages</code>. Después genera el token.</p>
+    <div class="nota">
+      <p><strong>Genera el token después de declarar los permisos, no antes.</strong>
+      El token congela los permisos que la app tenía al emitirlo. Uno emitido
+      solo para mensajería no responde comentarios, y el error no lo dice.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-titulo">tu IG user id</div>
+<pre>curl -s <span class="v">"https://graph.instagram.com/v23.0/me?fields=id,username&amp;access_token=TU_TOKEN"</span></pre>
+    </div>
+
+    <div class="aviso">
+      <div class="aviso-titulo">Ese id no es el que llega en los webhooks</div>
+      <p>El <code>id</code> de <code>/me</code> y el <code>entry.id</code> de los
+      eventos son <strong>dos identificadores distintos de la misma cuenta</strong>.
+      En las llamadas a la API va el de <code>/me</code>. Si usas el otro, Meta
+      responde <code>Invalid OAuth 2.0 Access Token</code> con código 190 y te
+      hace sospechar del token estando el token perfecto.</p>
+    </div>
+
+    <p>Sustituye <code>TU_IG_USER_ID</code> en los nodos <strong>Mandar el
+    mensaje directo</strong> y <strong>Mandar el enlace</strong>.</p>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">04</div>
+  <div>
+    <h2>Las dos credenciales</h2>
+
+    <h3>La del token</h3>
+    <p>En el nodo <strong>Mandar el mensaje directo</strong>: Authentication →
+    <em>Generic Credential Type</em> → <strong>Simplified Custom Auth</strong>.</p>
+    <div class="nota">
+      <p>No la busques en la lista general: este tipo solo se crea desde dentro
+      de un nodo HTTP Request. Y si buscas «Templated» en el listado te saldrá
+      «APITemplate.io», que no tiene nada que ver.</p>
+    </div>
+    <div class="cmd">
+      <div class="cmd-titulo">Auth template</div>
+<pre>{
+  <span class="v">"headers"</span>: {
+    <span class="v">"Authorization"</span>: <span class="v">"Bearer PEGA_AQUI_TU_TOKEN"</span>
+  }
+}</pre>
+    </div>
+    <p>El template es obligatorio: si lo dejas vacío, el botón de guardar se
+    queda gris y el formulario no te dice por qué. Asigna esta credencial a los
+    <strong>tres</strong> nodos HTTP.</p>
+
+    <h3>La de la firma</h3>
+    <p>El nodo <strong>Firmar el cuerpo recibido</strong> necesita una credencial
+    <strong>Crypto</strong> con el campo <strong>Hmac Secret</strong>.</p>
+    <div class="aviso">
+      <div class="aviso-titulo">Este es el error que más tiempo cuesta</div>
+      <p>Ese secreto es la <strong>clave secreta de la aplicación de
+      Instagram</strong>, la que está en Instagram → Configuración de la API,
+      arriba. <strong>No es</strong> la de Configuración → Básica.</p>
+      <p>Son dos secretos distintos de la misma app, los dos parecen correctos, y
+      con el equivocado la firma nunca coincide: el flujo responde <code>401</code>
+      a todo y no hay ningún mensaje que indique la causa.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">05</div>
+  <div>
+    <h2>Conectar el webhook</h2>
+    <p>Primero <strong>activa y publica</strong> el flujo: Meta va a llamar a la
+    URL durante la verificación y necesita que responda.</p>
+    <p>Copia la <em>Production URL</em> del nodo <code>Comentarios de
+    Instagram</code>, inventa un verify token largo y sustitúyelo en el nodo
+    <strong>Saludo de Meta o evento</strong>. Publica otra vez y pega ambos en
+    Meta, en <strong>2. Configurar Webhooks</strong>.</p>
+    <div class="nota">
+      <p>El verify token va escrito dentro del nodo y no como variable de
+      entorno a propósito: muchas instalaciones traen
+      <code>N8N_BLOCK_ENV_ACCESS_IN_NODE</code> activado, y entonces
+      <code>$env</code> falla con <em>access to env vars denied</em> en mitad de
+      la verificación.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">06</div>
+  <div>
+    <h2>Suscribir los campos</h2>
+    <p>Esto tiene <strong>dos niveles</strong> y hay que hacer los dos. Es la
+    trampa más común de toda la configuración.</p>
+
+    <h3>Nivel de app: los campos</h3>
+    <p>En <strong>Campos de webhook</strong>, activa <code>comments</code>,
+    <code>messages</code> y <code>messaging_postbacks</code>. Usa la
+    <strong>misma versión de la API</strong> en todos.</p>
+    <div class="aviso">
+      <div class="aviso-titulo"><code>messaging_postbacks</code> es un campo aparte de <code>messages</code></div>
+      <p>Si solo activas <code>messages</code>, los comentarios y los directos
+      funcionan perfectamente, pero cuando alguien toca el botón <strong>no pasa
+      absolutamente nada</strong>: Meta no entrega ese evento y en n8n no aparece
+      ni una ejecución fallida. No hay error en ningún sitio. Simplemente no
+      llega.</p>
+    </div>
+
+    <h3>Nivel de cuenta: la suscripción</h3>
+    <p>En <strong>1. Generar identificadores de acceso</strong>, la columna
+    <strong>Suscripción a webhook</strong> de tu cuenta tiene que decir
+    <strong>Sí</strong>.</p>
+    <div class="aviso">
+      <div class="aviso-titulo">Marcar los campos no suscribe la cuenta</div>
+      <p>Son cosas distintas. Con los campos activos y la cuenta sin suscribir,
+      el botón <strong>Test</strong> del panel funciona —y te convence de que
+      todo está bien— pero los comentarios de gente real no llegan nunca. El test
+      solo demuestra que Meta alcanza tu URL.</p>
+    </div>
+  </div>
+</div>
+
+<div class="paso">
+  <div class="paso-num">07</div>
+  <div>
+    <h2>La primera prueba</h2>
+    <p>Comenta tu palabra clave <strong>desde otra cuenta</strong>. El flujo
+    ignora a propósito los comentarios de la propia cuenta, así que probando
+    contigo mismo no verás nada y pensarás que está roto.</p>
+    <p>En <strong>Executions</strong> deberías ver una ejecución que llega hasta
+    <code>Responder el comentario en publico</code>, con el directo devolviendo
+    un <code>message_id</code> y la respuesta pública un <code>id</code>. Luego
+    toca el botón y busca la segunda ejecución.</p>
+  </div>
+</div>
+
+<h2>Cómo funciona, en corto</h2>
+
+<div class="cmd">
+  <div class="cmd-titulo">el recorrido de un comentario</div>
+<pre>Comentario → verifica la firma HMAC
+           → responde 200 a Meta
+           → lee las reglas de la tabla
+           → ¿coincide alguna palabra?
+           → ¿ya contestamos este comentario?
+           → apunta el comentario
+           → manda el directo
+           → <span class="n">si el directo salió</span>, responde en público</pre>
+</div>
+
+<p><strong>El orden importa.</strong> La respuesta pública dice «te lo mandé por
+privado», así que sale solo si el directo salió de verdad. Si el envío falla, la
+ejecución se detiene ahí y el comentario no recibe una promesa que nadie
+cumplió.</p>
+
+<p><strong>La fila se apunta antes de enviar, no después.</strong> Es
+deliberado: ante un reintento de Meta, es preferible perder un envío a gastar en
+vano la única respuesta privada que permite Instagram.</p>
+
+<h2>Problemas comunes</h2>
+
+<div class="problema">
+  <h3>«Meta no verifica mi URL»</h3>
+  <p>Por orden de frecuencia: el flujo no está <strong>publicado</strong>
+  (guardar no es publicar); el verify token no coincide exactamente; usaste
+  <code>$env</code> y tu n8n lo bloquea; o la rama del <code>GET</code> no está
+  conectada —el webhook tiene dos salidas y la verificación llega por la
+  primera—.</p>
+</div>
+
+<div class="problema">
+  <h3>«Todo responde 401 y la firma nunca coincide»</h3>
+  <p>Estás usando el secreto equivocado. Para comprobarlo sin adivinar, firma a
+  mano el cuerpo crudo de una petición que llegó y compáralo con la cabecera
+  <code>x-hub-signature-256</code>:</p>
+  <div class="cmd">
+<pre>printf <span class="v">'%s'</span> <span class="v">"$CUERPO_CRUDO"</span> | openssl dgst -sha256 -hmac <span class="v">"$TU_SECRETO"</span></pre>
+  </div>
+</div>
+
+<div class="problema">
+  <h3>«Cambié el flujo pero sigue haciendo lo de antes»</h3>
+  <p>n8n guarda un borrador y mantiene aparte la versión publicada. Después de
+  cada cambio hay que <strong>publicar</strong>.</p>
+</div>
+
+<div class="problema">
+  <h3>«Cannot read properties of undefined (reading 'json')»</h3>
+  <p>El webhook está en modo multi-método, así que tiene <strong>dos
+  salidas</strong>: la 0 para <code>GET</code> y la 1 para <code>POST</code>. Al
+  escribir <code>$('Comentarios de Instagram').first()</code> sin indicar rama
+  lees la 0, que en un evento real viene vacía. Por eso el flujo lee el cuerpo
+  desde <code>Firmar el cuerpo recibido</code>, que tiene una sola salida.</p>
+</div>
+
+<div class="problema">
+  <h3>«Paired item data for item is unavailable»</h3>
+  <p>Los nodos Code devuelven ítems sin <code>pairedItem</code>, y entonces los
+  nodos HTTP de más abajo no pueden resolver <code>$('Nodo').item</code>. El
+  flujo lo declara explícitamente; si escribes tus propios nodos Code, decláralo
+  tú también.</p>
+</div>
+
+<div class="problema">
+  <h3>«Llegan los eventos de prueba pero no los reales»</h3>
+  <p>La cuenta no está suscrita (paso 06, nivel de cuenta). Y si ni siquiera los
+  de usuarios reales llegan, comprueba que la app esté en modo
+  <strong>Publicada</strong>.</p>
+</div>
+
+<div class="problema">
+  <h3>«El botón no entrega el enlace»</h3>
+  <p><code>messaging_postbacks</code> no está suscrito. Para confirmarlo: si al
+  tocar el botón <strong>no aparece ninguna ejecución</strong> en n8n —ni
+  siquiera una que falle—, el evento no está llegando, y eso siempre es
+  configuración de Meta, nunca código.</p>
+</div>
+
+<div class="problema">
+  <h3>«Tengo el triple de ejecuciones que de comentarios»</h3>
+  <p>Es normal. La respuesta pública que publica tu cuenta vuelve a entrar por el
+  mismo webhook como comentario nuevo, y lo mismo pasa con el eco de tu propio
+  directo. El flujo los descarta, pero cada uno genera su ejecución.</p>
+</div>
+
+<div class="problema">
+  <h3>«Se perdieron comentarios y Meta no los reintentó»</h3>
+  <p>El flujo responde <code>200</code> <strong>antes</strong> de procesar, que es
+  lo que Meta exige. El efecto secundario es que Meta da la entrega por buena
+  pase lo que pase después: si tu flujo falla, esos comentarios no vuelven solos.
+  Mira las ejecuciones fallidas de vez en cuando, y si tu n8n corre en una
+  máquina propia, asegúrate de que no se suspende sola.</p>
+</div>
+
+<div class="problema">
+  <h3>«Hay gente que escribe mal la palabra»</h3>
+  <p>Pasa más de lo que parece. En una campaña real con «grafo», tres personas
+  distintas escribieron «Grapo» y «Grado»; ninguna recibió respuesta. La solución
+  es añadir las variantes como filas nuevas, pero piénsalo antes: si la variante
+  es una palabra común en español, vas a responder a comentarios que no tenían
+  nada que ver.</p>
+</div>
+
+<div class="problema">
+  <h3>«Dejó de funcionar de un día para otro»</h3>
+  <p>El token vence a los <strong>60 días</strong> y cuando vence todo se calla a
+  la vez, sin aviso.</p>
+  <div class="cmd">
+<pre>curl -s <span class="v">"https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&amp;access_token=$TOKEN"</span></pre>
+  </div>
+  <p>Un token que pasa 60 días sin renovarse ya no se puede renovar: hay que
+  generar uno nuevo desde el panel. <strong>Monta un cron</strong>, o te va a
+  pasar.</p>
+</div>
+
+<h2>Lo que esto no hace</h2>
+
+<ul>
+  <li><strong>No conversa.</strong> Manda el directo y, si tocan el botón, el segundo. Si la persona responde, nadie le contesta.</li>
+  <li><strong>No lee comentarios en vivo.</strong> Los de Instagram Live van por otro campo.</li>
+  <li><strong>No distingue entre publicaciones.</strong> La palabra aplica a toda la cuenta. El <code>media_id</code> llega en el evento, así que separarlo por reel es un <code>if</code> cuando lo necesites.</li>
+  <li><strong>No lleva métricas.</strong> Solo queda la tabla de deduplicación y el historial de ejecuciones.</li>
+  <li><strong>No reintenta.</strong> Si un envío falla, no hay segundo intento automático.</li>
+</ul>
+
+<h2>Los límites que pone Meta</h2>
+
+<p>No son decisiones del flujo, son de la plataforma, y explican por qué está
+construido así:</p>
+
+<ul>
+  <li><strong>Una sola respuesta privada por comentario.</strong> De ahí la tabla de deduplicación.</li>
+  <li><strong>Siete días</strong> desde el comentario para poder responder en privado.</li>
+  <li>La ventana de 24 horas <strong>no</strong> aplica a esa primera respuesta. Aplica después: si la persona contesta, tienes 24 horas para seguir.</li>
+  <li>En Instagram Live solo se puede responder durante la transmisión.</li>
+</ul>
+
+<footer>
+  Antes de compartir tu propio flujo, saca el verify token y tu IG user id del
+  JSON. El token de acceso y la clave secreta no deberían estar ahí nunca.
+</footer>
+
+</div>

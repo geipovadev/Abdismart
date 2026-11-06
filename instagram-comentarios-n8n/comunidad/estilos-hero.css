@@ -1,0 +1,91 @@
+/* ───────────────────────────────────────────────────────────────
+   Hero de la guía de Instagram + n8n.
+   Va al final de styles.css, junto a los otros heros de artículo.
+   Sigue la misma estructura que .whatsapp-hero: solo cambian el
+   color de marca y las dos letras de la marca de agua.
+   Después de pegarlo, sube el ?v= del <link> en los HTML.
+   ─────────────────────────────────────────────────────────────── */
+
+.instagram-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 620px;
+  padding: 120px max(24px, calc((100vw - 1180px)/2)) 90px;
+  border-bottom: 1px solid #2c2430;
+  background:
+    radial-gradient(circle at 78% 25%, rgba(225,48,108,.16), transparent 30%),
+    radial-gradient(circle at 92% 70%, rgba(131,58,180,.12), transparent 32%),
+    linear-gradient(135deg, #0c0a0d, #100b11);
+}
+.instagram-hero:after {
+  content: "IG";
+  position: absolute;
+  right: -40px;
+  bottom: -115px;
+  color: rgba(225,48,108,.04);
+  font: 700 330px var(--display);
+  letter-spacing: -.1em;
+}
+.instagram-badge {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid rgba(225,48,108,.45);
+  border-radius: 30px;
+  padding: 9px 13px;
+  color: #f0a8c0;
+  font: 500 9px var(--mono);
+  letter-spacing: .1em;
+}
+.instagram-badge span {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #f77737, #e1306c 55%, #833ab4);
+  color: #fff;
+}
+.instagram-hero .hero-number { color: #e1306c; }
+.instagram-hero h1 {
+  position: relative;
+  z-index: 1;
+  max-width: 1040px;
+  font: 600 clamp(72px, 10vw, 140px)/.83 var(--display);
+  letter-spacing: -.075em;
+  margin: 65px 0 48px;
+}
+.instagram-hero h1 em { font-style: normal; color: #e1306c; }
+.instagram-hero > p:last-child {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+  color: #b4afb6;
+  font-size: 21px;
+  line-height: 1.6;
+}
+
+@media (min-width: 761px) and (max-width: 1024px) {
+  .instagram-hero { min-height: 560px; padding: 100px 40px 80px; }
+  .instagram-hero h1 { font-size: clamp(78px, 11vw, 105px); }
+}
+
+@media (max-width: 600px) {
+  .instagram-hero { min-height: 540px; padding: 75px 20px 65px; }
+  .instagram-badge { font-size: 7px; }
+  .instagram-hero h1 { font-size: clamp(58px, 17vw, 72px); line-height: .86; margin: 55px 0 38px; }
+  .instagram-hero > p:last-child { font-size: 17px; }
+  .instagram-hero:after { font-size: 190px; bottom: -60px; }
+}
+
+html[data-theme="light"] .instagram-hero {
+  border-color: #cbb8c6;
+  background:
+    radial-gradient(circle at 78% 25%, rgba(225,48,108,.15), transparent 30%),
+    radial-gradient(circle at 92% 70%, rgba(131,58,180,.10), transparent 32%),
+    linear-gradient(135deg, #f4f2ec, #f3eaf0);
+}
+html[data-theme="light"] .instagram-hero > p:last-child { color: #5a505a; }
+html[data-theme="light"] .instagram-badge { color: #a32350; border-color: #d087a6; }

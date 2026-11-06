@@ -1,0 +1,303 @@
+{
+  "name": "Instagram · palabra clave en comentarios → directo + respuesta pública",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "instagram-comentarios",
+        "responseMode": "responseNode",
+        "options": { "rawBody": true }
+      },
+      "id": "773a00eb-9f53-4edb-a081-2f00001905c6",
+      "name": "Comentarios de Instagram",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.2,
+      "position": [0, 192]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 4 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.query['hub.mode'] }}",
+                    "rightValue": "subscribe",
+                    "operator": { "type": "string", "operation": "equals" },
+                    "id": "631efa4e-bcae-49dd-b5c5-aaaa85ec6139"
+                  },
+                  {
+                    "leftValue": "={{ $json.query['hub.verify_token'] }}",
+                    "rightValue": "=PON_AQUI_TU_VERIFY_TOKEN",
+                    "operator": { "type": "string", "operation": "equals" },
+                    "id": "cb7f843d-bae3-4b55-bed7-28e46e46919e"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict", "version": 4 },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.query['hub.mode'] }}",
+                    "rightValue": "",
+                    "operator": { "type": "string", "operation": "empty", "singleValue": true },
+                    "id": "cf6c349d-6ce9-41c5-af1c-cc3b33d3a3d1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": { "fallbackOutput": "extra", "renameFallbackOutput": "rechazar" }
+      },
+      "id": "3d313c2c-ad91-424d-856c-af249530a880",
+      "name": "Saludo de Meta o evento",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [224, 176]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {}
+      },
+      "id": "dbc9a47b-66a6-402a-a331-e8079cb2933c",
+      "name": "Devolver el reto a Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [416, -96]
+    },
+    {
+      "parameters": { "action": "hmac", "binaryData": true, "dataPropertyName": "firma" },
+      "id": "6243043c-4184-437a-9dbd-5afa0c534ccf",
+      "name": "Firmar el cuerpo recibido",
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 2,
+      "position": [448, 192]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose", "version": 1 },
+          "conditions": [
+            {
+              "id": "firma-igual",
+              "leftValue": "={{ 'sha256=' + $json.firma }}",
+              "rightValue": "={{ $('Comentarios de Instagram').item.json.headers['x-hub-signature-256'] }}",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "820bd73c-785b-4c35-b7c9-8142740cf722",
+      "name": "La firma coincide",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [672, 192]
+    },
+    {
+      "parameters": { "respondWith": "text", "responseBody": "EVENT_RECEIVED", "options": {} },
+      "id": "41f3ef24-6bf7-4523-aefa-21e524a8be62",
+      "name": "Confirmar la entrega a Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [896, 0]
+    },
+    {
+      "parameters": { "respondWith": "text", "responseBody": "Unauthorized", "options": { "responseCode": 401 } },
+      "id": "b60bb5c4-530a-47b3-8ff8-39c4a1473cd0",
+      "name": "Firma invalida",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [896, 384]
+    },
+    {
+      "parameters": { "respondWith": "text", "responseBody": "Forbidden", "options": { "responseCode": 403 } },
+      "id": "dd9f8a8a-ee2b-4281-bdd9-0c642443bf4e",
+      "name": "Rechazar la peticion",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [448, 384]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "", "cachedResultName": "instagram_reglas" },
+        "returnAll": true
+      },
+      "id": "6eac0705-10b1-4ea4-bfa0-ab12ee9e8381",
+      "name": "Leer las reglas",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [1088, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Las reglas viven en la tabla instagram_reglas: palabra, dm, publico, activa,\n// boton, dm2, enlace, boton_enlace. Agregar una palabra clave es agregar una\n// fila, sin tocar este codigo.\nconst reglas = $input.all().map(i => i.json).filter(r => r && r.palabra && r.activa !== false);\n\nfunction normalizar(t) {\n  return String(t || \"\").toLowerCase().normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\");\n}\n\n// La columna publico admite variantes separadas por |. Se elige una al azar:\n// cien respuestas identicas en un mismo post son el patron que marca el\n// antispam de Instagram.\nfunction unaVariante(texto) {\n  const partes = String(texto || \"\").split(\"|\").map(s => s.trim()).filter(Boolean);\n  if (!partes.length) return \"\";\n  return partes[Math.floor(Math.random() * partes.length)];\n}\n\n// Se lee de 'Firmar el cuerpo recibido' y no del webhook: el webhook tiene dos\n// salidas (GET y POST) y .first() devuelve la 0, que en un evento viene vacia.\nconst payload = $('Firmar el cuerpo recibido').first().json.body;\nconst salida = [];\n\nif (payload && payload.object === \"instagram\") {\n  for (const entry of payload.entry || []) {\n    const cuenta = String(entry.id || \"\");\n    const cambios = (entry.changes && entry.changes.length) ? entry.changes : [{ field: entry.field, value: entry.value }];\n    for (const cambio of cambios) {\n      if (cambio.field !== \"comments\") continue;\n      const v = cambio.value || {};\n      const commentId = String(v.id || v.comment_id || \"\");\n      const autorId = String((v.from && v.from.id) || \"\");\n      if (!commentId || !autorId) continue;\n      if (autorId === cuenta) continue;\n      const texto = normalizar(v.text);\n      // Gana la primera que coincida: en la tabla, las frases largas van antes.\n      const regla = reglas.find(r => texto.includes(normalizar(r.palabra)));\n      if (!regla) continue;\n      salida.push({\n        json: {\n          comment_id: commentId,\n          usuario: String((v.from && v.from.username) || \"\"),\n          texto: String(v.text || \"\").slice(0, 500),\n          account_id: cuenta,\n          palabra: String(regla.palabra || \"\"),\n          mensaje_dm: String(regla.dm || \"\"),\n          mensaje_publico: unaVariante(regla.publico),\n          // Con boton vacio el directo sale como texto plano.\n          boton: String(regla.boton || \"\")\n        },\n        // Sin esto los nodos HTTP de mas abajo no pueden resolver .item: la\n        // entrada de este nodo son las reglas, no el comentario.\n        pairedItem: { item: 0 }\n      });\n    }\n  }\n}\n\nreturn salida;"
+      },
+      "id": "bed12a4f-890e-4c02-905d-a6031263a790",
+      "name": "Buscar la palabra clave",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1328, 0]
+    },
+    {
+      "parameters": {
+        "operation": "rowNotExists",
+        "dataTableId": { "__rl": true, "mode": "list", "value": "", "cachedResultName": "instagram_comentarios_contestados" },
+        "matchType": "allConditions",
+        "filters": { "conditions": [{ "keyName": "comment_id", "keyValue": "={{ $json.comment_id }}" }] }
+      },
+      "id": "d2d9d4eb-565f-4e90-9191-92f19ebe8c12",
+      "name": "Descartar los ya contestados",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [1552, 0]
+    },
+    {
+      "parameters": {
+        "dataTableId": { "__rl": true, "mode": "list", "value": "", "cachedResultName": "instagram_comentarios_contestados" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "comment_id": "={{ $json.comment_id }}",
+            "usuario": "={{ $json.usuario }}",
+            "contestado_at": "={{ $now.toISO() }}"
+          },
+          "schema": [
+            { "id": "comment_id", "displayName": "comment_id", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "usuario", "displayName": "usuario", "required": false, "defaultMatch": false, "display": true, "type": "string", "canBeUsedToMatch": true },
+            { "id": "contestado_at", "displayName": "contestado_at", "required": false, "defaultMatch": false, "display": true, "type": "dateTime", "canBeUsedToMatch": true }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b59a9c43-f70b-43e0-93a4-8284ce6ca468",
+      "name": "Apuntar el comentario antes de contestar",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [1776, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.instagram.com/v23.0/TU_IG_USER_ID/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify((() => { const c = $('Buscar la palabra clave').item.json; const cuerpo = { recipient: { comment_id: c.comment_id } }; cuerpo.message = c.boton ? { attachment: { type: 'template', payload: { template_type: 'button', text: c.mensaje_dm, buttons: [{ type: 'postback', title: c.boton, payload: 'enlace:' + c.palabra }] } } } : { text: c.mensaje_dm }; return cuerpo; })()) }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "64316d37-d14b-426b-9fb0-5fc9231b32a8",
+      "name": "Mandar el mensaje directo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [2000, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/{{ $('Buscar la palabra clave').item.json.comment_id }}/replies",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ message: $('Buscar la palabra clave').item.json.mensaje_publico }) }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "0dafacdb-b9ce-4558-89ef-48dc45e6cc01",
+      "name": "Responder el comentario en publico",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [2224, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Un boton postback no llega como comentario: por eso no lo ve el nodo de al\n// lado, que filtra field=comments.\n// El payload es el que pusimos al enviar el boton: \"enlace:<palabra>\".\n//\n// Meta lo entrega en DOS formas distintas y hay que aceptar las dos:\n//   entry[].messaging[].postback                                 <- los eventos reales\n//   entry[].changes[] field=messaging_postbacks, value.postback  <- la prueba del panel\nconst reglas = $input.all().map(i => i.json).filter(r => r && r.palabra && r.activa !== false);\n\nfunction normalizar(t) {\n  return String(t || \"\").toLowerCase().normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\");\n}\n\nconst payload = $('Firmar el cuerpo recibido').first().json.body;\nconst eventos = [];\n\nif (payload && payload.object === \"instagram\") {\n  for (const entry of payload.entry || []) {\n    const cuenta = String(entry.id || \"\");\n    for (const m of entry.messaging || []) {\n      if (m && m.postback) eventos.push({ cuenta, sender: m.sender, postback: m.postback });\n    }\n    for (const c of entry.changes || []) {\n      if (!c || c.field !== \"messaging_postbacks\") continue;\n      const v = c.value || {};\n      if (v.postback) eventos.push({ cuenta, sender: v.sender, postback: v.postback });\n    }\n  }\n}\n\nconst salida = [];\n\nfor (const e of eventos) {\n  const igsid = String((e.sender && e.sender.id) || \"\");\n  // El eco de nuestros propios envios trae sender = la cuenta.\n  if (!igsid || igsid === e.cuenta) continue;\n  const clave = normalizar(String(e.postback.payload || \"\").split(\":\")[1] || \"\");\n  if (!clave) continue;\n  const regla = reglas.find(r => normalizar(r.palabra) === clave);\n  // Sin enlace no hay nada que mandar: se descarta en silencio.\n  if (!regla || !regla.enlace) continue;\n  salida.push({\n    json: {\n      igsid,\n      palabra: String(regla.palabra || \"\"),\n      dm2: String(regla.dm2 || \"\"),\n      enlace: String(regla.enlace || \"\"),\n      boton_enlace: String(regla.boton_enlace || \"\")\n    },\n    pairedItem: { item: 0 }\n  });\n}\n\nreturn salida;"
+      },
+      "id": "e0af6053-b08d-4901-844c-7a8fd93cfba2",
+      "name": "Buscar el boton tocado",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1328, 272]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.instagram.com/v23.0/TU_IG_USER_ID/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ recipient: { id: $json.igsid }, message: { attachment: { type: 'template', payload: { template_type: 'button', text: $json.dm2, buttons: [{ type: 'web_url', url: $json.enlace, title: $json.boton_enlace || 'Abrir el enlace' }] } } } }) }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "a312e64c-89e8-47f2-a36c-a2cc38a37a9e",
+      "name": "Mandar el enlace",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [1552, 272]
+    }
+  ],
+  "connections": {
+    "Comentarios de Instagram": {
+      "main": [
+        [{ "node": "Saludo de Meta o evento", "type": "main", "index": 0 }],
+        [{ "node": "Saludo de Meta o evento", "type": "main", "index": 0 }]
+      ]
+    },
+    "Saludo de Meta o evento": {
+      "main": [
+        [{ "node": "Devolver el reto a Meta", "type": "main", "index": 0 }],
+        [{ "node": "Firmar el cuerpo recibido", "type": "main", "index": 0 }],
+        [{ "node": "Rechazar la peticion", "type": "main", "index": 0 }]
+      ]
+    },
+    "Firmar el cuerpo recibido": {
+      "main": [[{ "node": "La firma coincide", "type": "main", "index": 0 }]]
+    },
+    "La firma coincide": {
+      "main": [
+        [
+          { "node": "Confirmar la entrega a Meta", "type": "main", "index": 0 },
+          { "node": "Leer las reglas", "type": "main", "index": 0 }
+        ],
+        [{ "node": "Firma invalida", "type": "main", "index": 0 }]
+      ]
+    },
+    "Leer las reglas": {
+      "main": [
+        [
+          { "node": "Buscar la palabra clave", "type": "main", "index": 0 },
+          { "node": "Buscar el boton tocado", "type": "main", "index": 0 }
+        ]
+      ]
+    },
+    "Buscar la palabra clave": {
+      "main": [[{ "node": "Descartar los ya contestados", "type": "main", "index": 0 }]]
+    },
+    "Descartar los ya contestados": {
+      "main": [[{ "node": "Apuntar el comentario antes de contestar", "type": "main", "index": 0 }]]
+    },
+    "Apuntar el comentario antes de contestar": {
+      "main": [[{ "node": "Mandar el mensaje directo", "type": "main", "index": 0 }]]
+    },
+    "Mandar el mensaje directo": {
+      "main": [[{ "node": "Responder el comentario en publico", "type": "main", "index": 0 }]]
+    },
+    "Buscar el boton tocado": {
+      "main": [[{ "node": "Mandar el enlace", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}
