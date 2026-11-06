@@ -86,9 +86,20 @@ enlace        https://tudominio.com/la-guia
 boton_enlace  Ver la guía
 ```
 
-**Pon el enlace también en el texto del `dm`.** Si el botón falla por cualquier
-motivo, la persona no se queda sin nada. Es la diferencia entre un fallo molesto
-y un lead perdido.
+**Decide si el enlace va también en el texto del `dm`, porque tiene dos caras.**
+
+Si lo pones, nadie se queda sin la guía aunque el botón falle. Si no lo pones,
+obligas a tocar el botón, y ahí ganas tres cosas: sale el segundo mensaje, se
+abre la ventana de 24 horas para seguir conversando, y te queda registro de
+quién realmente quiso el enlace. Un clic en el texto no te lo reporta nadie.
+
+Hay además una creencia extendida de que Meta castiga el alcance cuando la
+automatización manda enlaces en el primer contacto. Es plausible —es el patrón
+clásico de spam— pero Meta no documenta ninguna regla así, y aquí no está
+comprobado. Tómalo como lo que es.
+
+Sin enlace en el texto para una campaña donde te importa medir; con enlace
+cuando prefieres que nadie se quede fuera. Las dos son defendibles.
 
 **La columna `publico` admite variantes separadas por `|`** y el flujo elige una
 al azar en cada respuesta. Cien respuestas idénticas bajo un mismo post son un
