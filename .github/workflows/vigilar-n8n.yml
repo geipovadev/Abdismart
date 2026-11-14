@@ -1,0 +1,77 @@
+# Avisa cuando n8n deja de responder.
+#
+# n8n corre en una máquina de la casa y sale a internet por un túnel de
+# Cloudflare. Cuando esa máquina se apaga —corte de luz, suspensión— el webhook
+# de Instagram deja de llegar, y Meta no reintenta: cada comentario que entra
+# mientras está caída se pierde sin dejar rastro. El 13 y el 14 de noviembre de
+# 2026 pasó dos madrugadas seguidas y se perdieron cinco leads.
+#
+# Por eso esto corre en GitHub y no en el servidor: un vigilante que vive en la
+# máquina que se cae no sirve de nada.
+#
+# Si la petición falla, el job falla y GitHub manda un correo al dueño del
+# repositorio. Ese correo es el aviso.
+#
+# Cada hora, no cada cinco minutos, por el plan gratuito: en un repositorio
+# privado GitHub cobra el tiempo redondeando cada ejecución a un minuto, y hay
+# 2.000 al mes. Cada hora son ~720; cada media hora, ~1.440. Si se quiere más
+# fino, cambiar el cron a '*/30 * * * *' y vigilar el consumo en Settings →
+# Billing.
+#
+# Ojo: GitHub apaga los workflows programados si el repositorio pasa 60 días
+# sin actividad. Si deja de llegar el correo de prueba, mirar eso primero.
+
+name: Vigilar n8n
+
+on:
+  schedule:
+    # En punto de cada hora.
+    - cron: '0 * * * *'
+  workflow_dispatch:        # permite lanzarlo a mano desde la pestaña Actions
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Preguntar si n8n responde
+        env:
+          # /healthz/readiness es más estricto que /healthz: confirma que n8n
+          # alcanza su base de datos, no solo que el proceso esté levantado.
+          # No pide autenticación, así que aquí no hace falta ningún secreto.
+          URL: https://n8n.geinerporras.com/healthz/readiness
+        run: |
+          set -euo pipefail
+
+          echo "Consultando $URL …"
+
+          # Tres intentos antes de dar la alarma: un bache de red de diez
+          # segundos no es una caída, y un correo falso a las 3 de la mañana
+          # enseña a ignorar los correos de verdad.
+          codigo=$(curl -sS -o /tmp/respuesta.txt -w '%{http_code}' \
+            --max-time 20 --retry 3 --retry-delay 20 --retry-connrefused \
+            "$URL") || true
+
+          echo "HTTP $codigo"
+          echo "Respuesta: $(head -c 300 /tmp/respuesta.txt)"
+
+          case "$codigo" in
+            200)
+              echo "✓ n8n responde."
+              ;;
+            000)
+              echo "✗ Sin respuesta: la máquina está apagada o sin red."
+              exit 1
+              ;;
+            530)
+              echo "✗ Error 1033 de Cloudflare: el túnel existe pero nadie lo atiende."
+              echo "  Suele ser cloudflared caído, o la máquina apagada."
+              exit 1
+              ;;
+            *)
+              echo "✗ Respuesta inesperada ($codigo)."
+              echo "  Si es 502 o 503, el túnel está arriba y n8n no."
+              exit 1
+              ;;
+          esac
