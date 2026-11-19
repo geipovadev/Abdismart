@@ -1,0 +1,860 @@
+{
+  "name": "Reels · carpeta de Drive → Instagram",
+  "nodes": [
+    {
+      "name": "Todos los días a las 2 pm",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        128
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 1,
+              "triggerAtHour": 14,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Configuración",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        128
+      ],
+      "parameters": {
+        "mode": "manual",
+        "options": {},
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ig-user-id",
+              "name": "ig_user_id",
+              "value": "PON_AQUI_TU_IG_USER_ID",
+              "type": "string"
+            },
+            {
+              "id": "carpeta-pendientes",
+              "name": "carpeta_pendientes",
+              "value": "PON_AQUI_EL_ID_DE_LA_CARPETA_PENDIENTES",
+              "type": "string"
+            },
+            {
+              "id": "carpeta-publicados",
+              "name": "carpeta_publicados",
+              "value": "PON_AQUI_EL_ID_DE_LA_CARPETA_PUBLICADOS",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Buscar carpetas de reels",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        448,
+        128
+      ],
+      "executeOnce": true,
+      "parameters": {
+        "resource": "fileFolder",
+        "limit": 20,
+        "options": {
+          "fields": [
+            "id",
+            "name"
+          ]
+        },
+        "filter": {
+          "whatToSearch": "folders",
+          "folderId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $json.carpeta_pendientes }}"
+          }
+        }
+      }
+    },
+    {
+      "name": "Descartar las ya procesadas",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        128
+      ],
+      "parameters": {
+        "operation": "rowNotExists",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "reels_publicados"
+        },
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "carpeta_id",
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "El más viejo primero",
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        896,
+        128
+      ],
+      "parameters": {
+        "type": "simple",
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "name",
+              "order": "ascending"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Un reel por vuelta",
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        128
+      ],
+      "parameters": {}
+    },
+    {
+      "name": "Listar archivos de la carpeta",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1344,
+        128
+      ],
+      "parameters": {
+        "resource": "fileFolder",
+        "returnAll": true,
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType"
+          ]
+        },
+        "filter": {
+          "whatToSearch": "files",
+          "folderId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $json.id }}"
+          }
+        }
+      }
+    },
+    {
+      "name": "Elegir video, portada y caption",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1568,
+        128
+      ],
+      "parameters": {
+        "jsCode": "// Busca los tres archivos del reel dentro de la carpeta.\n//\n// Si falta alguno no sale nada y el flujo termina sin publicar. Es a proposito:\n// si Drive todavia esta subiendo el mp4, es mejor esperar al dia siguiente que\n// publicar un reel a medias.\nconst archivos = $input.all().map(i => i.json);\nconst nombre = a => String(a.name || '').toLowerCase();\n\nconst video = archivos.find(a => nombre(a).endsWith('.mp4') || nombre(a).endsWith('.mov'));\nconst imagenes = archivos.filter(a => /\\.(png|jpe?g)$/.test(nombre(a)));\n// Si hay varias imagenes gana la que se llame portada*; si no, la primera.\nconst portada = imagenes.find(a => nombre(a).startsWith('portada')) || imagenes[0];\nconst caption = archivos.find(a => nombre(a) === 'caption.txt') || archivos.find(a => nombre(a).endsWith('.txt'));\n\nif (!video || !portada || !caption) return [];\n\nconst carpeta = $('Un reel por vuelta').first().json;\nreturn [{ json: {\n  carpeta_id: carpeta.id,\n  carpeta: carpeta.name,\n  video_id: video.id,\n  video: video.name,\n  portada_id: portada.id,\n  caption_id: caption.id,\n} }];"
+      }
+    },
+    {
+      "name": "Apuntar la carpeta antes de publicar",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1792,
+        128
+      ],
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "reels_publicados"
+        },
+        "options": {},
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "carpeta_id": "={{ $json.carpeta_id }}",
+            "carpeta": "={{ $json.carpeta }}",
+            "estado": "publicando"
+          },
+          "schema": [
+            {
+              "id": "carpeta_id",
+              "displayName": "carpeta_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "carpeta",
+              "displayName": "carpeta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hacer publico el video",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2016,
+        128
+      ],
+      "parameters": {
+        "operation": "share",
+        "options": {},
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Elegir video, portada y caption').first().json.video_id }}"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        }
+      }
+    },
+    {
+      "name": "Hacer publica la portada",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2240,
+        128
+      ],
+      "parameters": {
+        "operation": "share",
+        "options": {},
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Elegir video, portada y caption').first().json.portada_id }}"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        }
+      }
+    },
+    {
+      "name": "Descargar el caption",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2464,
+        128
+      ],
+      "parameters": {
+        "operation": "download",
+        "options": {
+          "binaryPropertyName": "data"
+        },
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Elegir video, portada y caption').first().json.caption_id }}"
+        }
+      }
+    },
+    {
+      "name": "Leer el caption",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.2,
+      "position": [
+        2688,
+        128
+      ],
+      "parameters": {
+        "operation": "text",
+        "destinationKey": "caption",
+        "options": {}
+      }
+    },
+    {
+      "name": "Crear el reel en Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        2912,
+        128
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/{{ $('Configuración').first().json.ig_user_id }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ media_type: 'REELS', share_to_feed: true, caption: String($json.caption || '').trim(), video_url: 'https://drive.usercontent.google.com/download?id=' + $('Elegir video, portada y caption').first().json.video_id + '&export=download', cover_url: 'https://lh3.googleusercontent.com/d/' + $('Elegir video, portada y caption').first().json.portada_id }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "name": "Esperar a que Instagram procese",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        3136,
+        128
+      ],
+      "parameters": {
+        "amount": 30
+      }
+    },
+    {
+      "name": "Consultar el estado",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        3360,
+        128
+      ],
+      "parameters": {
+        "url": "=https://graph.instagram.com/v23.0/{{ $('Crear el reel en Instagram').first().json.id }}?fields=status_code,status",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "options": {
+          "timeout": 30000
+        }
+      }
+    },
+    {
+      "name": "¿Listo para publicar?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3584,
+        128
+      ],
+      "parameters": {
+        "options": {},
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.status_code }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "rightValue": "FINISHED"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Publicar el reel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        3808,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v23.0/{{ $('Configuración').first().json.ig_user_id }}/media_publish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpTemplatedCustomAuth",
+        "sendBody": true,
+        "contentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ creation_id: $('Crear el reel en Instagram').first().json.id }) }}",
+        "options": {
+          "timeout": 60000
+        }
+      }
+    },
+    {
+      "name": "Marcar como publicado",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        4032,
+        0
+      ],
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "reels_publicados"
+        },
+        "options": {},
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "carpeta_id",
+              "keyValue": "={{ $('Elegir video, portada y caption').first().json.carpeta_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "publicado",
+            "media_id": "={{ $json.id }}",
+            "detalle": "={{ $now.toISO() }}"
+          },
+          "schema": [
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "media_id",
+              "displayName": "media_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "detalle",
+              "displayName": "detalle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Mover la carpeta a publicados",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        4256,
+        0
+      ],
+      "parameters": {
+        "operation": "move",
+        "fileId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Elegir video, portada y caption').first().json.carpeta_id }}"
+        },
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Configuración').first().json.carpeta_publicados }}"
+        }
+      }
+    },
+    {
+      "name": "¿Falló o tardó demasiado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3808,
+        288
+      ],
+      "parameters": {
+        "options": {},
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "leftValue": "={{ ['ERROR', 'EXPIRED'].includes($json.status_code) || $runIndex >= 20 }}",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Marcar el error",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        4032,
+        288
+      ],
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "",
+          "cachedResultName": "reels_publicados"
+        },
+        "options": {},
+        "matchType": "allConditions",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "carpeta_id",
+              "keyValue": "={{ $('Elegir video, portada y caption').first().json.carpeta_id }}"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "estado": "error",
+            "detalle": "={{ ($json.status_code || '') + ' ' + ($json.status || 'sin respuesta tras 10 min') }}"
+          },
+          "schema": [
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "detalle",
+              "displayName": "detalle",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Nota de uso",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        224,
+        400
+      ],
+      "parameters": {
+        "color": 4,
+        "width": 1100,
+        "height": 420,
+        "content": "## Cómo se usa\n\nUna carpeta por reel en **Drive › Reels para publicar**, con tres archivos:\n\n- el video, `.mp4` o `.mov`\n- la portada, `portada.png` o `.jpg`\n- el texto, `caption.txt`\n\n**El nombre de la carpeta empieza con la fecha**: `2026-11-16-mi-reel`. El flujo ordena por nombre y publica la primera, y con la fecha en formato ISO delante el orden alfabético es el cronológico.\n\nTodos los días a la hora del disparador sale **una** carpeta: la más vieja sin publicar. Si no hay ninguna, el flujo termina en dos segundos sin hacer nada. Al terminar, la carpeta se mueve a **Reels publicados**.\n\n### Antes de activarlo\n\n1. Crea la tabla `reels_publicados` y asóciala en los cuatro nodos que la usan.\n2. Rellena el nodo **Configuración**: tu `ig_user_id` y los ids de las dos carpetas de Drive.\n3. Crea la credencial del token en **Crear el reel en Instagram** y asígnasela también a **Consultar el estado** y **Publicar el reel**.\n4. Conecta tu cuenta de Google Drive en los seis nodos de Drive.\n\nLa carpeta se anota en `reels_publicados` **antes** de publicar, así nunca sale dos veces. Si queda en `publicando` o en `error`, borra la fila para reintentar."
+      }
+    }
+  ],
+  "connections": {
+    "Todos los días a las 2 pm": {
+      "main": [
+        [
+          {
+            "node": "Configuración",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Configuración": {
+      "main": [
+        [
+          {
+            "node": "Buscar carpetas de reels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar carpetas de reels": {
+      "main": [
+        [
+          {
+            "node": "Descartar las ya procesadas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descartar las ya procesadas": {
+      "main": [
+        [
+          {
+            "node": "El más viejo primero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "El más viejo primero": {
+      "main": [
+        [
+          {
+            "node": "Un reel por vuelta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Un reel por vuelta": {
+      "main": [
+        [
+          {
+            "node": "Listar archivos de la carpeta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar archivos de la carpeta": {
+      "main": [
+        [
+          {
+            "node": "Elegir video, portada y caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Elegir video, portada y caption": {
+      "main": [
+        [
+          {
+            "node": "Apuntar la carpeta antes de publicar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apuntar la carpeta antes de publicar": {
+      "main": [
+        [
+          {
+            "node": "Hacer publico el video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hacer publico el video": {
+      "main": [
+        [
+          {
+            "node": "Hacer publica la portada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hacer publica la portada": {
+      "main": [
+        [
+          {
+            "node": "Descargar el caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Descargar el caption": {
+      "main": [
+        [
+          {
+            "node": "Leer el caption",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer el caption": {
+      "main": [
+        [
+          {
+            "node": "Crear el reel en Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear el reel en Instagram": {
+      "main": [
+        [
+          {
+            "node": "Esperar a que Instagram procese",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar a que Instagram procese": {
+      "main": [
+        [
+          {
+            "node": "Consultar el estado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar el estado": {
+      "main": [
+        [
+          {
+            "node": "¿Listo para publicar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Listo para publicar?": {
+      "main": [
+        [
+          {
+            "node": "Publicar el reel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "¿Falló o tardó demasiado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar el reel": {
+      "main": [
+        [
+          {
+            "node": "Marcar como publicado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar como publicado": {
+      "main": [
+        [
+          {
+            "node": "Mover la carpeta a publicados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Falló o tardó demasiado?": {
+      "main": [
+        [
+          {
+            "node": "Marcar el error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Esperar a que Instagram procese",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Costa_Rica"
+  }
+}
